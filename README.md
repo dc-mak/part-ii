@@ -11,7 +11,7 @@ Below are a list of LaTeX package dependencies for this project to build
   
     git clone https://github.com/
     cd <dir>
-    make < all | main.pdf | proposal.pdf | progress.pdf >
+    make <all|main.pdf|proposal.pdf|progress.pdf>
 
 ### Variables
 
@@ -20,9 +20,9 @@ Default values:
     FLAGS := -quiet
     BUILD := build 
 
-Run with full LaTeX output:
+E.g. run with full LaTeX output:
 
-    make < all | main.pdf | proposal.pdf | progress.pdf > FLAGS=''
+    make <all|main.pdf|proposal.pdf|progress.pdf> FLAGS=''
 
 ## LaTeX Package Dependencies
 
