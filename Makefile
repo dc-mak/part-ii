@@ -8,20 +8,20 @@ SRC_PROG := $(addprefix $(DIR_PROG)/, $(SRC_PROG))
 
 # Proposal files
 SRC_PROP := proposal.tex \
-					  proposal-project-structure-diagram.pdf
+	    proposal-project-structure-diagram.pdf
 DIR_PROP := proposal
 SRC_PROP := $(addprefix $(DIR_PROP)/, $(SRC_PROP))
 
 # Main files
 SRC_MAIN := main.tex \
-						title.tex \
-						frontmatter.tex \
-						introduction.tex \
-						preparation.tex \
-						implementation.tex \
-						evaluation.tex \
-						conclusions.tex \
-						dissertation.bib
+	    title.tex \
+	    frontmatter.tex \
+	    introduction.tex \
+	    preparation.tex \
+	    implementation.tex \
+	    evaluation.tex \
+	    conclusions.tex \
+	    dissertation.bib
 DIR_MAIN := src
 SRC_MAIN := $(addprefix $(DIR_MAIN)/, $(SRC_MAIN))
 
