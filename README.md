@@ -28,26 +28,15 @@ Run with full LaTeX output:
 Python and [Pygments](http://pygments.org/download/) library.
 
     a4wide
-    amsmath
-    amssymb
-    autofe
     booktabs
-    color
     docmute
-    hyperref
-    fancyvrb
     fontenc
     geometry
     graphicx
     helvet
     hyperref
     inputenc
-    lmodern
-    mathpartir
     minted
-    natbib
     pgfplots
-    stmaryrd
-    ucs
     ulem
     xcolor
