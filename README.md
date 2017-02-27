@@ -16,10 +16,12 @@ Below are a list of LaTeX package dependencies for this project to build
 ### Variables
 
 Default values:
+
     FLAGS := -quiet
     BUILD := build 
 
 Run with full LaTeX output:
+
     make < all | main.pdf | proposal.pdf | progress.pdf > FLAGS=''
 
 ## LaTeX Package Dependencies
