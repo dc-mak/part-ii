@@ -1,0 +1,159 @@
+\documentclass[12pt]{article}
+
+\usepackage{a4wide}
+\usepackage{amssymb}
+\usepackage{autofe}
+\usepackage{fancyvrb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{natbib}
+\usepackage{ucs}
+\usepackage{ulem}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[utf8x]{inputenc}
+
+\parindent 0pt
+\parskip 6pt
+
+\newcommand{\added}[1]{\textcolor{ForestGreen}{#1}}
+\newcommand{\done}[1]{\sout{#1}}
+\newcommand{\removed}[1]{\textcolor{red}{#1}}
+
+\begin{document}
+
+\begin{center}
+\Large
+Computer Science Tripos -- Part II -- Progress Report\\[4mm]
+\LARGE
+Exploring the structure of mathematical theories using graph databases\\[4mm]
+
+\large
+Dhruv C.~Makwana, Trinity College
+
+dcm41@cam.ac.uk
+
+\end{center}
+
+\vspace{5mm}
+
+\textbf{Project Supervisor:} Dr.~Timothy G.~Griffin
+
+\textbf{Directors of Studies:} Dr.~Frank Stajano \& Dr.~Sean B.~Holden
+
+\textbf{Project Overseers:} Dr.~David J.~Greaves  \& Prof.~John Daugman
+
+% Main document
+\section*{Scheduling}
+
+The project is on schedule. Although the some of the details of the work to be
+done (especially regarding the script-to-CSV tool) have changed, most of it
+(compiled-to-CSV and library of queries) has been as predicted.
+
+Firstly, work on the compiled-to-CSV tool is further along (with more detailed
+models, such as hierarchical modules and type-constructor relations.) than
+anticipated, reducing the need for the script-to-CSV tool. The current
+implementation suffers from some strange results (thanks to the representation
+of modules types/functors) but is overall, working as expected.
+
+Work on the library of queries/tools is further along than expected thanks to
+pre-existing solutions (APOC: Awesome Procedures on Cypher) to some of the
+graph algorithm and query ideas considered. What remains to be done is either
+implementing a new metric or an existing one, aiming for better performance.
+
+Lastly, work on the script-to-CSV tool has been temporarily suspended. This is
+because the model, as it stands, of Coq's proof-objects is sufficiently detailed
+to run some queries on and develop a library for. The only missing features are
+(a) inclusion of notation in the model and (b) appropriate de-duplications of
+module types (and dealing appropriately with opaque \texttt{:=} and
+transparent \texttt{<:} ascriptions).
+
+\section*{Unexpected Difficulties}
+
+Understanding the Coq AST and API has been even more challenging than
+anticipated.  The project is large and poorly documented, so a lot of time was
+spent trying to figure out how to find and chain appropriate AST
+transformations.
+
+Once Coq was better understood, it became apparent that the full Coq AST was
+impractical to work with for this project and a easier alternative would be to
+process \texttt{glob} files, (global reference) which will provide the
+aformentioned missing features.
+
+\section*{Accomplished Work}
+
+Accomplished work is detailed in Table \ref{table:milestones}.
+
+\sout{Strikethroughs} represent work done. \textcolor{ForestGreen}{Green}
+represents additions to the original schedule presented in the proposal and
+\textcolor{red}{red} shows work removed or rescheduled.
+
+Exploring queries and starting the library was delayed (to January) as it
+became clear the compiled-to-CSV tool could provide more information than
+originally expected (and thus more time was reallocated to that).
+
+CoqPL is a workshop (to which this project was submitted). It was removed from
+the schedule when the proposal submission of this project was rejected.  The
+time for this was allocated to getting ahead on writing the final dissertation.
+
+\begin{table}[p]
+\centering
+\caption{Milestones: Updated (\done{Done}, \removed{Removed}, \added{Added})}
+\label{table:milestones}
+\begin{tabular}{ l | l }
+    \hline
+    Date & Milestone \\
+    \hline
+
+	% October
+    21-10-2016	&	\done{Complete Project Proposal} \\
+          
+	% November
+    04-11-2016 & \done{Finish a prototype compiled-to-CSV tool.} \\ 
+               & \done{Get familiar with Neo4j Cypher.} \\
+               & \done{Understand how to use the Coq parser.} \\
+
+    18-11-2016 &	\done{Refine compiled-to-CSV tool: tests and documentation.} \\
+               &	\removed{Explore queries possible and start the library.} \\
+               &	\done{Begin work on translating Coq constructs from proof-scripts.} \\
+
+	% December
+    02-12-2016	&	\removed{Finish a prototype script-to-CSV tool.} \\
+                & \added{\sout{Refactor compiled-to-CSV tool, add new features.}} \\
+
+    16-12-2016	&	\removed{Test and document script-to-CSV tool.} \\
+               & \added{\sout{Test and document refactored compiled-to-CSV tool.}} \\
+
+    30-12-2016	&	\done{Begin work on integrating tools into one workflow.} \\
+
+	% January
+	13-01-2017	&	\done{Stabilise and document whole project so far.} \\
+              &	\removed{Prepare presentation for CoqPL Conference.} \\
+              & \added{\sout{Write Introduction, Preparation chapters.}} \\
+
+    27-01-2017	&	\removed{Look at SSReflect and evaluate changes to be made.} \\
+               &	\added{\sout{Explore tools and queries possible, start library.}} \\
+
+	% February
+    10-02-2017	&	\removed{Incorporate changes from feedback/new features.} \\
+               &	\added{Implement new graph query/algorithm.} \\
+
+    24-02-2017	&	Test and document the new features. \\
+
+	% March
+    10-03-2017	&	\removed{Write Introduction, Preparation and Implementation chapters.} \\
+                & \added{Write Implementation chapters.} \\
+               &	\added{Implement script-to-CSV tool.} \\
+
+    24-03-2017	&	Fix bugs/unexpected problems. \\
+    
+	% April
+    07-04-2017	&	Write Evaluation and Conclusion chapters. \\
+
+    21-04-2017	&	Fix bugs/unexpected problems. \\
+    
+	% May
+	05-05-2017	&	Complete Dissertation (references, bibliography, appendix, formatting). \\
+\end{tabular}
+\end{table}
+
+\end{document}

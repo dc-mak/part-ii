@@ -1,0 +1,89 @@
+% Whole document compilation
+\newcommand{\setflag}{\newif \ifwhole \wholetrue}
+
+\documentclass[12pt,a4paper,notitlepage,twoside,openright]{report}
+
+% \usepackage{helvet}
+% \renewcommand{\familydefault}{\sfdefault}
+
+% \usepackage{amsmath}
+% \usepackage{amssymb}
+% \usepackage{booktabs}
+% \usepackage{color}
+\usepackage[top=1.1in, bottom=1.25in, left=1.25in, right=1.25in]{geometry}
+% \usepackage{graphicx}
+\usepackage{docmute}    % For including stand-alone LaTeX documents as is
+% \usepackage{fancyvrb}
+\usepackage[T1]{fontenc}
+\usepackage[utf8x]{inputenc}
+% \usepackage{lmodern}
+\usepackage[outputdir=build]{minted}
+% \usepackage{mathpartir}
+\usepackage{pgfplots}
+% \usepackage{stmaryrd}
+\usepackage[pdftitle={Exploring the structure of mathematical theories using graph databases},
+            pdfauthor={Dhruv Makwana},
+            pdfkeywords={mathematics, theorem, prover, graph, database, structure}]{hyperref}
+
+% \usetikzlibrary{plotmarks}
+% \newlength\figurewidth
+% \setlength\figurewidth{12.5cm}
+% \newlength\figureheight
+% \setlength\figureheight{9cm}
+
+% Prevent line breaks inside urls
+% \let\urlold\url
+% \renewcommand{\url}[1]{\mbox{\urlold{#1}}}
+
+\raggedbottom{}
+\sloppy
+\clubpenalty1000%
+\widowpenalty1000%
+
+\parindent 0pt
+\parskip 6pt
+
+\begin{document}
+
+\input{src/title.tex}
+\cleardoublepage{}
+
+\setcounter{page}{1}
+\pagenumbering{roman}
+\pagestyle{plain}
+
+\input{src/frontmatter.tex}
+\cleardoublepage{}
+
+\tableofcontents
+\cleardoublepage{}
+
+\setcounter{page}{1}
+\pagenumbering{arabic}
+\pagestyle{headings}
+
+\input{src/introduction.tex}
+
+\input{src/preparation.tex}
+
+\input{src/implementation.tex}
+
+\input{src/evaluation.tex}
+
+\input{src/conclusions.tex}
+
+\phantomsection{} % Stop hyperlinks from going to the wrong page
+\addcontentsline{toc}{chapter}{Bibliography}
+\bibliographystyle{plain}
+\bibliography{src/dissertation.bib}
+\cleardoublepage{}
+
+\appendix
+\input{src/output.tex}
+\cleardoublepage{}
+
+\chapter{Project proposal}
+\input{proposal/proposal.tex}
+\cleardoublepage
+
+\end{document}
