@@ -2,12 +2,21 @@
 \providecommand{\setflag}{\newif \ifwhole \wholefalse}
 \setflag
 
-\documentclass[12pt]{article}
+\documentclass[12pt,a4paper]{article}
 
-\usepackage{a4wide}
 \usepackage{booktabs} % Nice tables
 \usepackage{graphicx}
+\usepackage[top=1.1in, bottom=1.25in, left=1.25in, right=1.25in]{geometry}
 \usepackage{hyperref}
+\usepackage{xcolor}
+
+% Remove ugly boxes around hyperlinks
+\hypersetup{%
+    colorlinks,
+    linkcolor={red!80!black},
+    citecolor={green!50!black},
+    urlcolor={blue!80!black}
+}
 
 \parindent 0pt
 \parskip 6pt
@@ -48,7 +57,7 @@ throughout. Such a presentation is concise but limiting: it is linear; it forces
 the reader to keep track of dependencies such as implicit assumptions, previously
 defined results and the types and conventions behind any notation used;
 and it offers little opportunity to consider and compare different approaches
-for arriving at a result (i.e. number of assumptions, number of steps, some
+for arriving at a result (i.e.\ number of assumptions, number of steps, some
 notion of the importance of a result such as number of uses by later
 results).
 
@@ -73,12 +82,12 @@ huge challenge for traditional, relational databases.
 
 A graph-based approach to the representation and exploration of the structure of
 proof-objects would	be a far more natural expression of the complex
-relationships (i.e. chains of dependencies) involved in
+relationships (i.e.\ chains of dependencies) involved in
 constructing mathematical theories. Questions such as ``What depends on this
 lemma and how many such things are there?'' or ``What are the components of
 this definition?'' could thus be expressed concisely (questions which are not
 even expressible with standard relational databases systems such as
-SQL). A popular graph database, Neo4j \cite{neo4j} with an expressive query
+SQL). A popular graph database, Neo4j~\cite{neo4j} with an expressive query
 language \emph{Cypher} will be used for this project.
 	
 \section*{Resources Required}
@@ -135,11 +144,14 @@ with no way to query and interact with the information available.
 \begin{figure}[tb]
 	\centering
 	\includegraphics[width=\textwidth, page=1]{proposal/proposal-project-structure-diagram.pdf} 
-	\caption{System Components}
-	\label{fig:structure}
+  \ifwhole%
+    \caption{System Components (repeated from page~\pageref{fig:structure})}
+  \else
+    \caption{System Components}\label{fig:structure}
+  \fi
 \end{figure}
 
-The project will have three major parts, as shown in Figure \ref{fig:structure}.
+The project will have three major parts, as shown in Figure~\ref{fig:structure}.
 
 \subsection*{Processing Compiled Files}
 First, using coq-dpdgraph as a starting point, a tool which expresses a
@@ -169,7 +181,7 @@ proof -- will be an non-trivial task which will be tackled iteratively.
 \subsection*{Extensions}
 
 Extensions for this project will come from the process of adapting the project to
-be compatible with SSReflect \cite{gonthier2015ssr}, part of the Mathematical
+be compatible with SSReflect~\cite{gonthier2015ssr}, part of the Mathematical
 Components set of tools for Coq. These set of tools use low-level hooks in the
 Coq plugin system to significantly alter the specification and computation of
 proofs. As such, although they allow for large-scale projects to be formalised
@@ -192,9 +204,13 @@ following criteria will be used to evaluate the success of this project:
 
 \end{enumerate}
 
+\newpage
 \section*{Timetable and milestones}
+\vspace*{\fill}
 
-\begin{tabular}{ll }
+\begin{table}[h]
+\centering
+\begin{tabular}{ll}
     \toprule
 
     Date & Milestone \\
@@ -247,6 +263,8 @@ following criteria will be used to evaluate the success of this project:
   \bottomrule
 
 \end{tabular}
+\end{table}
+\vspace*{\fill}
 
 \ifwhole \else
 

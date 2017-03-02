@@ -1,6 +1,6 @@
 \chapter{Preparation}
 
-{\sf \color{red}
+\guidance{%
   Principally, this chapter should \textbf{describe the work which was
   undertaken before code was written}, hardware built or theories worked on. It
   should \textbf{show how the project proposal was further refined and
@@ -18,7 +18,7 @@
 
   The chapter will cite any \textbf{new programming languages and systems which
   had to be learnt} and will \textbf{mention complicated theories or
-algorithms} which required understanding.
+  algorithms} which required understanding.
 
   It is essential to \textbf{declare the Starting Point} (see Section 7). This
   states \textbf{any existing codebase or materials} that your project builds
@@ -29,11 +29,13 @@ algorithms} which required understanding.
   explained}.
 }
 
-Before commencing implementation of the project, careful consideration was
-given to planning it. Current solutions were explored, studied and evaluated
-against the aims described in Section~\ref{intro:aims}. The rest of this
-chapter will explain the initial set-up, elaborate on findings concerning
-related work and outline the project's starting point.
+\prechapter{%
+  Before commencing implementation of the project, careful consideration was
+  given to planning it. Current solutions were explored, studied and evaluated
+  against the aims described in Section~\ref{intro:aims}. The rest of this
+  chapter will explain the initial set-up, elaborate on findings concerning
+  related work and outline the project's starting point.
+}
 
 \section{Project Planning}
 
@@ -92,7 +94,7 @@ implementation decisions.
 
     \item support both graphical and textual modes of use. Small queries and
           novice users are likely to benefit from the presence of a well-designed
-          GUI. However, larger queries requiring more computation and
+          GUI\@. However, larger queries requiring more computation and
           flexibility will benefit from a traditional, shell-like interface.
 
     \item be interactive and extensible. A static presentation of data, even in
@@ -123,8 +125,8 @@ implementation decisions.
 Choice of implementation languages was, although an important decision, almost
 completely dictated by the programs at the core of the project (Coq and Neo4j).
 
-Coq and its plugins -- specifically, {\tt dpdgraph}, which was used as a
-starting point for extracting information about Coq proof-objects from compiled
+Coq and its plugins -- specifically, dpdgraph, which was used as a starting
+point for extracting information about Coq proof-objects from compiled
 proof-scripts -- are written in OCaml
 (\href{http://ocaml.org}{\texttt{ocaml.org}}).  Since it almost always wiser to
 work with and modify existing sytems (and more representative of real-world
@@ -138,7 +140,7 @@ editing tools.
 
 Similarly, Neo4j and its plugins are (usually) written in Java, but several
 lanaguages are supported for the latter, both by Neo4j officially and by the
-community. As will be explained in sub-section~\ref{subsec:neo4jandtools}, Java
+community. As will be explained in Subsection~\ref{subsec:neo4jandtools}, Java
 and R were found to be the most suitable for achieving this project's goals.
 
 \section{Starting Point}
@@ -146,7 +148,7 @@ and R were found to be the most suitable for achieving this project's goals.
 \subsection{Coq}
 
 Coq is a \emph{large} project, devloped by INRIA (France), and its size and
-complexity are best experienced through detangling the source code for yourself.
+complexity are best experienced through detangling the source code for oneself.
 Just for the implementation of the system (not including the standard library),
 Coq features approximately 3 major ASTs, 6 transformations between them, 3000
 visible types, 9000 APIs and 521 implementation files containing 228,000 lines
@@ -177,7 +179,7 @@ hyperlinking: potentially useful for building dependency graphs.
 
 However, the whole tool worked on an entirely \emph{lexical} level, with no
 formal parsing, understanding or elaboration of the code structure. Some efforts
-were made to modify its output into a useful format (e.g. comma-separated
+were made to modify its output into a useful format (e.g.\ comma-separated
 values) for other tools; however these did not prove fruitful because
 tokenisation cannot infer or preserve as much information as full compilation.
 Hence, since it could not meet any of the modelling requirements (completeness,
@@ -187,7 +189,7 @@ flexibility and size/precomputation) this approach was abandoned.
 Coqdep is a tool which computes inter-module dependencies for Coq and
 OCaml programs, outputtting in a format readable by the \texttt{make} program.
 Although on first impressions, this tool seemed to offer more flexibility than
-coqdoc, it was even more restrictive: it simply searches for keywords such as
+coqdoc, it was even more restrictive: it simply searches for keywords (such as
 \texttt{Require} or \texttt{Import} for Coq  and \texttt{open} or dot-notation
 module usage for OCaml) per file and outputs them accordingly.  As with coqdoc
 (and for the same reasons), this approach was also abandoned.
@@ -211,7 +213,7 @@ it to be a starting point for tools to build upon.
 
 Although lots of information such as notation, the relationship between
 constructors and the types they construct, proof tactics, the precise kind of an
-object (e.g.  fixpoint, class, lemma, theorem, etc.) and which module an object
+object (e.g.\  fixpoint, class, lemma, theorem, etc.) and which module an object
 belongs to was missing, it seemed unlikely that the information was not present
 in the compiled object files. Assuming that the data was already present in
 those files, but simply \emph{ignored or unused}, implementation of the
@@ -232,7 +234,7 @@ could be focused towards extracting and expressing in a simple format as much
 information as possible.
 
 Neo4j also includes an interactive graphical interface, accessible through an
-ordinary web-browser. As can be seen on Figure \ref{fig:neo4jbrowser}, the tool
+ordinary web-browser. As can be seen on Figure~\ref{fig:neo4jbrowser}, the tool
 offers 
 \begin{itemize}
   \item an overview of the current labels, relationships and properties in the
@@ -249,9 +251,11 @@ offers
 \end{itemize}
 
 \begin{figure}[tbp]
-  \includegraphics[width=\textwidth]{img/Neo4j_Browser.png}
-  \caption{Neo4j Interactive Browser}
-  \label{fig:neo4jbrowser}
+
+\includegraphics[width=\textwidth]{img/Neo4j_Browser.png}
+\caption{Neo4j Interactive Browser}
+\label{fig:neo4jbrowser}
+
 \end{figure}
 
 \subsection{Existing Tools for Neo4j}

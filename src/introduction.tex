@@ -1,6 +1,7 @@
 \chapter{Introduction}
 
-{\sf \color{red}
+
+\guidance{%
   The Introduction should explain the \textbf{principal motivation} for the
   project.  \textbf{Show how the work fits into} the broad area of surrounding
   Computer Science and \textbf{give a brief survey} of previous related work.
@@ -9,12 +10,14 @@
   consign any lengthy quotation to an appendix.
 }
 
-This dissertation offers a solution to problems regarding the presentation of
-mathematics. Firstly, these problems and the specific systems involved are
-described. Then, the aims of the project are stated; in later chapters, details
-of the prepration and implementation carried out are expounded. Lastly, the
-chapters on evaluation and conclusion provide evidence for the success of the
-project, reflections on the process and suggestions for future work.
+\prechapter{%
+  This dissertation offers a solution to problems regarding the presentation of
+  mathematics. Firstly, these problems and the specific systems involved are
+  described. Then, the aims of the project are stated; in later chapters, details
+  of the prepration and implementation carried out are expounded. Lastly, the
+  chapters on evaluation and conclusion provide evidence for the success of the
+  project, reflections on the process and suggestions for future work.
+}
 
 \section{Problem}
 
@@ -105,7 +108,7 @@ first-class citizens and can be manipulated and analysed.
 
 \emph{Cypher} features heavy use of pattern-matching in an ASCII-art inspired
 syntax.  The following (slightly contrived but hopefully illuminating) example
-in Listing \ref{lst:cypherexample} illustrates some of the key strengths of
+in Listing~\ref{lst:cypherexample} illustrates some of the key strengths of
 graph-based modelling using Cypher. 
 
 Suppose we have a very popular puppy named ``Cliff'' looking for the nearest
@@ -158,7 +161,7 @@ Coqdep is a utility included with Coq which analyses dependencies \emph{at the
 module level} by tracking {\tt Require} and {\tt Import} statements.
 
 Coq SerAPI
-(\href{http://github.com/ejgallego/coq-serapis}{\texttt{github.com/ejgallego/coq-serapis}})
+(\href{http://github.com/ejgallego/coq-serapi}{\texttt{github.com/ejgallego/coq-serapi}})
 is a work-in-progress library and communication protocol for Coq designed to
 make low-level interaction with Coq easier, especially for IDEs. It has a
 starting point for gathering some statistics of proof-objects in a project.
