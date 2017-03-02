@@ -111,9 +111,9 @@ syntax.  The following (slightly contrived but hopefully illuminating) example
 in Listing~\ref{lst:cypherexample} illustrates some of the key strengths of
 graph-based modelling using Cypher. 
 
-Suppose we have a very popular puppy named ``Cliff'' looking for the nearest
-and most familiar children (for this example, a person under the age of six) to
-play with.
+Suppose we have a puppy named ``Cliff'' looking for the nearest and most
+familiar children (for this example, a person under the age of six) to play
+with.
 
 To see how Cliff (indirectly) likes/knows this child, we bind \emph{path} to the
 result of the \emph{shortestPath} query.  For the path itself, we start with a
@@ -131,18 +131,18 @@ child) in the \mintinline{cypher}{WHERE} clause.
 Lastly, we return the path and order the results by proximity as a row of
 results, renaming the column of the child's name to simply ``name''.
 
-\begin{listing}[tb]
+\begin{listing}[tb]%
 
-  \caption{Example Cypher Query}
-  \label{lst:cypherexample}
+\caption{Example Cypher Query}
+\label{lst:cypherexample}
 
-  \begin{minted}[frame=lines]{cypher}
-MATCH path = shortestPath(
-  (puppy:dog {name: "Cliff")-[:LIKES|:KNOWS*..4]->(child:person))
-WHERE puppy.age <= 2 AND child.age < 6
-RETURN path,
-       child.name AS name,
-       ORDER BY other.distance_from_clifford
+  \begin{minted}{cypher}
+  MATCH path = shortestPath(
+    (puppy:dog {name: "Cliff"})-[:LIKES|:KNOWS*..4]->(child:person))
+  WHERE puppy.age <= 2 AND child.age < 6
+  RETURN path,
+         child.name AS name,
+         ORDER BY other.distance_from_clifford
   \end{minted}
 
 \end{listing}
