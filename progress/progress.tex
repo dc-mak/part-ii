@@ -1,8 +1,10 @@
 \documentclass[12pt]{article}
 
+\usepackage{booktabs} % Nice tables
 \usepackage{graphicx}
 \usepackage{hyperref}
-\usepackage{ulem}
+\usepackage{makerobust}
+\usepackage{ulem} % Strikethrough
 \usepackage[dvipsnames]{xcolor}
 
 \parindent 0pt
@@ -92,60 +94,65 @@ time for this was allocated to getting ahead on writing the final dissertation.
 \centering
 \caption{Milestones: Updated (\done{Done}, \removed{Removed}, \added{Added})}
 \label{table:milestones}
-\begin{tabular}{ l | l }
-    \hline
+\begin{tabular}{ll}
+    \toprule
+
     Date & Milestone \\
-    \hline
+
+    \midrule
 
 	% October
-    21-10-2016	&	\done{Complete Project Proposal} \\
+    21-10-2016	&	\done{Complete Project Proposal} \\[6pt]
           
 	% November
     04-11-2016 & \done{Finish a prototype compiled-to-CSV tool.} \\ 
                & \done{Get familiar with Neo4j Cypher.} \\
-               & \done{Understand how to use the Coq parser.} \\
+               & \done{Understand how to use the Coq parser.} \\[6pt]
 
     18-11-2016 &	\done{Refine compiled-to-CSV tool: tests and documentation.} \\
                &	\removed{Explore queries possible and start the library.} \\
-               &	\done{Begin work on translating Coq constructs from proof-scripts.} \\
+               &	\done{Begin work on translating Coq constructs from proof-scripts.} \\[6pt]
 
 	% December
     02-12-2016	&	\removed{Finish a prototype script-to-CSV tool.} \\
-                & \added{\sout{Refactor compiled-to-CSV tool, add new features.}} \\
+                & \added{\sout{Refactor compiled-to-CSV tool, add new features.}} \\[6pt]
 
     16-12-2016	&	\removed{Test and document script-to-CSV tool.} \\
-               & \added{\sout{Test and document refactored compiled-to-CSV tool.}} \\
+               & \added{\sout{Test and document refactored compiled-to-CSV tool.}} \\[6pt]
 
-    30-12-2016	&	\done{Begin work on integrating tools into one workflow.} \\
+    30-12-2016	&	\done{Begin work on integrating tools into one workflow.} \\[6pt]
 
 	% January
 	13-01-2017	&	\done{Stabilise and document whole project so far.} \\
               &	\removed{Prepare presentation for CoqPL Conference.} \\
-              & \added{\sout{Write Introduction, Preparation chapters.}} \\
+              & \added{\sout{Write Introduction, Preparation chapters.}} \\[6pt]
 
     27-01-2017	&	\removed{Look at SSReflect and evaluate changes to be made.} \\
-               &	\added{\sout{Explore tools and queries possible, start library.}} \\
+               &	\added{\sout{Explore tools and queries possible, start library.}} \\[6pt]
 
 	% February
     10-02-2017	&	\removed{Incorporate changes from feedback/new features.} \\
-               &	\added{Implement new graph query/algorithm.} \\
+               &	\added{Implement new graph query/algorithm.} \\[6pt]
 
-    24-02-2017	&	Test and document the new features. \\
+    24-02-2017	&	Test and document the new features. \\[6pt]
 
 	% March
     10-03-2017	&	\removed{Write Introduction, Preparation and Implementation chapters.} \\
                 & \added{Write Implementation chapters.} \\
-               &	\added{Implement script-to-CSV tool.} \\
+               &	\added{Implement script-to-CSV tool.} \\[6pt]
 
-    24-03-2017	&	Fix bugs/unexpected problems. \\
+    24-03-2017	&	Fix bugs/unexpected problems. \\[6pt]
     
 	% April
-    07-04-2017	&	Write Evaluation and Conclusion chapters. \\
+    07-04-2017	&	Write Evaluation and Conclusion chapters. \\[6pt]
 
-    21-04-2017	&	Fix bugs/unexpected problems. \\
+    21-04-2017	&	Fix bugs/unexpected problems. \\[6pt]
     
 	% May
-	05-05-2017	&	Complete Dissertation (references, bibliography, appendix, formatting). \\
+	05-05-2017	&	Complete Dissertation (references, bibliography, appendix, formatting). \\[6pt]
+
+  \bottomrule
+
 \end{tabular}
 \end{table}
 

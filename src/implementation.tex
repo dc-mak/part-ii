@@ -19,57 +19,84 @@
 }
 
 \section{Coq object-files to CSV}
-\color{red}
-I have so much to write!
-For each: intention, execution, problems (remember the stack overflow), solutions.
+Intention, execution, problems (remember the stack overflow), solutions.
 
 Also, how it fit in with larger, open-source projects.
+
+\subsection{Model}
+
+\subsubsection{Initial}
+
+\subsubsection{Removed}
+
+\subsubsection{Precise Kinds}
+
+\subsubsection{Recursive Modules}
+
+\subsubsection{Types}
+
+\subsubsection{Relationships}
+
 \begin{itemize}
-  \item Conversion to CSV
-  \item More precise kinds
-  \item Recursive modules
-  \item Types -- explain code, typechecking process
+  \item Tried and \emph{removed} x\_USED\_BY\_y
+  \item USES
+  \item CONTAINS
+  \item CONSTRUCTED\_BY
+  \item Emphasis on direction of arrow for exploration, importance of consistency
 \end{itemize}
-\color{black}
+
+\subsection{Translation from \texttt{.dpd} to CSV files}
 
 \section{Coq source-files to CSV}
-\color{red}
 Intention, execution, problems, solutions.
 
 Also, how it fit in with larger, open-source projects.
-\begin{itemize}
-  \item Figuring out missing information
-  \item Glob files -- explain
-  \item Parsing glob file
-  \item Matching up info later
-\end{itemize}
-\color{black}
+
+\subsection{Missing Information}
+
+\subsection{Glob Files}
+
+\subsection{Collection}
+
+\subsection{Merging}
 
 \section{CSV to Neo4j}
-\color{red}
 Intention, execution, problems, solutions.
 
 Also, how it fit in with larger, open-source projects.
-\begin{itemize}
-  \item The import tools
-  \item Changes in the model, tradeoffs, impacts on execution.
-\end{itemize}
-\color{black}
+
+\subsection{Neo4j Import Tools}
+
+\subsection{Impact of Changes to Model}
+Trade-offs, execution.
 
 \section{Query Library}
-\color{red}
 Intention, execution, problems, solutions.
 
 Also, how it fit in with larger, open-source projects.
-\begin{itemize}
-  \item Figuring out what is missing
-  \item Choosing what is feasible, efficient and useful.
-  \item Explain algorithm (fancy maths)
-  \item Visualisation tools
-\end{itemize}
-\color{black}
 
-\section{Dead-ends and Lessons Learnt}
-\color{red}
-Coqdoc, multiple relationship types, attempting to parse.
-\color{black}
+\subsection{APOC}
+
+\subsection{Additions on top of APOC}
+
+\subsection{igraph}
+
+\subsubsection{Terminology}
+
+\subsubsection{Betweenness Centrality}
+
+\subsubsection{Closeness Centrality}
+
+\subsubsection{PageRank}
+
+\subsubsection{Community Detection}
+
+\subsection{Visualisation}
+
+\subsection{R Library}
+
+\subsection{Project Related}
+Modifying make files, continuous-integration builds, editors
+
+\section{Summary}
+Features implemented, dead-ends and lessons learnt.

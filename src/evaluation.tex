@@ -1,27 +1,106 @@
 \chapter{Evaluation}
 \label{chapter:evaluation}
 
-This is where Assessors will be looking for signs of success and for evidence
-of thorough and systematic testing. Sample output, tables of timings and
-photographs of workstation screens, oscilloscope traces or circuit boards may
-be included. 
+{\sf \color{red}
+  This is where Assessors will be looking for \textbf{signs of success} and for
+  \textbf{evidence of thorough and systematic testing}. \textbf{Sample output},
+  tables of timings and photographs of workstation screens, oscilloscope traces
+  or circuit boards may be included. 
 
-As with code, voluminous examples of sample output are usually best left to
-appendices or omitted altogether. 
+  As with code, voluminous examples of sample output are usually best left to
+  appendices or omitted altogether. 
 
-There are some obvious questions which this chapter will address. How many of
-the original goals were achieved? Were they proved to have been achieved? Did
-the program, hardware, or theory really work? 
+  There are some obvious questions which this chapter will address. \textbf{How
+  many of the original goals were achieved? Were they proved to have been
+  achieved? Did the program, hardware, or theory really work?} 
 
-Assessors are well aware that large programs will very likely include some
-residual bugs. It should always be possible to demonstrate that a program works
-in simple cases and it is instructive to demonstrate how close it is to working
-in a really ambitious case. 
+  Assessors are well aware that large programs will very likely include some
+  residual bugs. It should always be possible to demonstrate that a
+  \textbf{program works in simple cases} and it is instructive to
+  \textbf{demonstrate how close it is to working in a really ambitious case}. 
+}
+
+\section{Constructs Translated}
+
+\subsection{Possible Extensions}
+
+\section{Library of Queries}
 
 \section{Sample output}
+\subsection{Small: CoqRegExp}
 
-\section{Constructs translated}
+\subsection{Large: MathComp}
 
-\section{Queries}
+\section{A Comparative Analysis}
 
-\section{Performance}
+\subsection{Features}
+
+\begin{table}[tbp]
+\centering
+\caption{Comparison of Features}
+\label{table:features}
+
+\bigskip
+
+\begin{tabular}{rccc}
+
+  \toprule
+
+  &
+  \rot{Property 1} &
+  \rot{Property 2} &
+  \rot{Property 3} \\
+
+  \midrule
+
+  System 1        &       &       &  X    \\ 
+  System 2        & X     & X     &  X    \\
+  System 3        & X &   &  X            \\
+
+  \bottomrule
+
+\end{tabular}
+\end{table}
+
+\subsection{Performance}
+
+\begin{figure}[tbp]
+\centering
+
+\caption{Comparison of Execution Times}
+\label{fig:exectimes}
+\bigskip
+
+\begin{tikzpicture}[trim axis left]
+	\begin{axis}[
+		ybar,
+		enlargelimits=0.15,
+		legend style={at={(0.5,-0.15)},
+		anchor=north,
+		legend columns=-1},
+		ylabel={time (ms)},
+		symbolic x coords={Step 1,Step 2,Total},
+		xtick=data,
+		nodes near coords,
+		nodes near coords align={vertical},
+	]
+
+	\addplot
+		coordinates
+			{(Step 1,7) (Step 2,9) (Total,4)};
+
+	\addplot
+		coordinates
+			{(Step 1,4) (Step 2,4) (Total,4)};
+
+	\addplot
+		coordinates
+			{(Step 1,1) (Step 2,1) (Total,1)};
+
+	\legend
+		{Tool 1,Tool 2,Tool 3}
+
+	\end{axis}
+
+\end{tikzpicture}
+\end{figure}

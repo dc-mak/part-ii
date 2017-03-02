@@ -6,7 +6,9 @@
 % \usepackage{helvet}
 % \renewcommand{\familydefault}{\sfdefault}
 
-% \usepackage{booktabs} % Nice tables
+\usepackage{adjustbox}
+\usepackage{array}
+\usepackage{booktabs} % Nice tables
 \usepackage[top=1.1in, bottom=1.25in, left=1.25in, right=1.25in]{geometry}
 \usepackage{docmute}    % For including stand-alone LaTeX documents as is
 \usepackage[T1]{fontenc}
@@ -26,6 +28,15 @@
 % Paragraph formatting
 \parindent 0pt
 \parskip 6pt
+
+% Fancy evaluation table with slanted columns
+% http://tex.stackexchange.com/questions/32683/rotated-column-titles-in-tabular#32690
+\newcolumntype{R}[2]{%
+    >{\adjustbox{angle=#1,lap=\width-(#2)}\bgroup}%
+    l%
+    <{\egroup}%
+}
+\newcommand*\rot{\multicolumn{1}{R{90}{1em}}}%
 
 \begin{document}
 

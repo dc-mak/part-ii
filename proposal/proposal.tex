@@ -5,6 +5,7 @@
 \documentclass[12pt]{article}
 
 \usepackage{a4wide}
+\usepackage{booktabs} % Nice tables
 \usepackage{graphicx}
 \usepackage{hyperref}
 
@@ -193,9 +194,12 @@ following criteria will be used to evaluate the success of this project:
 
 \section*{Timetable and milestones}
 
-\begin{tabular}{ l | l }
+\begin{tabular}{ll }
+    \toprule
+
     Date & Milestone \\
-    \hline
+
+    \midrule
 
 	% October
 	21-10-2016	&	Complete Project Proposal \\ \\
@@ -239,6 +243,9 @@ following criteria will be used to evaluate the success of this project:
     
 	% May
 	05-05-2017	&	Complete Dissertation (references, bibliography, appendix, formatting). \\
+
+  \bottomrule
+
 \end{tabular}
 
 \ifwhole \else
