@@ -1,40 +1,36 @@
 \chapter{Preparation}
 
 \guidance{%
-  Principally, this chapter should \textbf{describe the work which was
-  undertaken before code was written}, hardware built or theories worked on. It
-  should \textbf{show how the project proposal was further refined and
-  clarified}, so that the Implementation stage could go smoothly rather than by
-  trial and error.
-
-  Throughout this chapter and indeed the whole dissertation, it is essential to
-  \textbf{demonstrate that a proper professional approach was employed}.
-
-  The nature of this chapter will vary greatly from one dissertation to another
-  but, underlining the professional approach, this chapter will very likely
-  include a \textbf{section headed “Requirements Analysis”} and
-  \textbf{incorporate other references to the techniques of Software
-  Engineering}.
-
-  The chapter will cite any \textbf{new programming languages and systems which
-  had to be learnt} and will \textbf{mention complicated theories or
-  algorithms} which required understanding.
-
-  It is essential to \textbf{declare the Starting Point} (see Section 7). This
-  states \textbf{any existing codebase or materials} that your project builds
-  on.  The text here \textbf{can commonly be identical to the text in your
-  proposal}, but it may \textbf{enlarge on it or report variations}. For
-  instance, the true starting point may have turned out to be different from
-  that declared in the proposal and \textbf{such discrepancies must be
-  explained}.
+Principally, this chapter should \textbf{describe the work which was
+undertaken before code was written}, hardware built or theories worked on. It
+should \textbf{show how the project proposal was further refined and
+clarified}, so that the Implementation stage could go smoothly rather than by
+trial and error.\\
+Throughout this chapter and indeed the whole dissertation, it is essential to
+\textbf{demonstrate that a proper professional approach was employed}.\\
+The nature of this chapter will vary greatly from one dissertation to another
+but, underlining the professional approach, this chapter will very likely
+include a \textbf{section headed “Requirements Analysis”} and
+\textbf{incorporate other references to the techniques of Software
+Engineering}.\\
+The chapter will cite any \textbf{new programming languages and systems which
+had to be learnt} and will \textbf{mention complicated theories or
+algorithms} which required understanding.\\
+It is essential to \textbf{declare the Starting Point} (see Section 7). This
+states \textbf{any existing codebase or materials} that your project builds
+on.  The text here \textbf{can commonly be identical to the text in your
+proposal}, but it may \textbf{enlarge on it or report variations}. For
+instance, the true starting point may have turned out to be different from
+that declared in the proposal and \textbf{such discrepancies must be
+explained}.
 }
 
 \prechapter{%
   Before commencing implementation of the project, careful consideration was
   given to planning it. Current solutions were explored, studied and evaluated
   against the aims described in Section~\ref{intro:aims}. The rest of this
-  chapter will explain the initial set-up, elaborate on findings concerning
-  related work and outline the project's starting point.
+  chapter will explain the initial set-up, elaborate on  related work and
+  outline the project's starting point.
 }
 
 \section{Project Planning}
@@ -47,13 +43,14 @@ changes, evaluate the end-result and repeat. This allowed for experimentation
 of ideas and flexibility of implementation strategies.
 
 Git (\href{http://git-scm.com}{\texttt{git-scm.com}}) and GitHub
-(\href{http://github.com/dc-mak}{\texttt{github.com/dc-mak}}) were invaluable during the
-project, allowing for easy tracking, reverting, reviewing and collaborating.
-New features could be tested on new branches before being merged in and a copy
-of the work was safely backed up in one more place. GitHub extensions such as
-Travis-CI (continous integration) were added in later, as it became apparent
-that precisely specified versioning, build-dependencies and automated tests were
-useful in spotting errors early.
+(\href{http://github.com/dc-mak}{\texttt{github.com/dc-mak}}) were invaluable
+during the project, allowing for easy tracking, reverting, reviewing and
+collaborating.  New features could be tested on new branches before being
+merged in and a copy of the work was safely backed up in one more place. GitHub
+extensions such as \href{https://travis-ci.org}{Travis-CI} (continous
+integration) were added in later, as it became apparent that precisely
+specified versioning, build-dependencies and automated tests were useful in
+spotting errors early.
 
 \section{Requirements Analysis}
 Several components of this project needed to function correctly, both
@@ -67,55 +64,56 @@ implementation decisions.
 \begin{itemize}
 
   \item \textbf{Modelling}: The model should
-  \begin{itemize}
+  \begin{enumerate}[label=\textbf{M\arabic*},ref={M\arabic*}]
 
-    \item include as much relevant data as possible. Here, relevant means
-          useful to understanding a large library, but not so much so as to
-          obfuscate any information or make learning how to use the project
-          more difficult.
+    \item\label{req:m1} include as much relevant data as possible. Here,
+      relevant means useful to understanding a large library, but not so much
+      so as to obfuscate any information or make learning how to use the
+      project more difficult.
 
-    \item be flexible to work with and easy to translate. One could imagine
-          different front-ends for interacting with and computing data
-          from the model.
+    \item\label{req:m2} be flexible to work with and easy to translate. One
+      could imagine different front-ends for interacting with and computing
+      data from the model.
 
-    \item strike a balance between size and precomputing too much data.
-          Figuring out which pieces of data can be reconstructed later and
-          which are beneficial to compute during modelling will be a matter of
-          experimentation and weighing up ease of implementation
-          versus ease of later processing.
+    \item\label{req:m3} strike a balance between size and precomputing too much
+      data. Figuring out which pieces of data can be reconstructed later and
+      which are beneficial to compute during modelling will be a matter of
+      experimentation and weighing up ease of implementation versus ease of
+      later processing.
 
-  \end{itemize}
+  \end{enumerate}
 
   \item \textbf{Interaction}: Interacting with the model should
-  \begin{itemize}
+  \begin{enumerate}[label=\textbf{I\arabic*},ref={I\arabic*}]
 
-    \item primarily, allow users to understand the data. The following two points
-          follow from this principal goal.
+    \item\label{req:i1} primarily, allow users to understand the data. The
+      following two points follow from this principal goal.
 
-    \item support both graphical and textual modes of use. Small queries and
-          novice users are likely to benefit from the presence of a well-designed
-          GUI\@. However, larger queries requiring more computation and
-          flexibility will benefit from a traditional, shell-like interface.
+    \item\label{req:i2} support both graphical and textual modes of use. Small
+      queries and novice users are likely to benefit from the presence of a
+      well-designed GUI\@. However, larger queries requiring more computation
+      and flexibility will benefit from a traditional, shell-like interface.
 
-    \item be interactive and extensible. A static presentation of data, even in
-          a GUI, would fail to make full use of graph-databases and the ability
-          to query, in whatever way the user desires, information dynamically.
+    \item\label{req:i3} be interactive and extensible. A static presentation of
+      data, even in a GUI, would fail to make full use of graph-databases and
+      the ability to query, in whatever way the user desires, information
+      dynamically.
 
-  \end{itemize}
+  \end{enumerate}
 
   \item \textbf {Computation}: Working with the model's data should
-  \begin{itemize}
+  \begin{enumerate}[label=\textbf{C\arabic*},ref={C\arabic*}]
 
-    \item be enabled by a core library of good defaults. Certain, common
-          functions should be ready `out-of-the-box' and provide users
-          all they need to get started.
+    \item\label{req:c1} be enabled by a core library of good defaults. Certain,
+      common functions should be ready `out-of-the-box' and provide users all
+      they need to get started.
 
-    \item allow the user to add their own functions. It is not possible
-          to imagine and implement all the functionality users may desire and
-          so a way to extend the project to suit their own needs would be of
-          great use.
+    \item\label{req:c2} allow the user to add their own functions. It is not
+      possible to imagine and implement all the functionality users may desire
+      and so a way to extend the project to suit their own needs would be of
+      great use.
 
-  \end{itemize}
+  \end{enumerate}
 
 
 \end{itemize}
@@ -125,15 +123,15 @@ implementation decisions.
 Choice of implementation languages was, although an important decision, almost
 completely dictated by the programs at the core of the project (Coq and Neo4j).
 
-Coq and its plugins -- specifically, dpdgraph, which was used as a starting
-point for extracting information about Coq proof-objects from compiled
-proof-scripts -- are written in OCaml
+Coq and its plugins \textemdash specifically, dpdgraph, which was used as a
+starting point for extracting information about Coq proof-objects from compiled
+proof-scripts \textemdash are written in OCaml
 (\href{http://ocaml.org}{\texttt{ocaml.org}}).  Since it almost always wiser to
 work with and modify existing sytems (and more representative of real-world
 work) and as a functional language, OCaml benefits from strong, static (and
 inferred) type-system (allowing for easy experimentation, greater confidence in
 correctness), sticking to it for other parts of the tools which need not
-necessarily be in OCaml (e.g.\ the {\tt dpd2csv} utility) was a welcome and
+necessarily be in OCaml (e.g.\ the \texttt{dpd2} utility) was a welcome and
 easy decision. OCaml has several other benefits too, such as
 inductively-defined datatypes (useful for manipulating Coq constructs) and good
 editing tools.
@@ -172,18 +170,21 @@ follows is a brief overview of each tool and the reason it was insufficient for
 the purposes of meeting the project aims and requirements.
 
 \subsubsection{Coqdoc}
-Coqdoc is a documentation tool for Coq projects. It can output to raw text,
-HTML, \LaTeX~and a few other formats. Although it supports prettifying code with
-syntax highlighting and unicode characters, its most relevant feature was its
-hyperlinking: potentially useful for building dependency graphs.
+
+Coqdoc is a documentation tool for Coq projects, includes as part of the Coq
+system.. It can output to raw text, HTML, \LaTeX~and a few other formats.
+Although it supports prettifying code with syntax highlighting and unicode
+characters, its most relevant feature was its hyperlinking: potentially useful
+for building dependency graphs.
 
 However, the whole tool worked on an entirely \emph{lexical} level, with no
 formal parsing, understanding or elaboration of the code structure. Some efforts
 were made to modify its output into a useful format (e.g.\ comma-separated
 values) for other tools; however these did not prove fruitful because
 tokenisation cannot infer or preserve as much information as full compilation.
-Hence, since it could not meet any of the modelling requirements (completeness,
-flexibility and size/precomputation) this approach was abandoned.
+Hence, since it could not meet any of the modelling requirements
+(completeness~\ref{req:m1}, flexibility~\ref{req:m2} and
+size/precomputation~\ref{req:m3}) this approach was abandoned.
 
 \subsubsection{Coqdep}
 Coqdep is a tool which computes inter-module dependencies for Coq and
@@ -196,12 +197,13 @@ module usage for OCaml) per file and outputs them accordingly.  As with coqdoc
 
 \subsubsection{CoqSerAPI}
 
-\emph{Coq Se(xp)rialized API} is a new library and communication protocol aiming to
-make low-level interactions easier (using OCaml datatypes and s-expressions),
-particularly for tool/IDE developers. While this is likely to be useful in the
-future, it is still far from complete and is more geared towards interactive
-\emph{construction} (via a tool/IDE) rather than \emph{analysis}. As such,
-tracking dependencies (critical to the modelling requirements) is not possible.
+\emph{Coq Se(xp)rialized API} is a new library and communication protocol
+aiming to make low-level interactions easier (using OCaml datatypes and
+s-expressions), particularly for tool/IDE developers. While this is likely to
+be useful in the future, it is still far from complete and is more geared
+towards interactive \emph{construction} (via a tool/IDE) rather than
+\emph{analysis}. As such, tracking dependencies (critical to the modelling
+requirements) is not possible.
 
 \subsubsection{dpdgraph}
 
