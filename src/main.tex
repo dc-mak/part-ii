@@ -1,28 +1,38 @@
 % Whole document compilation
 \newcommand{\setflag}{\newif \ifwhole \wholetrue}
 
-\documentclass[12pt,a4paper,notitlepage,twoside,openright]{report}
-
 % \usepackage{helvet}
 % \renewcommand{\familydefault}{\sfdefault}
+
+\newif\ifsans%
+\sanstrue%
+
+\ifsans%
+\documentclass[11pt,a4paper,notitlepage,twoside,openright]{report}
+\usepackage[sfdefault]{FiraSans}
+\usepackage{FiraMono}
+\usepackage{arevmath}
+\else%
+\documentclass[12pt,a4paper,notitlepage,twoside,openright]{report}
+\fi%
 
 \usepackage{adjustbox} % Rotated table headers
 \usepackage{array} % Rotated table headers
 \usepackage{booktabs} % Nice tables
-\usepackage[headheight=15pt, top=1.1in, bottom=1.25in, left=1.25in, right=1.25in]{geometry}
+\usepackage[headheight=15pt, top=1.1in, bottom=1.25in, left=1.25in, right=1.25in]{geometry} % 15pt for fancyhdr
 \usepackage{docmute}  % For including stand-alone LaTeX documents as is
 \usepackage{enumitem} % For referrable enumerated lists
 \usepackage{fancyhdr} % Fancy headers
 \usepackage[T1]{fontenc}
 \usepackage[pdftitle={Exploring the structure of mathematical theories using graph databases},
             pdfauthor={Dhruv Makwana},
-            pdfkeywords={mathematics, theorem, prover, graph, database, structure}]{hyperref}
+            pdfkeywords={mathematics, theorem, prover, graph, database, structure}]{hyperref} % (hyper)links
 \usepackage[utf8x]{inputenc}
 \usepackage[outputdir=build]{minted} % Source code highlighting
 \usepackage{minitoc}  % Per Chapter Mini Table of Contents (load after)
 \usepackage{pgfplots} % Graphs
-\usepackage{titlesec}
-\usepackage{xcolor}
+\usepackage{titlesec} % For customising chapter titles
+\usepackage{xcolor} % More colour names
 
 % Formatting to allow flexible pages 
 \raggedbottom{}
@@ -70,6 +80,15 @@
 
 \newpage%
 }
+
+% Update MiniToC fonts
+\ifsans%
+\renewcommand{\mtifont}{\large\sffamily}
+\renewcommand{\mtcfont}{\normalsize\sffamily}
+\renewcommand{\mtcSfont}{\normalsize\sffamily\bf}
+\renewcommand{\mtcSSfont}{\small\sffamily}
+\renewcommand{\mtcSSSfont}{\small\sffamily}
+\fi%
 
 % Fancy evaluation table with slanted columns
 % http://tex.stackexchange.com/questions/32683/rotated-column-titles-in-tabular#32690
@@ -125,6 +144,5 @@
 
 \chapter{Project proposal}
 \input{proposal/proposal.tex}
-\cleardoublepage%
 
 \end{document}
