@@ -123,9 +123,9 @@ implementation decisions.
 Choice of implementation languages was, although an important decision, almost
 completely dictated by the programs at the core of the project (Coq and Neo4j).
 
-Coq and its plugins \textemdash specifically, dpdgraph, which was used as a
+Coq and its plugins \textendash~specifically, dpdgraph, which was used as a
 starting point for extracting information about Coq proof-objects from compiled
-proof-scripts \textemdash are written in OCaml
+proof-scripts \textendash~are written in OCaml
 (\href{http://ocaml.org}{\texttt{ocaml.org}}).  Since it almost always wiser to
 work with and modify existing sytems (and more representative of real-world
 work) and as a functional language, OCaml benefits from strong, static (and
@@ -138,10 +138,14 @@ editing tools.
 
 Similarly, Neo4j and its plugins are (usually) written in Java, but several
 lanaguages are supported for the latter, both by Neo4j officially and by the
-community. As will be explained in Subsection~\ref{subsec:neo4jandtools}, Java
+community. As will be explained in Subsection~\ref{subsec:neo4j}, Java
 and R were found to be the most suitable for achieving this project's goals.
 
 \section{Starting Point}
+
+Both Coq and Neo4j have a rich eco-system of tools and libraries built for them.
+Hence, it was worthwhile to examine the current landscape to determine the
+software available and then use it as a starting point effectively.
 
 \subsection{Coq}
 
@@ -162,12 +166,14 @@ programs and libraries. However, it did serve as invaluable insight for
 \emph{cognitive walkthroughs} carried out during the implementation phase
 (as a structured way of guiding the design of the model and libraries).
 
-\subsection{Existing Tools for Coq}
+\subsection{Existing Tools for Coq}\label{prep:coqtools}
+
 A number of tools were studied to learn their approaches and analyse their
 strengths and weakeness. A full, detailed comparison between all the tools
-mentioned and this project will be presented later, during evaluation.  What
-follows is a brief overview of each tool and the reason it was insufficient for
-the purposes of meeting the project aims and requirements.
+mentioned and this project will be presented later, during evaluation
+(Section~\ref{eval:compare}).  What follows is a brief overview of each tool and
+the reason it was insufficient for the purposes of meeting the project aims and
+requirements.
 
 \subsubsection{Coqdoc}
 
@@ -223,8 +229,7 @@ modelling aspect of this project focused on understanding and augmenting
 dpdgraph to add the missing pieces to the model and convert the whole thing to
 comma-separated values (henceforth referred to as CSVs)
 
-\subsection{Neo4j}
-\label{subsec:neo4jandtools}
+\subsection{Neo4j}\label{subsec:neo4j}
 
 Neo4j is one of the most popular graph database systems. It supports both
 graphical and textual modes of use and is easily extensible (through Cypher
@@ -260,7 +265,11 @@ offers
 
 \end{figure}
 
-\subsection{Existing Tools for Neo4j}
+\subsection{Existing Tools for Neo4j}\label{subsec:existtoolsneo4j}
+
+Neo4j features rich-integration with many languages, libraries and tools.
+Of those, the following were the most relevant and useful tools for meeting
+the project requirements.
 
 \subsubsection{APOC: Awesome Procedures on Cypher}
 
@@ -277,7 +286,7 @@ Thus, APOC helps step towards meeting the \emph{interaction} requirements for
 this project by being easy to understand, flexibile to use and extensible; even
 going part-way towards meeting the \emph{computation} requirements.
 
-\subsubsection{igraph}
+\subsubsection{igraph}\label{subsubsec:neo4jtoolsigraph}
 
 APOC has some key strengths that made it a good choice: it is easy to install
 and use and has some basic graph algorithms to get started with.  However, its

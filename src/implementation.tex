@@ -27,7 +27,7 @@
 \begin{figure}[tb]
 
 \centering
-\includegraphics[width=\textwidth, page=1]{proposal/proposal-project-structure-diagram.pdf} 
+\includegraphics[width=\textwidth, page=1]{proposal/proposal-project-structure-diagram.pdf}
 \caption{System Components}\label{fig:structure}
 
 \end{figure}
@@ -67,19 +67,18 @@ vocabulary of a Coq programmer (e.g. \texttt{Definition}, \texttt{Inductive},
 \texttt{Theorem}) and could not represent the richness of the
 AST appropriately. It was not documented how to translate these constructs back
 to familiar terms and thus, it quickly became clear that the these properties
-needed to be replaced by more general and descriptive ones.
+needed to be replaced by more general and descriptive ones (expounded below).
 
 \subsubsection{Precise Kinds}
 
 Apart from \emph{path}, all the properties were removed and replaced by two
 \emph{labels}: labels are used to group  nodes into subsets; since a node can
 belong to more than one subset, it can have more than one label assigned to it.
-Implementation of this was straightforward: simply a matter of looking up and
-expanding the abstract syntax tree starting from the type
-\texttt{global\_reference}.
+Implementation of this was simply a matter of looking up and expanding the
+abstract syntax tree (AST) starting from the type \texttt{global\_reference}.
 
 The two labels are \emph{kind} and \emph{subkind}.  A \emph{kind} is a string
-which can take one of the following values, each directly corresponding to an
+that can take one of the following values, each directly corresponding to an
 AST term: \textsf{module}, \textsf{class}, \textsf{type\_constructor},
 \textsf{inductive\_type}, \textsf{definition}, \textsf{assumption} or
 \textsf{proof}.
@@ -91,7 +90,7 @@ constructs more precisely. For example, when writing Coq, there is no
 all are \emph{synonyms} for proofs. Full details can be found in
 Appendix~\ref{chapter:fullmodel}.
 
-\subsubsection{Recursive Modules}
+\subsubsection{Recursive Modules}\label{subsubsec:recmodules}
 
 What remained from the initial model was the \emph{path} property. The issue
 here was that an inherently \emph{hierarchical} structure (of inclusion) was
@@ -101,29 +100,37 @@ proof-objects, excluding the possibility of expressing \emph{module-level
 dependencies} (as possible in the coqdep tool).
 
 Implementing this feature was difficult; there were two major phases. Firstly,
-the type of a node was exanded to include modules (using a variant datatype).
-Finishing this was just a matter of locating and fixing the resulting
-type-errors. This meant modules were in the model, but as a flat structure:
-modules could be related to objects but not to other modules.
+the type of a node was expanded to include modules (using a variant datatype).
+Finishing this involved locating and fixing the resulting type-errors. This
+meant modules were in the model, but as a flat structure: modules could be
+related to objects but not to other modules.
 
-Thus, the second major phase was inferring and adding all the ``ancestors'' of
-a module with the correct relationships (parent as source, child as
-destination, repeatedly up to the root module). The initial attempt resulted in
-stack-overflow for larger examples. A stack-trace did not highlight any point
-of error so it was \emph{assumed} to be due to the na\"{i}ve, but easy-to-write
+Thus, the second major phase was inferring and adding all the ``ancestors'' of a
+module with the correct relationships (parent as source, child as destination,
+repeatedly up to the root module). The initial attempt resulted in
+stack-overflow for larger examples. A stack-trace did not highlight any point of
+error so it was \emph{assumed} to be due to the na\"{i}ve, but easy-to-write
 (and check) non-tail-recursive implementation. So, the code was rewritten in a
-space-efficient tail-recursive manner (which allows for deeply nested module
+space-efficient, tail-recursive manner (which allows for deeply nested module
 hierarchies to be handled). Surprisingly, the problem persisted; further
 investigation discovered the fault lay in the separate \texttt{dpd2} tool (the
-details of which can be found in Subsection~\ref{subsec:translation}).
+details of which can be found in~\ref{subsubsec:dpd2} on
+page~\pageref{subsubsec:dpd2}).
 
-\subsubsection{Inductive Types and Constructors}
+\subsubsection{(Co-)Inductive Types and Constructors}
 
 Now that the properties of the original dpdpgraph had been superseded by more
 general and flexible alternatives, it was time to implement new features.  One
 of the most obvious and frustrating omissions from the initial model was the
-inability to relate an inductive type to to its constuctor(s). Expanding the 
-AST term for type-constructors showed which type it constructed. However,
+inability to relate an (co-)inductive type to to its constuctor(s). Expanding the
+AST term for type-constructors showed which type it constructed (however, types
+have no information about which constructors construct them). Hence, since
+dependencies were constrcuted in a depth-first manner \emph{down} the AST, they
+had to be built in reverse. Therefore, in order to correct this when outputting
+edges, each pair of nodes has to be checked to see if it (a) was a type and a
+constructor and if so, (b) the constructor's fully-qualified type matched the
+fully-qualified name of the type. If both these criteria were met, then the
+direction of the edge output was swapped.
 
 \subsubsection{Types}
 
@@ -134,80 +141,425 @@ able to include them in the model, would, along with kinds, subkinds and
 modules, help towards meeting the modelling requirement~\ref{req:m1} of
 including as much relevant data as possible. 
 
-\emph{Getting} the type was unexpectedly straightfoward; following the
-functions called when the Coq command \texttt{Check} \emph{<expression>} (for
-printing the type of a given expression) led to the algorithm; all that was
-left was converting the output to an OCaml string. It was \emph{using} the
-output which was problematic. Newlines, quotation marks, and commas had to be
-replaced by hash signs, single-quote marks and underscores respectively, so as
-to not interfere with the \texttt{.dpd} and CSV encoding of data.
-
+Following the functions called for the Coq command \texttt{Check}
+\emph{<expression>} (for printing the type of a given expression) led to the
+algorithm for \emph{getting} the type; all that was left was converting the
+output to an OCaml string. It was \emph{using} the output which was problematic.
+Newlines, quotation marks, and commas had to be replaced by hash signs,
+single-quote marks and underscores respectively, so as to not interfere with the
+\texttt{.dpd} and CSV encoding of data.
 
 \subsubsection{Relationships}
 
-Relationships were the most interesti
-Intention, execution, problems (remember the stack overflow), solutions.
+Modelling relationships was the most interesting aspect of deciding how to
+represent information. Of primary concern was the notion of expanding a node to
+see more details: if a user is looking at an object, they should be able to
+expand the object to see what the object depends on; if a user is looking at a
+module, they should be able to expand the module to see the objects contained
+within that module; if a user is looking at a (co-)inductive type, they should
+be able to expand the type and see its constructors. This leads to the basic
+modelling structure of \mintinline{cypher}{(src)-[:USES]->(dst)} for
+dependencies. For (co-)inductive types, this is refined to a
+\mintinline{cypher}{(type)-[:CONSTRUCTED_BY]->(constr)} and for modules this
+becomes \mintinline{cypher}{(module)-[:CONTAINS]->(object)}.
 
-\begin{itemize}
-  \item Tried and \emph{removed} x\_USED\_BY\_y
-  \item USES
-  \item CONTAINS
-  \item CONSTRUCTED\_BY
-  \item Emphasis on direction of arrow for exploration, importance of consistency
-\end{itemize}
+Two issues arose whilst implementing these relationships. First, finding and
+matching types and constructors (details of which are described earlier).
+Second, balancing expressivity against simplicity. Relationships of the
+following format, \texttt{X\_USES\_Y} were considered for kinds X and Y.
+Although this was useful for fewer kinds, its specificity when subkinds are
+included in the model made the model too large and complex (on the order of
+$n^{2}$ relationships). Since Cypher allows pattern-matching and filtering
+based on kinds and subkinds anyway, this aspect was simplified to the model
+presented above.
 
 \subsection{Translation}
-\label{subsec:translation}
+
+Once a model is constructed (in the form of a graph), it is translated by the
+\texttt{dpd2} tool to a CSV file for use by Neo4j's import tool to create a
+database. An overview of the \texttt{dpd} and CSV formats, as well as the
+\texttt{dpd2} tool itself, is presented next.
+
+\subsubsection{\texttt{dpd} Format}
+
+The graph representing the model is output as a \texttt{dpd} file with the
+following format for nodes (one per line):
+
+{\tt N: \emph{<id>} "\emph{<name>}" [\emph{<property>}=\emph{<value>}];}
+
+for example (full type elided for brevity), 
+
+{\tt N: 76 "matches" [type="... -> bool", subkind=fixpoint, kind=definition, path="RegExp.Definitions", ];}
+
+and likewise for edges:
+
+{\tt E: \emph{<src id>} \emph{<dst id>} [\emph{<property>}=\emph{<value>}];}
+
+for example, 
+
+{\tt E: 150 145 [type=CONTAINS, weight=1, ];}.
+
+\subsubsection{CSV}\label{subsubsec:translationcsv}
+
+Upon output as as \texttt{dpd} file, a model can be translated to various
+other formats. As an example, dpdgraph includes a tool to output a \texttt{dot}
+file, used extensively for \emph{visualising} graphs by many tools, from a
+\texttt{dpd} file. However, for the purpose of this project, the \texttt{dpd}
+file is translated (using the \texttt{dpd2} tool described below) to \emph{two}
+CSV (comma-separated values) files: one for nodes and one for edges, for use
+with Neo4j's import tools, with the following headers.
+
+{\tt objectId:ID(Object), name, kind:LABEL, subkind:LABEL, path, type}
+
+Here we see name, path and type declared as properties, kind and subkind
+declared as labels and the objectId field declared as unique identifier (or in
+relational terms, a key) for the nodes (in this schema, called ``Objects'') in
+the graph.
+
+{\tt :START\_ID(Object), :END\_ID(Object), weight:int, :TYPE}
+
+Similarly, here we see relationships (between ``Objects'' as declared
+previously) named according to the value under the \texttt{:TYPE} column (e.g.
+\texttt{CONTAINS}, \texttt{USES} or \texttt{CONSTRUCTED\_BY}), each with an
+integer property, weight.
+
+By using a CSV format, adding extra properties, labels and relationships becomes
+very straightforward and allows for easy integration (with external tools) and
+extension for new features.
+
+\subsubsection{\texttt{dpd2} Tool}\label{subsubsec:dpd2}
+
+Initially, this tool started out as the \texttt{dpd2dot} utility (bundled with
+dpdgraph), refactored into \texttt{dpd2csv} which output CSVs instead. Later,
+both were combined into a more general, \texttt{dpd2} tool which could accept
+the file-type as a command-line argument. As mentioned
+in~\ref{subsubsec:recmodules} on page~\pageref{subsubsec:recmodules}, a
+stack-overflow error occured because of this tool. By default, \texttt{dpd2}
+attempts to remove reflexive and transitive dependencies (i.e. $a \rightarrow a$
+and removing $a \rightarrow c$ if $a \rightarrow b$ and $b \rightarrow c$) in a
+depth-first manner.  For large graphs, doing so is stack-intensive, and thus
+causes the aforementioned error. Since this ``feature'' was unnecessary (because
+it \emph{removed} useful information) and appeared time-consuming to fix, the
+\texttt{-keep-trans} flag was passed on subsequent uses to avoid the issue
+altogether.
 
 \section{Coq source-files to CSV}
-Intention, execution, problems, solutions.
 
-Also, how it fit in with larger, open-source projects.
+This section of implementation corresponds to ``filegraph'' on
+Figure~\ref{fig:structure}: modelling the data contained in and the structure of
+Coq source-files (\texttt{*.v}). First, deficiencies with the model so far
+(relying only on information from \texttt{*.vo} files via ``dpdgraph++'') are
+mentioned. Then, attempts to address those deficiencies are described. Finally,
+conclusions regarding the practicality, necessity and contribution of
+``filegraph'' to the overall project are drawn.
 
-\subsection{Missing Information}
+\subsection{Deficiencies in the Model}
 
-\subsection{Collection}
-Explain Glob Files.
+Some small issues remained with the model as presented so far: \emph{apparent}
+absence or duplication of some modules and a lack of notation and tactics.
+Oddities with modules arose from the use of \emph{functors}: modules that take
+other modules as arguments (used to abstract over agruments, tactics,
+defintions and proofs).
 
-\subsection{Merging}
+A concrete example (from the Coq Standard Library) is the theory of total
+orders, minimums and maximums, which is applied to naturals, integers and
+rational numbers (as well as any further ordered types). Such functors cannot be
+compiled unless fully applied (explaining the \emph{absence} of some modules);
+when fully applied, they essentially copy their \emph{structure} into each
+instance (explaining the \emph{duplication} of some module names and
+structures).
+
+\subsection{Exploring Solutions}
+
+Notation, tactics and functors can all be dealt with by simply parsing
+source-files directly with the Coq parser. However, \emph{several issues}
+stop this from being a pragmatic solution, least of which are the size of the
+AST and complexity of parsing Coq files.
+
+\begin{enumerate}
+
+  \item \emph{Modules and functors are represented identically} in the AST, with
+    the former as a special case of the latter, making it very difficult to
+    distinguish between the two on an AST-level. By far, this was the biggest
+    roadblock.
+
+  \item \emph{Module types}, or \emph{signatures}, must be incorporated into
+    the model for functors to make sense. Modules and signatures share a
+    many-to-many relationship: a signature can be satisfied by multiple modules
+    and a module can satisfy multiple signatures. To express this correctly
+    would require \emph{signature-matching}, a notoriously difficult task (and
+    the reason why few languages support ML-style modules).
+
+  \item Futher issues involve resolving objects into a global namespace and
+    knowing which compiler flags were given during compilation (to match
+    physical directories to logical modules), all of which complicate matching
+    and merging with the compiled proof objects.
+
+\end{enumerate}
+
+Even though progress had been made tackling these issues, a simpler solution was
+desired. \emph{Glob files}, produced during compilation, retain much of the
+information in the source code (as a list of globally-resolved names and paths
+for each file) in a simpler format. A shell-script was used to prototype a tool
+that converted glob files to CSVs. Although promising for tactics and notation,
+glob files suffer from the same inability to distinguish between modules and
+functors.
+
+\subsection{Resolution}
+
+Both direct-parsing and glob-file approaches to notation, tactics and functors
+were limited and time-consuming. Functors are rarely-used with many projects
+(especially given the popularity and ease of use of \emph{typeclasses} for
+expressing generalisations) and thus risked violation requirement~\ref{req:m1}
+(by (a) potentially obfuscating information through their inclusion in the model
+and (b) making the model more difficult to use.) Also, in light of
+requirement~\ref{req:m3}, given that names \emph{and structures} of instantiated
+modules are duplicated, it is possible to \emph{reconstruct} generalisations
+\emph{representing functors} once the database is created. As such, extracting
+information directly from Coq source-files contributes little to the overall
+project, but presents clear ways forward for future-work.
 
 \section{CSV to Neo4j}
-Intention, execution, problems, solutions.
 
-Also, how it fit in with larger, open-source projects.
+As part of the ``utilities'' in Figure~\ref{fig:structure}, Neo4j comes
+with a command-line import tool that \textendash~when given a target directory,
+a CSV file containing the nodes of the graph and a separate CSV file containing
+the edges of the graph \textendash~constructs a database.  As explained
+in~\ref{subsubsec:translationcsv} on page~\pageref{subsubsec:translationcsv},
+the headers determine the labels, properties, IDs of nodes as well as the start-
+and end-points, properties and type of edges.
 
-\subsection{Neo4j Import Tools}
-
-\subsection{Impact of Changes to Model}
-Trade-offs, execution.
+%\subsection{Impact of Changes to Model}
+%Trade-offs, execution.
 
 \section{Query Library}
-Intention, execution, problems, solutions.
 
-Also, how it fit in with larger, open-source projects.
+Finally, this last section of the implementation corresponds to the ``library of
+queries'' shown in Figure~\ref{fig:structure}. Extensions, written (in Java and
+R) to meet the interaction (\ref{req:i1},~\ref{req:i2},~\ref{req:i3}) and
+computation (\ref{req:c1},~\ref{req:c2}) requirements on page~\pageref{req:i1},
+and their uses are outlined.
 
-\subsection{APOC}
+\subsection{Java Library}
 
-\subsection{Additions on top of APOC}
+Briefly, APOC (Awesome Procedures on Cypher) provides, out of the box (by
+placing a jar file into a database's plugins directory), many convenient,
+utility functions to use. Of note are:
 
-\subsection{igraph}
+\begin{itemize}
 
-\subsubsection{Terminology}
+  \item the ability to examine a \emph{meta-graph} showing which labels and
+    relationship-types are available in the database and how they are connected, 
+    allowing a user to see an overview of the model;
 
-\subsubsection{Betweenness Centrality}
+  \item a few key graph algorithms, such as node and path expansion, spanning
+    tree, Dijkstra's shortest paths, A*, label propogation (for community
+    detection), centrality measures (betweenness and closeness) and PageRank;
 
-\subsubsection{Closeness Centrality}
+  \item some utility functions for regular-expressions and mathematics, useful
+    for selecting nodes based on statistics (e.g. PageRank) or selecting nodes
+    based on their path.
 
-\subsubsection{PageRank}
+\end{itemize}
 
-\subsubsection{Community Detection}
+Each of these can be called directly from within Cypher; for example, writing
+\texttt{call apoc.meta.graph()} would return the meta-graph of the database.
 
-\subsection{Visualisation}
+\subsubsection{Additions}
+
+APOC is used as a foundation for simpler, domain-specific query library.  As an
+example, a user can write \texttt{coq.assumptions(<node>, <depth>)} to examine
+the n\textsuperscript{th} level assumptions behind a given node. More
+convenience functions are defined for executing some of the listed algorithms on
+all nodes in a given module or of a given type. For more complex, efficient and
+scalable/scriptable analyses however, igraph and R must be used.
 
 \subsection{R Library}
 
+For the R side of the library of queries, to meet requirement~\ref{req:c1} for
+a core set of good, out-of-the-box defaults, several example programs were
+written which automatically processed data from a new database, stored the
+information again for later use (to avoid recomputation) and output appropriate
+visualisations. Since processing could take on the order of minutes, status
+updates, informing the user of the task being executed, the time it took to
+execute once complete, as well as progress-bars where possible and relevant
+(e.g.\ commiting a transaction to the database) were provided.
+
+As mentioned in~\ref{subsubsec:neo4jtoolsigraph},
+Subsection~\ref{subsec:neo4j}, igraph provides a comprehensive set of graph
+algorithms with an \emph{emphasis on efficiency, portability and ease of use}.
+The metrics these algorithms compute and an interpretation of them in the
+context of mathematical theories is given next. Although a wealth of
+algorithms are available in igraph, visualisation and evaluation was focused
+on only the most common and well-known ones.
+
+\subsubsection{Centrality}
+
+\emph{Centrality} measures offer a way to characterise a node's
+\emph{importance}.
+
+\textbf{Betweenness} centrality is a measure based on shortest paths. For each
+node ($v$), the number of shortest paths ($\sigma_{st}$) which pass through it
+($\sigma_{st}\left(v\right)$) is its betweenness centrality. When applied to
+mathematical theories, how ``unavoidable'' a given object is for the results
+which mention it.~\cite{freeman1977}
+
+\begin{equation}
+  g\left(v\right) = \sum_{s \neq v \neq t} \frac{\sigma_{st}\left(v\right)}{\sigma_{st}}
+\end{equation}
+
+\textbf{Closeness} centrality is also measure based on shortest paths. For each
+node, the sum of the length of all shortest paths to every other node is its
+closeness centrality. In a directed, dependency graph of mathematical theories,
+this corresponds to how ``foundational'' a node is. It is typically calculated
+as the reciprocal of \emph{farness} ($\sum_{y}d\left(y,x\right)$), scaled by
+the number of nodes in the graph ($N$) to allow comparisons with graphs of
+different sizes.~\cite{bavelas1950}
+
+\begin{equation}
+  C\left(x\right) = \frac{N}{\sum_{y}d\left(y,x\right)}
+\end{equation}
+
+\textbf{PageRank} is a variant of \textbf{eigenvector} centrality.  For an
+adjacency matrix $\mathbf{A}$, the v\textsuperscript{th} component of the
+eigenvector $\mathbf{x}$ (whose entries must all be non-negative, corresponding
+to the greatest eigenvalue $\lambda$) is the v\textsuperscript{th} node's
+\emph{relative, eigenvector} centrality. Normalising the eigenvector provides
+the \emph{absolute eigenvector} centralities.~\cite{newman2008}
+
+The principle behind such a measure is that connections to high-ranking nodes
+contribute more to a node's rank than connections to low-ranking nodes.  As
+such, for mathematical theories, it is like a \emph{weighted
+in-degree/number-of-uses} which takes into account the importance of the nodes
+which is using a given type, proof or defintion.
+
+PageRank is similar; instead of the vector $\mathbf{x}$ such that $\mathbf{Ax}
+= \lambda\mathbf{x}$, for number of nodes $N$, random-jump probability $1-d$,
+stochastic adjacency matrix $\mathbf{L}$, we want $\mathbf{r}$ which satisfies
+equation~\ref{eqn:pagerank}.~\cite{page1999} Hence, it can be viewed as the a
+probability of an easily-confused, randomly-perusing mathematician coming
+across a given proof or definition, perhaps upon a first reading.
+
+\begin{equation}~\label{eqn:pagerank}
+  \mathbf{r} = \frac{\left(1-d\right)}{N} \mathbf{1} + d\mathbf{Lr}
+\end{equation}
+
+\subsubsection{Community Detection}
+
+Complex networks can exhibit community structure; that is, the graph can be
+(roughly) divided into sparsely-connected dense groups. Although mathematical
+theories are often divided into sections, chapters and books, the following
+algorithms provide scope for re-evaluating these groupings.
+
+\textbf{Label propagation} is a simple, near linear time method for
+determining which community a node belongs to. Each node starts with a unique
+label, after which, on successive iterations, it adopts the label held by most
+of its neighbours, until a consensus is reached. This whole procedure is
+repeated a few times and an aggregate result constitutes the
+output.~\cite{raghavan2007}
+
+\textbf{Edge betweenness} (like betweenness centrality), is also based on
+shortest paths, with the idea that edges separating communities are likely to
+have high edge betweenness (since all shortest paths must pass through them).
+Removing the edge with the greatest betweenness value and recomputing over the
+remaining edges successively will result in a rooted tree, a hierarchical map
+(called a dendrogram) where the root represents the whole graph and the leaves
+represent individual nodes.~\cite{newman2004}
+
+\textbf{Modularity} is a measure of how well network can be divided.
+Formally, it is the fraction of edges that fall within a given grouping
+(across the whole graph) minus the expected number of those which could have
+fallen within the group by chance (and so is a real number between $-0.5$ and
+$1$). Calculating this in an optimal manner is an NP-complete problem, and so
+a fast and greedy version of it was used.~\cite{clauset2004}
+
+\subsubsection{Visualisation}
+
+There are many interesting ways to visualise the plethora of data that
+analysing large mathematical theories using graph databases makes available.
+
+Simply plotting the density/spread of and correlation between metrics such as
+in- and out-degrees, PageRank, centrality measures is a good start and can
+occasionally yield useful information. Here, R's strength as a
+statistics-oriented programming language shone through, making it easy to
+rapidly explore different ideas.
+
+Another, more direct, way of displaying infomation is by displaying the graph
+itself. As will be shown in Section~\ref{sec:sampleoutput}, Sample outupt, there
+are a number of different layouts possible (layered, circular and
+force-directed), each contributing to a more comprehensive, overall, picture of
+understanding the theory.
+
+Surprisingly, igraph was able to help with this aspect of the project as well.
+Whilst visNetwork \textendash~with its own JavaScript, force-directed, physics
+rendering \textendash~produced more aesthetically pleasing results for smaller
+graphs, the webpages it output for larger graphs took intolerably long to render
+inside a typical web-browser (Firefox). Thanks to an (experimental) integration
+with igraph (specifically, igraph's layout mechanisms) graph layouts could be
+pre-computed in fast, native C/C++.
+
 \section{Project Related}
-Modifying make files, testing, continuous-integration builds, editors
+
+During implementation, several skills and lessons were learnt about correct
+project management. Small things, such as grep-ing a code base or keeping track of
+time and a log of work done, proved to be useful. However, to ensure the
+project ran smoothly on a larger-scale, the following areas received particular
+focus.
+
+\subsection{Testing}
+
+For most of the project, testing was done by manually inspecting output. Though
+this was tedious, it was the only way to do so when the model was undergoing
+continual development. As soon as the model was settled and focus shifted to
+visualisation, automated tests were used (which came in particularly useful when
+the project had to be bifurcated to support two different versions of Coq).
+Small scripts \textendash~of problems solved when learning Coq \textendash~were
+used to check output on a small scale (where every single aspect of a project
+was known, and testing turnaround was quick). Coq's Standard Library was used as
+a large scale stress-test, to ensure all constructs were translated correctly.
+When problems were found, they could usually be traced back to debug output
+produced during execution.
+
+\subsection{Continuous-Integration Builds}
+
+Although the project never failed to build locally, there were occasionally
+problems when trying to build it on the project supervisor's machine. The
+problem was compounded when it became apparent that smaller libraries (such as
+CoqRegExp and the solved problems) relied on a version of Coq (8.5.2) older than
+the one Mathematical Components (needed for the project's moonshot, the Odd
+Order Theorem) relied on (8.6). Setting up Travis-CI for continuous-integration
+builds made version dependencies precise and explicit, removing much of the
+hassle and uncertainty surrounding builds on other machines.
+
+\subsection{Tooling}
+
+At first, the project was run half on Windows and half on a Linux VM (virtual
+machine), using shared folders. There were a number of reasons for this: Coq
+and Neo4j were already set up on Windows, both are easier to interact with in a
+graphical environment and starting up a VM just for some experimentation
+incurred quite an overhead.  Eventually, this set-up became confusing and
+time-consuming and a leap to running the project fully on a Linux VM was made.
+Nevertheless, issues arose when working on R integrations: running a Java
+database inside a Linux VM was insufferably slow, requiring a SSH
+reverse-port-forwarding to be set up (to let R inside the Linux VM connect to
+a Neo4j instance running directly on Windows) for decent performance.
+
+To be the most productive during longer sessions of work, editor integrations
+for OCaml were set up, dramatically reducing the edit-compile cycle (especially
+for a strong, statically-typed programming language as OCaml). Coq's use of
+non-standard OCaml features, extensions and build-systems became particularly
+frustrating at this point. For example, considerable time was spent untangling
+the Makefile inherited from dpdgraph to have cleaner, out-of-source builds and
+reduce the mess in the current working directory, all to no avail as the
+complexity of the build-system became apparent.
 
 \section{Summary}
-Features implemented, dead-ends and lessons learnt.
+
+Just presented was an in-depth account of the programs written (dpdgraph++,
+dpd2, Java library, R library), problems encountered (first-class modules,
+relating types and constructors, incorporating type signatures, CSV
+translation, extracting information directly from Coq source-files, dependency
+and version tracking, impenetrable build-systems), solutions implemented and
+tests conducted. Where relevant, experiments were mentioned to illustrate
+lessons learnt. Throughout, project requirements were referenced to justify
+important decisions.

@@ -5,7 +5,7 @@
 % \renewcommand{\familydefault}{\sfdefault}
 
 \newif\ifsans%
-\sanstrue%
+\sansfalse%
 
 \ifsans%
 \documentclass[11pt,a4paper,notitlepage,twoside,openright]{report}
@@ -29,10 +29,12 @@
             pdfkeywords={mathematics, theorem, prover, graph, database, structure}]{hyperref} % (hyper)links
 \usepackage[utf8x]{inputenc}
 \usepackage[outputdir=build]{minted} % Source code highlighting
-\usepackage{minitoc}  % Per Chapter Mini Table of Contents (load after)
 \usepackage{pgfplots} % Graphs
+\usepackage{sectsty}  % San-serif section headers
+\usepackage{tocloft}  % Control (format) table of contents, figures
 \usepackage{titlesec} % For customising chapter titles
-\usepackage{xcolor} % More colour names
+\usepackage{xcolor}   % More colour names
+\usepackage{minitoc}  % Per Chapter Mini Table of Contents (load after)
 
 % Formatting to allow flexible pages 
 \raggedbottom{}
@@ -64,8 +66,18 @@
 }%
 
 % Fancy (and smaller) chapter heading style
-\titleformat{\chapter}[hang]{\Huge\bfseries}{%
-\thechapter\hspace{20pt}\textcolor{lightgray}{|}\hspace{20pt}}{0pt}{\Huge\bfseries}
+\titleformat{\chapter}[hang]{\sffamily\Huge\bfseries}{%
+\thechapter\hspace{20pt}\textcolor{lightgray}{|}\hspace{20pt}}{0pt}{\sffamily\Huge\bfseries}%
+
+% Formatting Section headers
+\setlength{\cftparskip}{6pt}% Spacing in ToC
+\renewcommand{\cfttoctitlefont}{\normalfont\Huge\sffamily\bfseries}% sans ToC Title
+\renewcommand{\cftchapfont}{\normalfont\sffamily\bfseries}% sans ToC chapter font
+\renewcommand{\cftsecfont}{\normalfont\sffamily}% sans ToC section font
+\renewcommand{\cftsubsecfont}{\normalfont\sffamily}% sans ToC subsection font
+\allsectionsfont{\normalfont\sffamily\bfseries}% sans Sub*sections font
+\setcounter{secnumdepth}{3}% Number subsubsections
+\renewcommand{\thesubsubsection}{\Roman{subsubsection}}% with captial roman
 
 % At the start of each chapter
 \renewcommand{\mtctitle}{}
@@ -80,15 +92,6 @@
 
 \newpage%
 }
-
-% Update MiniToC fonts
-\ifsans%
-\renewcommand{\mtifont}{\large\sffamily}
-\renewcommand{\mtcfont}{\normalsize\sffamily}
-\renewcommand{\mtcSfont}{\normalsize\sffamily\bf}
-\renewcommand{\mtcSSfont}{\small\sffamily}
-\renewcommand{\mtcSSSfont}{\small\sffamily}
-\fi%
 
 % Fancy evaluation table with slanted columns
 % http://tex.stackexchange.com/questions/32683/rotated-column-titles-in-tabular#32690
@@ -115,6 +118,10 @@
 \dominitoc% Initialisation
 \setcounter{tocdepth}{1}
 \tableofcontents
+% For bold minitoc section headings, minitoc & tocloft conflict
+\renewcommand{\cftsecfont}{\normalfont\sffamily\bfseries}% bold sans mintoc section font
+\renewcommand{\cftsecleader}{\normalfont\sffamily\bfseries\cftdotfill{\cftdotsep}}% bold sans dots for sections
+\renewcommand{\cftsecpagefont}{\bfseries}% bold (not sans for ToC & page consistency) page numbers
 \cleardoublepage{}
 
 \setcounter{page}{1}
