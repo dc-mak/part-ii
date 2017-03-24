@@ -9,7 +9,7 @@ Below are a list of LaTeX package dependencies for this project to build
 
 ## Installation
   
-    git clone https://github.com/
+    git clone https://github.com/dc-mak/part-ii <dir>
     cd <dir>
     make <all|main.pdf|proposal.pdf|progress.pdf>
 
@@ -29,16 +29,24 @@ E.g. run with full LaTeX output:
 [Minted](https://github.com/gpoore/minted) (for syntax highlighting) depends on
 Python and [Pygments](http://pygments.org/download/) library.
 
-    a4wide
+    sfdefault
+    FiraMono
+    arevmath
+
+    adjustbox
+    array
     booktabs
+    geometry
     docmute
+    enumitem
+    fancyhdr
     fontenc
     geometry
-    graphicx
-    helvet
-    hyperref
     inputenc
     minted
     pgfplots
-    ulem
+    sectsty
+    tocloft
+    titlesec
     xcolor
+    minitoc
