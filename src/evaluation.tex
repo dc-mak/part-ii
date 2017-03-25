@@ -19,54 +19,66 @@
 
 \prechapter{%
   Here, the project's resounding success will be justified in relation to the
-  aims of the project (as listed in~\ref{intro:aims}). Sample output will be
+  aims of the project (as listed in Section~\ref{intro:aims}). Sample output will be
   shown and the interesting insights they provide will be explained. A
   comparison with existing tools will demonstrate the advantages of this project
-  over existing tools (those mentioned in~\ref{prep:coqtools}).
+  over existing tools (those mentioned in Subsection~\ref{prep:coqtools}).
 }%
 
-\section{Constructs Translated}
+\section{A Comparative Analysis}\label{eval:compare}
+
+The first aim of the the project involved \emph{exploring and choosing the
+correct model}. To assess this objectively, all of the existing tools mentioned
+in Subsection~\ref{prep:coqtools} are compared side-by-side in
+Table~\ref{table:features}. Reviewing all of the features which
+existing tools provided
 
 \subsection{Cognitive Walkthrough}
 
-\subsection{Possible Extensions}
+\subsection{Constructs Available}
 
 \section{Library of Queries}
-
-\section{Sample output}\label{sec:sampleoutput}
-\subsection{Small: CoqRegExp}
-
-\subsection{Large: MathComp}
-
-\section{A Comparative Analysis}\label{eval:compare}
 
 \subsection{Features}
 
 \begin{table}[tbp]
 \centering
-\caption{Comparison of Features}
-\label{table:features}
+\caption{Comparison of Features}\label{table:features}
 
 \bigskip
 
-\begin{tabular}{rccc}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} rcccccccccc}
 
   \toprule
 
   &
-  \rot{Property 1} &
-  \rot{Property 2} &
-  \rot{Property 3} \\
+  \rot{Source Code} &
+  \rot{Hyperlinks} &
+  \rot{Module depend.} &
+  \rot{Graphical rep.} &
+  \rot{Interactivity} &
+  \rot{Statistics} &
+  \rot{Object depend.} &
+  \rot{Precise Kinds} &
+  \rot{Constr. \& Types} &
+  \rot{Type Sig.} \\
 
   \midrule
 
-  System 1        &       &       &  X    \\ 
-  System 2        & X     & X     &  X    \\
-  System 3        & X &   &  X            \\
+  Coqdoc    &\N&\Y&\N&\M&\N&\N&\N&\N&\N&\Y\\
+  Coqdep    &\N&\M&\Y&\M&\N&\N&\N&\N&\N&\N\\
+  CoqSerAPI &\N&\N&\N&\N&\Y&\Y&\N&\N&\N&\N\\
+  dpdgraph  &\N&\N&\N&\M&\N&\N&\Y&\M&\N&\N\\
+  Project   &\M&\Y&\M&\Y&\Y&\Y&\Y&\Y&\Y&\Y\\
 
   \bottomrule
 
-\end{tabular}
+\end{tabular*}
+
+\medskip
+
+\Y\  Has feature \hfill \N\ Does not have feature \hfill \M\ Can be extended to support it
+
 \end{table}
 
 \subsection{Performance}
@@ -111,3 +123,9 @@
 
 \end{tikzpicture}
 \end{figure}
+
+\section{Sample output}\label{sec:sampleoutput}
+\subsection{Small: CoqRegExp}
+
+\subsection{Large: MathComp}
+
