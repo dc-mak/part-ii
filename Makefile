@@ -25,9 +25,15 @@ SRC_MAIN := main.tex \
 DIR_MAIN := src
 SRC_MAIN := $(addprefix $(DIR_MAIN)/, $(SRC_MAIN))
 
+# Images
+SRC_IMG := Neo4j_Browser.PNG \
+					 static-CAS-small.pdf
+DIR_IMG := img
+SRC_IMG := $(addprefix $(DIR_IMG)/, $(SRC_IMG))
+
 all: main.pdf proposal.pdf progress.pdf
 
-main.pdf: $(SRC_MAIN) $(SRC_PROP) | $(BUILD)
+main.pdf: $(SRC_MAIN) $(SRC_PROP) $(SRC_IMG) | $(BUILD)
 	latexmk -pdf -dvi- -ps- $< -shell-escape -output-directory=$(BUILD) $(FLAGS)
 	mv $(BUILD)/$@ $@
 

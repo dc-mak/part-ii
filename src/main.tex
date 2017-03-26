@@ -22,6 +22,7 @@
 \usepackage[headheight=15pt, top=1.1in, bottom=1.25in, left=1.25in, right=1.25in]{geometry} % 15pt for fancyhdr
 \usepackage{docmute}  % For including stand-alone LaTeX documents as is
 \usepackage{enumitem} % For referrable enumerated lists
+\usepackage{etoolbox} % For fixing minted red error box
 \usepackage{fancyhdr} % Fancy headers
 \usepackage[T1]{fontenc}
 \usepackage[pdftitle={Exploring the structure of mathematical theories using graph databases},
@@ -29,6 +30,7 @@
             pdfkeywords={mathematics, theorem, prover, graph, database, structure}]{hyperref} % (hyper)links
 \usepackage[utf8x]{inputenc}
 \usepackage[outputdir=build]{minted} % Source code highlighting
+\usepackage{nameref}  % Refer to Chapters and sections by their title
 \usepackage{pgfplots} % Graphs
 \usepackage{sectsty}  % San-serif section headers
 \usepackage{tocloft}  % Control (format) table of contents, figures
@@ -106,6 +108,12 @@
 \newcommand{\Y}{\tikz \fill [green] (-0.3ex,0) rectangle (1.3ex,0.7em); }
 \newcommand{\M}{\tikz \fill [cyan]  (-0.3ex,0) rectangle (1.3ex,0.7em); }
 \newcommand{\N}{\tikz \fill [red]   (-0.3ex,0) rectangle (1.3ex,0.7em); }
+
+% Magic incantation to stop minted from putting red boxes around shit
+\makeatletter
+\AtBeginEnvironment{minted}{\dontdofcolorbox}
+\def\dontdofcolorbox{\renewcommand\fcolorbox[4][]{##4}}
+\makeatother
 
 \begin{document}
 

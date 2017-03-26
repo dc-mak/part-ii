@@ -133,8 +133,7 @@ results, renaming the column of the child's name to simply ``name''.
 
 \begin{listing}[tb]%
 
-\caption{Example Cypher Query}
-\label{lst:cypherexample}
+\caption{Example Cypher Query}\label{lst:cypherexample}
 
   \begin{minted}{cypher}
   MATCH path = shortestPath(
@@ -142,7 +141,7 @@ results, renaming the column of the child's name to simply ``name''.
   WHERE puppy.age <= 2 AND child.age < 6
   RETURN path,
          child.name AS name,
-         ORDER BY other.distance_from_clifford
+  ORDER BY other.distance_from_clifford
   \end{minted}
 
 \end{listing}
@@ -168,10 +167,10 @@ starting point for gathering some statistics of proof-objects in a project.
 
 \section{Aims of the Project}\label{intro:aims}
 
-This project aimed to:
+This project aims to:
 
 \begin{itemize}
-\item represent Coq libraries as Neo4j graph databases, which involved
+\item represent Coq libraries as Neo4j graph databases, which wil involve
   \begin{itemize}
   \item exploring and choosing the correct model
   \item converting and extending existing code to output CSVs
@@ -182,7 +181,7 @@ This project aimed to:
 
 \item create a library of Neo4j queries, intended
   \begin{itemize}
-  \item to highlight the structure and relationship between proof-objects
+  \item to highlight the structure of and relationship between proof-objects
   \item by coalescing and implementing several graph-related metrics.
   \end{itemize}
 \end{itemize}

@@ -1,4 +1,4 @@
-\chapter{Implementation}
+\chapter{Implementation}\label{chap:impl}
 
 \guidance{%
   This chapter should describe what was actually produced: the programs which
@@ -69,7 +69,7 @@ AST appropriately. It was not documented how to translate these constructs back
 to familiar terms and thus, it quickly became clear that the these properties
 needed to be replaced by more general and descriptive ones (expounded below).
 
-\subsubsection{Precise Kinds}
+\subsubsection{Precise Kinds}\label{subsubsec:kinds}
 
 Apart from \emph{path}, all the properties were removed and replaced by two
 \emph{labels}: labels are used to group  nodes into subsets; since a node can
@@ -105,17 +105,16 @@ Finishing this involved locating and fixing the resulting type-errors. This
 meant modules were in the model, but as a flat structure: modules could be
 related to objects but not to other modules.
 
-Thus, the second major phase was inferring and adding all the ``ancestors'' of a
-module with the correct relationships (parent as source, child as destination,
-repeatedly up to the root module). The initial attempt resulted in
-stack-overflow for larger examples. A stack-trace did not highlight any point of
-error so it was \emph{assumed} to be due to the na\"{i}ve, but easy-to-write
+Thus, the second major phase was inferring and adding all the ``ancestors'' of
+a module with the correct relationships (parent as source, child as
+destination, repeatedly up to the root module). The initial attempt resulted in
+stack-overflow for larger examples. A stack-trace did not highlight any point
+of error so it was \emph{assumed} to be due to the na\"{i}ve, but easy-to-write
 (and check) non-tail-recursive implementation. So, the code was rewritten in a
 space-efficient, tail-recursive manner (which allows for deeply nested module
 hierarchies to be handled). Surprisingly, the problem persisted; further
 investigation discovered the fault lay in the separate \texttt{dpd2} tool (the
-details of which can be found in~\ref{subsubsec:dpd2} on
-page~\pageref{subsubsec:dpd2}).
+details of which can be found on page~\pageref{subsubsec:dpd2}).
 
 \subsubsection{(Co-)Inductive Types and Constructors}
 
@@ -148,7 +147,7 @@ algorithm for \emph{getting} the type; all that was left was converting the
 output to an OCaml string. It was \emph{using} the output which was problematic.
 Newlines, quotation marks, and commas had to be replaced by hash signs,
 single-quote marks and underscores respectively, so as to not interfere with the
-\texttt{.dpd} and CSV encoding of data.
+\texttt{dpd} and CSV encoding of data.
 
 \subsubsection{Relationships}
 
@@ -234,15 +233,15 @@ Initially, this tool started out as the \texttt{dpd2dot} utility (bundled with
 dpdgraph), refactored into \texttt{dpd2csv} which output CSVs instead. Later,
 both were combined into a more general, \texttt{dpd2} tool which could accept
 the file-type as a command-line argument. As mentioned
-in~\ref{subsubsec:recmodules} on page~\pageref{subsubsec:recmodules}, a
-stack-overflow error occured because of this tool. By default, \texttt{dpd2}
-attempts to remove reflexive and transitive dependencies (i.e. $a \rightarrow a$
-and removing $a \rightarrow c$ if $a \rightarrow b$ and $b \rightarrow c$) in a
-depth-first manner.  For large graphs, doing so is stack-intensive, and thus
-causes the aforementioned error. Since this ``feature'' was unnecessary (because
-it \emph{removed} useful information) and appeared time-consuming to fix, the
-\texttt{-keep-trans} flag was passed on subsequent uses to avoid the issue
-altogether.
+in~\ref{subsubsec:recmodules}~\nameref{subsubsec:recmodules} on
+page~\pageref{subsubsec:recmodules}, a stack-overflow error occured because of
+this tool. By default, \texttt{dpd2} attempts to remove reflexive and
+transitive dependencies (i.e. $a \rightarrow a$ and removing $a \rightarrow c$
+if $a \rightarrow b$ and $b \rightarrow c$) in a depth-first manner.  For large
+graphs, doing so is stack-intensive, and thus causes the aforementioned error.
+Since this ``feature'' was unnecessary (because it \emph{removed} useful
+information) and appeared time-consuming to fix, the \texttt{-keep-trans} flag
+was passed on subsequent uses to avoid the issue altogether.
 
 \section{Coq source-files to CSV}
 
@@ -322,13 +321,14 @@ project, but presents clear ways forward for future-work.
 
 \section{CSV to Neo4j}
 
-As part of the ``utilities'' in Figure~\ref{fig:structure}, Neo4j comes
-with a command-line import tool that \textendash~when given a target directory,
-a CSV file containing the nodes of the graph and a separate CSV file containing
-the edges of the graph \textendash~constructs a database.  As explained
-in~\ref{subsubsec:translationcsv} on page~\pageref{subsubsec:translationcsv},
-the headers determine the labels, properties, IDs of nodes as well as the start-
-and end-points, properties and type of edges.
+As part of the ``utilities'' in Figure~\ref{fig:structure}, Neo4j comes with a
+command-line import tool that \textendash~when given a target directory, a CSV
+file containing the nodes of the graph and a separate CSV file containing the
+edges of the graph \textendash~constructs a database.  As explained
+in~\ref{subsubsec:translationcsv}~\nameref{subsubsec:translationcsv} on
+page~\pageref{subsubsec:translationcsv}, the headers determine the labels,
+properties, IDs of nodes as well as the start- and end-points, properties and
+type of edges.
 
 %\subsection{Impact of Changes to Model}
 %Trade-offs, execution.
@@ -386,13 +386,12 @@ updates, informing the user of the task being executed, the time it took to
 execute once complete, as well as progress-bars where possible and relevant
 (e.g.\ commiting a transaction to the database) were provided.
 
-As mentioned in~\ref{subsubsec:neo4jtoolsigraph},
-Subsection~\ref{subsec:neo4j}, igraph provides a comprehensive set of graph
-algorithms with an \emph{emphasis on efficiency, portability and ease of use}.
-The metrics these algorithms compute and an interpretation of them in the
-context of mathematical theories is given next. Although a wealth of
-algorithms are available in igraph, visualisation and evaluation was focused
-on only the most common and well-known ones.
+As stated previously, igraph provides a comprehensive set of graph algorithms
+with an \emph{emphasis on efficiency, portability and ease of use}.  The
+metrics these algorithms compute and an interpretation of them in the context
+of mathematical theories is given next.  Although a wealth of algorithms are
+available in igraph, visualisation and evaluation was focused on only the most
+common and well-known ones.
 
 \subsubsection{Centrality}
 
@@ -486,7 +485,8 @@ statistics-oriented programming language shone through, making it easy to
 rapidly explore different ideas.
 
 Another, more direct, way of displaying infomation is by displaying the graph
-itself. As will be shown in Section~\ref{sec:sampleoutput}, Sample outupt, there
+itself. As will be shown in
+Section~\ref{sec:libeval}~\nameref{sec:libeval},~\nameref{sec:libeval}, there
 are a number of different layouts possible (layered, circular and
 force-directed), each contributing to a more comprehensive, overall, picture of
 understanding the theory.
