@@ -48,11 +48,12 @@
   \end{itemize}
 
   \hrule%
+  \bigskip
   \caption{Aims of the Project}\label{fig:aims}
 
 \end{figure}
 
-\section{Capabilities}\label{eval:compare}
+\section{Features}\label{eval:compare}
 
 For convenience, the aims of the project, as listed in
 Section~\ref{intro:aims}, are reproduced above, in Figure~\ref{fig:aims}.
@@ -65,11 +66,9 @@ So, to assess the first aim of the project (exploring and choosing the
 correct model), all of the programs listed in
 Subsection~\ref{prep:coqtools},~\nameref{prep:coqtools}, are compared
 side-by-side in Table~\ref{table:features}, in which this project comes out
-favourably. Performance (specifically, the time to set up a database from
-scratch) is also considered, to demonstrate that the project is usable on large
-mathematical theories. 
+favourably.
 
-\subsection{Features Supported by Other Tools}
+\subsection{Other Tools}
 
 \begin{table}[p]
 \centering
@@ -142,7 +141,7 @@ JavaScript), although this is rarely done.  What dpdgraph does do well is model
 \textbf{object dependencies}, with some scope for distinguishing precise kinds
 and displaying information graphically.
 
-\subsection{Features Supported by this Project}
+\subsection{This Project}
 
 It is clear from the table that this project either supports, or can support,
 every feature supported by other tools. However, it is important to note, that
@@ -198,22 +197,29 @@ And finally, object dependencies are at the heart of this project: by using a
 Neo4j graph database, we can understand and manipulate this relation in a much
 more flexible and scalable manner than any visualisation can manage.
 
-\subsection{Performance}
+\section{Performance}
 
-Setting up a graph database from scratch can take some time. Assuming a Coq project
-is already compiled, the following steps need to take place:
+This project could have all the features any user could ever want but if it ran
+so slowly that nobody would have the patience to use it, then it would be wrong
+to consider it as having met its aims. So, here, this project's execution time
+is compared to most of the tools from the previous section. Although it is
+slightly slower than other existing tools, this can be directly accounted for
+by its larger feature set and increased flexibility.
 
-\begin{enumerate}
-  \item write file with a list of all the modules to be examined,
-  \item compile that file using the Coq compiler,
-  \item convert the output \texttt{dpd} file to CSV files,
-  \item create a Neo4j database from those CSV files
-  \item and run the R library scripts over the newly-instantiated databases.
-\end{enumerate}
+\subsection{Setup}
 
-And finally, object dependencies are at the heart of this project: by using a
-Neo4j graph database, we can understand and manipulate this relation in a much
-more flexible and scalable manner than any visualisation can manage.
+To evaluate timings, the Coq (8.6) Standard Library was used, due to its sheer
+size (564 modules, 5823 definitions, 23,892 proofs). For coqdoc and coqdep,
+Coq's Makefiles were modified to measure execution time using bash's \emph{time}
+command. At the time of writing, CoqSerAPI's statistics were not fully/usably
+implemented, so it was not measured. For dpdgraph, seprate measurements were
+taken for outputting a \texttt{dpd} file and converting that file to a dot
+Format. A similar approach~\textendash of measuring database creation (model
+output, CSV translation and data import) and library analysis
+separately~\textendash was taken for this project, so that the comparison was as
+fair as possible. Each set of timings was repeated five times (with the
+exception of \texttt{dpd2dot} which, at nearly \emph{27 minutes}, was not
+repeated because of time and system-usability constraints).
 
 \begin{figure}[p]
 \centering
@@ -221,7 +227,7 @@ more flexible and scalable manner than any visualisation can manage.
 \begin{tikzpicture}[trim axis left]
 	\begin{axis}[
     % width of chart
-    width=0.9\textwidth,
+    width=\textwidth,
     % no box, below chart, horizontal
 		legend style={%
       draw=none,
@@ -232,7 +238,7 @@ more flexible and scalable manner than any visualisation can manage.
       cells={align=center},
     },
     % value above position on bar chart
-		ybar=1ex, % bar chart, with inter-bar spacing of 1ex
+		ybar=0.5ex, % bar chart, with inter-bar spacing of 1ex
     log ticks with fixed point,
     yticklabel={\pgfmathparse{pow(10,\tick-3)}\pgfmathprintnumber[fixed]{\pgfmathresult}}\,s, % N ms along y-axis
     symbolic x coords={User,System,Real},
@@ -257,19 +263,23 @@ more flexible and scalable manner than any visualisation can manage.
   \addplot [area legend, style={red,fill=red,mark=none}]
     coordinates {(User,1361) (System,2299) (Real,4257)};
 
-  % dpdgraph + dpd2dot
+  % dpdgraph
   \addplot [area legend, style={green,fill=green,mark=none}]
-    coordinates {(User,1279121) (System,9388) (Real,1597695)};
+    coordinates {(User,6872) (System,0645) (Real,9392)};
 
   % creation
   \addplot [area legend, style={violet,fill=violet,mark=none}]
     coordinates {(User,79254) (System,2521) (Real,98157)};
 
+  % dpd2dot
+  \addplot [area legend, style={teal,fill=teal,mark=none}]
+    coordinates {(User,1272249) (System,2516) (Real,1588303)};
+
   % analysis
   \addplot [area legend, style={orange,fill=orange,mark=none}]
-    coordinates {(User,7877) (System,0295) (Real,10007)};
+    coordinates {(User,255912) (System,49569) (Real,371881)};
 
-  \legend{coqdoc,coqdep,dpdgraph\\+ \texttt{dpd2dot},{model, CSV\\+ database},analysis}
+  \legend{coqdoc,coqdep,dpdgraph,{model, CSV\\+ database},\texttt{dpd2dot},analysis}
 
 	\end{axis}
 
@@ -279,26 +289,90 @@ more flexible and scalable manner than any visualisation can manage.
 
 \end{figure}
 
+\subsection{Results}
+
+Figure~\ref{fig:exectimes} shows the results of the comparison, as broken-down
+by bash's time command into time spent in user-code, system calls and overall.
+Note that the data is presented on a \emph{logarithmic} scale. Immediately
+we see coqdoc takes very little time to run, approximately 10 seconds and coqdep
+even less at around 4 seconds, which, considering their purely lexical
+approaches, is to be expected.
+
+Somewhat surprising then is that dpdgraph runs just as quickly as coqdoc. The
+increase in system time can be explained by the 14MB \texttt{dpd} file output by
+dpdgraph. Although at first it appears that there is an order-of-magnitude
+slowdown with this project, more detailed examination explains precisely
+\emph{what} occurs during database creation and where ineffeciencies lie.
+
+\subsection{Inefficiencies}
+
+Setting up a graph database from scratch can take some time. Assuming a Coq
+project is already compiled, the following steps need to take place:
+
+\begin{enumerate}
+  \item\label{step:gen} generating file with a list of all the modules to be
+    examined (15 ms),
+  \item\label{step:compile} compile that file using the Coq compiler (12.6 s),
+  \item\label{step:dpd2csv} convert the output \texttt{dpd} file to CSV files (72.7 s),
+  \item create a Neo4j database from those CSV files (12.8 s)
+\end{enumerate}
+
+When steps~\ref{step:gen} and~\ref{step:compile} are taken on their own, we see
+that the changes to accomodate a more detailed model resulted in a 25\%
+slowdown, which is acceptable given this is a stress-test and the difference is
+on the order of seconds. Creating a database from CSV files takes a similar
+amount of time, also acceptable given the size of the graph (31,088 nodes and
+850,434 edges).
+
+So, the real bottleneck is step~\ref{step:dpd2csv}: converting \texttt{dpd}
+files to CSV. During execution, \texttt{dpd2} reads in a 25MB \texttt{dpd} file
+and outputs two CSV files of size 7MB (nodes) and 8MB (edges), so IO is likely
+to be a factor, as is reconstructing the graph in memory. Outputting to
+\texttt{dpd} was done to facilitate easy extension with other tools. It is
+likely that outputting a CSV directly would have resulted in being able to
+bypass this phase altogether, though, from a software-engineering
+point-of-view, the trade-off there is increased coupling.
+
+\subsection{Graph Analysis \& Visualisation}
+
+% Last thing dpd2dot total order, converting to svg didn't terminate after
+% couple of hours vs hierarchical visulisation stack overflow
+
 \section{Library of Queries}\label{sec:libeval}
 
-Due to the \emph{type} property, each object's type is also visible. For a proof
-object, its type is a statement of the actual theorem being proved, hence this
-feature is incredibly important when coming to grips with a mathematical theory.
-Crucially, it is a \emph{fully expanded} type signature, making explicit any
-assumptions introduced (perhaps hunderds of lines prior in the source code) into
-the environment.
+Within the second major bullet-point (creating a library of Neo4j queries), the
+second aim (of coalescing and implementing graph-related metrics) was dealt
+with in the~\nameref{chap:impl} chapter. To assess the first aim (of
+highlighting the structure of and relationship between proof-objects), the
+library will be shown to work on the small case of a Coq Regular-Expression
+library and on the large case of the project's moonshot, the
+Odd Order Theorem.
 
-Module dependencies are set with the query in Listing~\ref{lst:moddep} by use of
-the \texttt{CONTAINS} relation.  Interactivity is achieved through the Neo4j
-browser interface and the JavaScript visualisations; statistics are achieved
-through the library of queries; graphical representations by both. An important
-limitation of CoqSerAPI is that its statistics are simply three counters,
-whereas this project offers the ability, through a queriable database, to gain
-\emph{any} sort of information a user is interested in.
+\begin{figure}[p]
+\centering
+\includegraphics[width=0.8\textwidth]{img/regexp/direct.png}
+\caption{Force-directed, Betweenness \& Modularity}\label{fig:regexp:prmod}
+\end{figure}
 
-And finally, object dependencies are at the heart of this project: by using a
-Neo4j graph database, we can understand and manipulate this relation in a much
-more flexible and scalable manner than any visualisation can manage.
+\begin{figure}[p]
+\centering
+\includegraphics[width=0.8\textwidth]{img/regexp/hierarchical.png}
+\caption{Hierarchical, Betweenness \& Modularity}\label{fig:regexp:hier}
+\end{figure}
+
+\begin{figure}[tp]
+
+  \begin{minipage}{0.5\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{img/regexp/grid.png}
+    \caption{Grid Layout}\label{fig:regexp:grid}
+  \end{minipage}~%
+  \begin{minipage}{0.5\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{img/regexp/module.png}
+    \caption{Force-directed with \emph{Modules}}\label{fig:regexp:module}
+  \end{minipage}
+\end{figure}
 
 \subsection{Small: CoqRegExp}
 
@@ -341,4 +415,3 @@ whereas this project offers the ability, through a queriable database, to gain
 And finally, object dependencies are at the heart of this project: by using a
 Neo4j graph database, we can understand and manipulate this relation in a much
 more flexible and scalable manner than any visualisation can manage.
-

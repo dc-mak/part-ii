@@ -26,8 +26,17 @@ DIR_MAIN := src
 SRC_MAIN := $(addprefix $(DIR_MAIN)/, $(SRC_MAIN))
 
 # Images
+# regexp
+SRC_REGEXP := direct.png  \
+							grid.png  \
+							hierarchical.png  \
+							module.png
+DIR_REGEXP := regexp
+SRC_REGEXP := $(addprefix $(DIR_REGEXP)/, $(SRC_REGEXP))
+# root
 SRC_IMG := Neo4j_Browser.PNG \
-					 static-CAS-small.pdf
+					 static-CAS-small.pdf \
+				   $(SRC_REGEXP)
 DIR_IMG := img
 SRC_IMG := $(addprefix $(DIR_IMG)/, $(SRC_IMG))
 
