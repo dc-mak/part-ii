@@ -14,7 +14,7 @@ SRC_PROP := $(addprefix $(DIR_PROP)/, $(SRC_PROP))
 
 # Main files
 SRC_MAIN := main.tex \
-	    mystyle.sty \
+	    myclass.cls \
 	    title.tex \
 	    frontmatter.tex \
 	    introduction.tex \
@@ -37,6 +37,7 @@ SRC_REGEXP := $(addprefix $(DIR_REGEXP)/, $(SRC_REGEXP))
 # root
 SRC_IMG := Neo4j_Browser.PNG \
 					 static-CAS-small.pdf \
+					 timings.tex \
 				   $(SRC_REGEXP)
 DIR_IMG := img
 SRC_IMG := $(addprefix $(DIR_IMG)/, $(SRC_IMG))

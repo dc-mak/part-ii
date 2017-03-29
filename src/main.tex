@@ -1,22 +1,6 @@
 % Whole document compilation
 \newcommand{\setflag}{\newif \ifwhole \wholetrue}
-
-% \usepackage{helvet}
-% \renewcommand{\familydefault}{\sfdefault}
-
-\newif\ifsans%
-\sansfalse%
-
-\ifsans%
-\documentclass[11pt,a4paper,notitlepage,twoside,openright]{report}
-\usepackage[sfdefault]{FiraSans}
-\usepackage{FiraMono}
-\usepackage{arevmath}
-\else%
-\documentclass[12pt,a4paper,notitlepage,twoside,openright]{report}
-\fi%
-
-\usepackage{src/mystyle}
+\documentclass{src/myclass}
 
 \begin{document}
 
@@ -33,10 +17,10 @@
 \dominitoc% Initialisation
 \setcounter{tocdepth}{1}
 \tableofcontents
-% For bold minitoc section headings, minitoc & tocloft conflict
-\renewcommand{\cftsecfont}{\normalfont\sffamily\bfseries}% bold sans mintoc section font
-\renewcommand{\cftsecleader}{\normalfont\sffamily\bfseries\cftdotfill{\cftdotsep}}% bold sans dots for sections
-\renewcommand{\cftsecpagefont}{\bfseries}% bold (not sans for ToC & page consistency) page numbers
+% For Bold minitoc Section Headings, minitoc & tocloft conflict
+\renewcommand{\cftsecfont}{\normalfont\sffamily\bfseries}% Bold Sans mintoc Section font
+\renewcommand{\cftsecleader}{\normalfont\sffamily\bfseries\cftdotfill{\cftdotsep}}% Bold Sans dots for Sections
+\renewcommand{\cftsecpagefont}{\bfseries}% Bold (not sans for ToC & page consistency) page numbers
 \cleardoublepage{}
 
 \setcounter{page}{1}

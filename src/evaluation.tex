@@ -21,7 +21,7 @@
   (as listed in Section~\ref{intro:aims}), will be justified. A comparison with
   existing tools will demonstrate the advantages of this project over existing
   tools (those mentioned in Subsection~\ref{prep:coqtools}). Sample output will
-  be shown and the interesting insights they provide will be explained. 
+  be shown and the interesting insights they provide will be explained.
 }%
 
 \begin{figure}[tbp]
@@ -70,41 +70,34 @@ favourably.
 \subsection{Other Tools}
 
 \begin{table}[p]
-\centering
+  \centering
 
-\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} rcccccccccc}
+  \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} rcccccccccc}
 
-  \toprule
+    \toprule
 
-  &
-  \rot{Source Code} &
-  \rot{Hyperlinks} &
-  \rot{Precise Kinds} &
-  \rot{Constr. \& Types~~} & % for vertical space after 'Types'
-  \rot{Type Sig.} &
-  \rot{Module depend.} &
-  \rot{Graphical rep.} &
-  \rot{Interactivity} &
-  \rot{Statistics} &
-  \rot{Object depend.} \\
+    & \rot{Source Code} & \rot{Hyperlinks} & \rot{Precise Kinds}
+    & \rot{Constr. \& Types~~} % for vertical space after 'Types'
+    & \rot{Type Sig.} & \rot{Module depend.} & \rot{Graphical rep.}
+    & \rot{Interactivity} & \rot{Statistics} & \rot{Object depend.} \\
 
-  \midrule
+    \midrule
 
-  Coqdoc    & \Y & \Y & \Y & \Y & \Y & \N & \N & \N & \N & \N \\
-  Coqdep    & \N & \M & \N & \N & \N & \Y & \Y & \N & \N & \N \\
-  CoqSerAPI & \N & \N & \N & \N & \N & \N & \N & \Y & \Y & \N \\
-  dpdgraph  & \N & \N & \M & \N & \N & \N & \Y & \N & \N & \Y \\
-  Project   & \M & \Y & \Y & \Y & \Y & \Y & \Y & \Y & \Y & \Y \\
+    Coqdoc    & \Y & \Y & \Y & \Y & \Y & \N & \N & \N & \N & \N \\
+    Coqdep    & \N & \M & \N & \N & \N & \Y & \Y & \N & \N & \N \\
+    CoqSerAPI & \N & \N & \N & \N & \N & \N & \N & \Y & \Y & \N \\
+    dpdgraph  & \N & \N & \M & \N & \N & \N & \Y & \N & \N & \Y \\
+    Project   & \M & \Y & \Y & \Y & \Y & \Y & \Y & \Y & \Y & \Y \\
 
-  \bottomrule
+    \bottomrule
 
-\end{tabular*}
+  \end{tabular*}
 
-\medskip
-\Y\  Has feature \hfill \N\ Does not have feature \hfill \M\ Can be extended to support it
+  \medskip
+  \Y\  Has feature \hfill \N\ Does not have feature \hfill \M\ Can be extended to support it
 
-\bigskip
-\caption{Comparison of Features}\label{table:features}
+  \bigskip
+  \caption{Comparison of Features}\label{table:features}
 
 \end{table}
 
@@ -158,7 +151,7 @@ expansion is done in place, thus retaining the \emph{context} of its use.
 
 Thanks to the \emph{kind} and \emph{subkind} labels, the project supports
 precise kinds.  Also, any (co-)inductive type can, via the
-\texttt{CONSTRUCTED\_BY} relation, be expanded to see its constructors. 
+\texttt{CONSTRUCTED\_BY} relation, be expanded to see its constructors.
 
 Due to the \emph{type} property, each object's type is also visible. For a proof
 object, its type is a statement of the actual theorem being proved, hence this
@@ -222,70 +215,8 @@ repeated because of time and system-usability constraints).
 
 \begin{figure}[tp]
 \centering
-
-\begin{tikzpicture}[trim axis left]
-	\begin{axis}[
-    % width of chart
-    width=\textwidth,
-    % no box, below chart, horizontal
-		legend style={%
-      draw=none,
-      at={(0.5,-0.15)},
-      anchor=north,
-      legend columns=3,
-      column sep = 1em,
-      cells={align=center},
-    },
-    % value above position on bar chart
-		ybar=0.5ex, % bar chart, with inter-bar spacing of 1ex
-    log ticks with fixed point,
-    yticklabel={\pgfmathparse{pow(10,\tick-3)}\pgfmathprintnumber[fixed]{\pgfmathresult}}\,s, % N ms along y-axis
-    symbolic x coords={User,System,Real},
-		xtick=data,
-    axis line style={opacity=0}, % hide y axis
-    major tick style={draw=none}, % no ticks
-    ymin = 0,
-    ymode=log, % log scale for y
-    log basis y = {10}, % log base 10
-		enlarge x limits=0.20, % spacing on x axis
-    bar width=2ex,
-    ymajorgrids, % rows of lines
-    major grid style={white, line width=1pt},
-    axis on top,
-	]
-
-  % Coqdoc
-  \addplot [area legend, style={Blue,fill=Blue,mark=none}]
-    coordinates {(User,7877) (System,0295) (Real,10007)};
-
-  % Coqdep
-  \addplot [area legend, style={red,fill=red,mark=none}]
-    coordinates {(User,1361) (System,2299) (Real,4257)};
-
-  % dpdgraph
-  \addplot [area legend, style={LimeGreen,fill=LimeGreen,mark=none}]
-    coordinates {(User,6872) (System,0645) (Real,9392)};
-
-  % creation
-  \addplot [area legend, style={Orchid,fill=Orchid,mark=none}]
-    coordinates {(User,79254) (System,2521) (Real,98157)};
-
-  % dpd2dot
-  \addplot [area legend, style={ForestGreen,fill=ForestGreen,mark=none}]
-    coordinates {(User,1272249) (System,2516) (Real,1588303)};
-
-  % analysis
-  \addplot [area legend, style={violet,fill=violet,mark=none}]
-    coordinates {(User,255912) (System,49569) (Real,371881)};
-
-  \legend{coqdoc,coqdep,dpdgraph,{model, CSV\\+ database},\texttt{dpd2dot},analysis}
-
-	\end{axis}
-
-\end{tikzpicture}
-
+\input{img/timings.tex}
 \caption{Comparison of Execution Times}\label{fig:exectimes}
-
 \end{figure}
 
 \subsection{Results}
@@ -409,19 +340,16 @@ toward the the center of a cluster.
 
 We see that modularity clustering largely corresponds to the how a human might
 group nodes visually: two major clusters with a few, smaller clusters.
-Intuitively, the \textcolor{graphblue}{light-blue} cluster represents
-\textcolor{graphblue}{\emph{executable functions}}; the
-\textcolor{graphorange}{orange} cluster represents
-\textcolor{graphorange}{\emph{proofs of correctness}}; the
-\textcolor{graphpurple}{purple} cluster represents proofs using the definition
-of \textcolor{graphpurple}{string length}; the
-\textcolor{graphgreen}{light-green} cluster represents proofs involving
-\textcolor{graphgreen}{converting strings to regular-expressions}; the
-\textcolor{graphviolet}{violet} cluster represents proofs relating to
-\textcolor{graphviolet}{nullable strings}. The node at the center of the light-blue
-cluster is a function which computes whether a given regular-expression matches
-a given string; the node at the center of the yellow cluster defines what it
-means for two regular-expressions to be equal.
+Intuitively, the \gblue{light-blue} cluster represents \gblue{\emph{executable
+functions}}; the \gorange{orange} cluster represents \gorange{\emph{proofs of
+correctness}}; the \gpurple{purple} cluster represents proofs using the
+definition of \gpurple{string length}; the \ggreen{light-green} cluster
+represents proofs involving \ggreen{converting strings to regular-expressions};
+the \gviolet{violet} cluster represents proofs relating to \gviolet{nullable
+strings}. The node at the center of the light-blue cluster is a function which
+computes whether a given regular-expression matches a given string; the node at
+the center of the yellow cluster defines what it means for two
+regular-expressions to be equal.
 
 \subsubsection{Hierarchical}
 
@@ -447,15 +375,14 @@ As indicators of importance, measures of centrality are a useful way to do
 precisely that. Figure~\ref{fig:regexp:grid} represents PageRank through node
 size on uniform grid, useful for visually determining relative importance.
 
-And finally, Figure~\ref{fig:regexp:module} shows the proofs and defintions with
-modules, where edges represent the \texttt{CONTAINS} relation. We see that the
-modules at the right and near the center (named Utility, Includes and Char
+And finally, Figure~\ref{fig:regexp:module} shows the proofs and defintions
+with modules, where edges represent the \texttt{CONTAINS} relation. We see that
+the modules at the right and near the center (named Utility, Includes and Char
 respectively) have very few important nodes (as determined by betweenness
 centrality). Each module has two main parts: those relating to
-\textcolor{graphblue}{executable functions} those relating to
-\textcolor{graphorange}{proofs of correctness}, occasionally accompanied by a
-few definitions/proofs on \textcolor{graphviolet}{nullability} or
-\textcolor{graphpurple}{string length}.
+\gblue{executable functions} those relating to \gorange{proofs of correctness},
+occasionally accompanied by a few definitions/proofs on \gviolet{nullability}
+or \gpurple{string length}.
 
 \subsubsection{Insights}
 
