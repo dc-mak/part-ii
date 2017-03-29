@@ -1,5 +1,4 @@
-\chapter{Evaluation}
-\label{chapter:evaluation}
+\chapter{Evaluation}\label{chapter:evaluation}
 
 \guidance{%
   This is where Assessors will be looking for \textbf{signs of success} and for
@@ -121,10 +120,10 @@ output a \texttt{dot} file to present it \textbf{graphically}.
 
 Coq Serialised (S-expression) API is an \textbf{interactive} IDE communication
 protocol with facilities for gathering some basic \textbf{statistics}. Here,
-interative is used to mean that information is not presented all at-once,
-\emph{statically}, but can instead by queried dynamically at run-time. An
-example of a static dispaly is Figure~\ref{fig:static}; it shows is a SVG
-(scalable vector-graphic) output by dpdgraph of a medium-size Coq library.
+interactive is used to mean that information is not presented all at-once,
+\emph{statically}, but can instead be queried dynamically at run-time. An
+example of a static dispaly is Figure~\ref{fig:static}; it shows a medium-sized
+Coq library as ouput by dpdgraph.
 
 \begin{figure}[p]
 
@@ -221,7 +220,7 @@ fair as possible. Each set of timings was repeated five times (with the
 exception of \texttt{dpd2dot} which, at nearly \emph{27 minutes}, was not
 repeated because of time and system-usability constraints).
 
-\begin{figure}[p]
+\begin{figure}[tp]
 \centering
 
 \begin{tikzpicture}[trim axis left]
@@ -256,7 +255,7 @@ repeated because of time and system-usability constraints).
 	]
 
   % Coqdoc
-  \addplot [area legend, style={blue,fill=blue,mark=none}]
+  \addplot [area legend, style={Blue,fill=Blue,mark=none}]
     coordinates {(User,7877) (System,0295) (Real,10007)};
 
   % Coqdep
@@ -264,19 +263,19 @@ repeated because of time and system-usability constraints).
     coordinates {(User,1361) (System,2299) (Real,4257)};
 
   % dpdgraph
-  \addplot [area legend, style={green,fill=green,mark=none}]
+  \addplot [area legend, style={LimeGreen,fill=LimeGreen,mark=none}]
     coordinates {(User,6872) (System,0645) (Real,9392)};
 
   % creation
-  \addplot [area legend, style={violet,fill=violet,mark=none}]
+  \addplot [area legend, style={Orchid,fill=Orchid,mark=none}]
     coordinates {(User,79254) (System,2521) (Real,98157)};
 
   % dpd2dot
-  \addplot [area legend, style={teal,fill=teal,mark=none}]
+  \addplot [area legend, style={ForestGreen,fill=ForestGreen,mark=none}]
     coordinates {(User,1272249) (System,2516) (Real,1588303)};
 
   % analysis
-  \addplot [area legend, style={orange,fill=orange,mark=none}]
+  \addplot [area legend, style={violet,fill=violet,mark=none}]
     coordinates {(User,255912) (System,49569) (Real,371881)};
 
   \legend{coqdoc,coqdep,dpdgraph,{model, CSV\\+ database},\texttt{dpd2dot},analysis}
@@ -298,7 +297,7 @@ we see coqdoc takes very little time to run, approximately 10 seconds and coqdep
 even less at around 4 seconds, which, considering their purely lexical
 approaches, is to be expected.
 
-Somewhat surprising then is that dpdgraph runs just as quickly as coqdoc. The
+So it is somewhat surprising that dpdgraph runs just as quickly as coqdoc. The
 increase in system time can be explained by the 14MB \texttt{dpd} file output by
 dpdgraph. Although at first it appears that there is an order-of-magnitude
 slowdown with this project, more detailed examination explains precisely
@@ -335,8 +334,23 @@ point-of-view, the trade-off there is increased coupling.
 
 \subsection{Graph Analysis \& Visualisation}
 
-% Last thing dpd2dot total order, converting to svg didn't terminate after
-% couple of hours vs hierarchical visulisation stack overflow
+Once a graph is created (whether it be in the form of \texttt{dpd} file or a
+dabtabase) the last step is to \emph{use} the data by analysing and visualising
+it. Here, this project shows a significant improvement over \texttt{dpd2dot}.
+
+At nearly \emph{27 minutes}, its execution time dwarfs the analyses carried out
+by this project. Whereas \texttt{dpd2dot} converted the output 13MB \texttt{dpd}
+file to a 24MB dot file, in about one-quarter of the time, an R script was able
+to run (a) PageRank and closeness centrality algorithms over all proofs and
+defintions and (b) output \emph{8} different 9MB visualisations of the data.
+Analyses took less than a minute; visualisations ranged from 20 to 90 seconds.
+
+It should be noted that \texttt{dpd2dot} did not do graph \emph{layout}: it just
+split the graph into subgraphs (based on modules) and assigned a colour and label
+to each node (based on their properties). Converting the dot file to a viewable
+format (e.g.\ a scalable vector-graphic or SVG) is up to another tool (that
+being said, the command \texttt{dot -Tsvg} to produce an SVG visualisation had to
+be cancelled after failing terminate within a few \emph{hours}).
 
 \section{Library of Queries}\label{sec:libeval}
 
@@ -345,19 +359,19 @@ second aim (of coalescing and implementing graph-related metrics) was dealt
 with in the~\nameref{chap:impl} chapter. To assess the first aim (of
 highlighting the structure of and relationship between proof-objects), the
 library will be shown to work on the small case of a Coq Regular-Expression
-library and on the large case of the project's moonshot, the
+package and on the large case of the project's moonshot, the
 Odd Order Theorem.
 
 \begin{figure}[p]
 \centering
 \includegraphics[width=0.8\textwidth]{img/regexp/direct.png}
-\caption{Force-directed, Betweenness \& Modularity}\label{fig:regexp:prmod}
+\caption{Force-directed with Betweenness Centrality}\label{fig:regexp:direct}
 \end{figure}
 
 \begin{figure}[p]
 \centering
 \includegraphics[width=0.8\textwidth]{img/regexp/hierarchical.png}
-\caption{Hierarchical, Betweenness \& Modularity}\label{fig:regexp:hier}
+\caption{Hierarchical with Betweenness Centrality}\label{fig:regexp:hier}
 \end{figure}
 
 \begin{figure}[tp]
@@ -365,35 +379,91 @@ Odd Order Theorem.
   \begin{minipage}{0.5\textwidth}
     \centering
     \includegraphics[width=\textwidth]{img/regexp/grid.png}
-    \caption{Grid Layout}\label{fig:regexp:grid}
+    \caption{Grid Layout with PageRank}\label{fig:regexp:grid}
   \end{minipage}~%
   \begin{minipage}{0.5\textwidth}
     \centering
     \includegraphics[width=\textwidth]{img/regexp/module.png}
-    \caption{Force-directed with \emph{Modules}}\label{fig:regexp:module}
+    \caption{Force-directed with Modules}\label{fig:regexp:module}
   \end{minipage}
 \end{figure}
 
 \subsection{Small: CoqRegExp}
 
-Due to the \emph{type} property, each object's type is also visible. For a proof
-object, its type is a statement of the actual theorem being proved, hence this
-feature is incredibly important when coming to grips with a mathematical theory.
-Crucially, it is a \emph{fully expanded} type signature, making explicit any
-assumptions introduced (perhaps hunderds of lines prior in the source code) into
-the environment.
+For this package, PageRank, betweenness centrality, modularity clustering,
+hierarchical layout, grid layout and force-directed layout produced the most
+aesthetically pleasing and insightful results. All graphs show only definitions
+(shown as triangles, reminiscent of the $\triangleq$ symbol sometimes used for
+definitions) and proofs (shown as squares, reminiscent of the end-of-proof
+$\square$ symbol), except for Figure~\ref{fig:regexp:module} which also includes
+modules (as circles).
 
-Module dependencies are set with the query in Listing~\ref{lst:moddep} by use of
-the \texttt{CONTAINS} relation.  Interactivity is achieved through the Neo4j
-browser interface and the JavaScript visualisations; statistics are achieved
-through the library of queries; graphical representations by both. An important
-limitation of CoqSerAPI is that its statistics are simply three counters,
-whereas this project offers the ability, through a queriable database, to gain
-\emph{any} sort of information a user is interested in.
+\subsubsection{Direct}
 
-And finally, object dependencies are at the heart of this project: by using a
-Neo4j graph database, we can understand and manipulate this relation in a much
-more flexible and scalable manner than any visualisation can manage.
+Figure~\ref{fig:regexp:direct} shows a force-directed visualisation. The size of
+the nodes corresponds to betweenness centrality scores (split up into 10
+logarithmically equal-width buckets). Colours correspond to groups assigned by modularity
+clustering. Edges represent the \texttt{USES} relation; edge-directions
+(source-uses-destination) are omitted for clarity since they generally point
+toward the the center of a cluster.
+
+We see that modularity clustering largely corresponds to the how a human might
+group nodes visually: two major clusters with a few, smaller clusters.
+Intuitively, the \textcolor{graphblue}{light-blue} cluster represents
+\textcolor{graphblue}{\emph{executable functions}}; the
+\textcolor{graphorange}{orange} cluster represents
+\textcolor{graphorange}{\emph{proofs of correctness}}; the
+\textcolor{graphpurple}{purple} cluster represents proofs using the definition
+of \textcolor{graphpurple}{string length}; the
+\textcolor{graphgreen}{light-green} cluster represents proofs involving
+\textcolor{graphgreen}{converting strings to regular-expressions}; the
+\textcolor{graphviolet}{violet} cluster represents proofs relating to
+\textcolor{graphviolet}{nullable strings}. The node at the center of the light-blue
+cluster is a function which computes whether a given regular-expression matches
+a given string; the node at the center of the yellow cluster defines what it
+means for two regular-expressions to be equal.
+
+\subsubsection{Hierarchical}
+
+As far as insights are concerned, we see that this enables us to get a
+high-level view of the threads of thought in the theory. We can see how these
+threads develop by looking at Figure~\ref{fig:regexp:hier}.  Here, a Sugiyama
+layout is used (the direction of edges always points downwards). If nodes were
+partially ordered according the \texttt{USES} relation (destination $<$ source
+if and only if source \texttt{USES} destination) then this layout ensures that
+if a node (destination) is \emph{below} another node connected to it (source)
+then the source \texttt{USES} destination.
+
+Applied to mathematical theories, this layout is essentially a visual
+study-guide, a plan for how to best tackle the material. It can be applied to
+subgraphs, refined by declaring the maximum depth or the lowest layer to include
+and filtered based on the kind or importance of a node.
+
+\subsubsection{Grid and Modules}
+
+Given a strategy for how to approach the material, knowing how important each
+section is can be useful for gauging how much time to spend on understanding it.
+As indicators of importance, measures of centrality are a useful way to do
+precisely that. Figure~\ref{fig:regexp:grid} represents PageRank through node
+size on uniform grid, useful for visually determining relative importance.
+
+And finally, Figure~\ref{fig:regexp:module} shows the proofs and defintions with
+modules, where edges represent the \texttt{CONTAINS} relation. We see that the
+modules at the right and near the center (named Utility, Includes and Char
+respectively) have very few important nodes (as determined by betweenness
+centrality). Each module has two main parts: those relating to
+\textcolor{graphblue}{executable functions} those relating to
+\textcolor{graphorange}{proofs of correctness}, occasionally accompanied by a
+few definitions/proofs on \textcolor{graphviolet}{nullability} or
+\textcolor{graphpurple}{string length}.
+
+\subsubsection{Insights}
+
+Without studying even \emph{one line} of source code, we have been able to gleam
+an intuitive and impressively detailed conceptual-scaffolding of this theory of
+regular-expressions. A user can use the library of queries to futher explore the
+theory or jump into reading the source code with a much better idea of how
+the different pieces of the puzzle come together.
 
 \subsection{Large: MathComp}
 

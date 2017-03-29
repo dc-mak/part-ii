@@ -14,6 +14,7 @@ SRC_PROP := $(addprefix $(DIR_PROP)/, $(SRC_PROP))
 
 # Main files
 SRC_MAIN := main.tex \
+	    mystyle.sty \
 	    title.tex \
 	    frontmatter.tex \
 	    introduction.tex \
@@ -30,7 +31,7 @@ SRC_MAIN := $(addprefix $(DIR_MAIN)/, $(SRC_MAIN))
 SRC_REGEXP := direct.png  \
 							grid.png  \
 							hierarchical.png  \
-							module.png
+							module.png#\ regexp_centrality.tex
 DIR_REGEXP := regexp
 SRC_REGEXP := $(addprefix $(DIR_REGEXP)/, $(SRC_REGEXP))
 # root
