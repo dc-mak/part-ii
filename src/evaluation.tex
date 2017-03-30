@@ -17,11 +17,11 @@
 }
 
 \prechapter{%
-  Here, the project's resounding success, in relation to the aims of the project
-  (as listed in Section~\ref{intro:aims}), will be justified. A comparison with
-  existing tools will demonstrate the advantages of this project over existing
-  tools (those mentioned in Subsection~\ref{prep:coqtools}). Sample output will
-  be shown and the interesting insights they provide will be explained.
+  Here, the project's resounding success, in relation its aims (as listed in
+  Section~\ref{intro:aims}), will be justified. A comparison with existing
+  tools will demonstrate the advantages of this project over existing tools
+  (those mentioned in Subsection~\ref{prep:coqtools}). Sample output will be
+  shown and the interesting insights they provide will be explained.
 }%
 
 \begin{figure}[tbp]
@@ -290,8 +290,7 @@ second aim (of coalescing and implementing graph-related metrics) was dealt
 with in the~\nameref{chap:impl} chapter. To assess the first aim (of
 highlighting the structure of and relationship between proof-objects), the
 library will be shown to work on the small case of a Coq Regular-Expression
-package and on the large case of the project's moonshot, the
-Odd Order Theorem.
+package and on the large case of the project's moonshot, the Odd Order Theorem.
 
 \begin{figure}[p]
 \centering
@@ -306,13 +305,13 @@ Odd Order Theorem.
 \end{figure}
 
 \begin{figure}[tp]
-
-  \begin{minipage}{0.5\textwidth}
+  \begin{minipage}{0.5\textwidth-0.5em}
     \centering
     \includegraphics[width=\textwidth]{img/regexp/grid.png}
     \caption{Grid Layout with PageRank}\label{fig:regexp:grid}
-  \end{minipage}~%
-  \begin{minipage}{0.5\textwidth}
+  \end{minipage}%
+  \hspace{1em}%
+  \begin{minipage}{0.5\textwidth-0.5em}
     \centering
     \includegraphics[width=\textwidth]{img/regexp/module.png}
     \caption{Force-directed with Modules}\label{fig:regexp:module}
@@ -340,11 +339,11 @@ toward the the center of a cluster.
 
 We see that modularity clustering largely corresponds to the how a human might
 group nodes visually: two major clusters with a few, smaller clusters.
-Intuitively, the \gblue{light-blue} cluster represents \gblue{\emph{executable
+Intuitively, the \glblue{light-blue} cluster represents \glblue{\emph{executable
 functions}}; the \gorange{orange} cluster represents \gorange{\emph{proofs of
-correctness}}; the \gpurple{purple} cluster represents proofs using the
-definition of \gpurple{string length}; the \ggreen{light-green} cluster
-represents proofs involving \ggreen{converting strings to regular-expressions};
+correctness}}; the \glpurple{light-purple} cluster represents proofs using the
+definition of \glpurple{string length}; the \glgreen{light-green} cluster
+represents proofs involving \glgreen{converting strings to regular-expressions};
 the \gviolet{violet} cluster represents proofs relating to \gviolet{nullable
 strings}. The node at the center of the light-blue cluster is a function which
 computes whether a given regular-expression matches a given string; the node at
@@ -380,9 +379,9 @@ with modules, where edges represent the \texttt{CONTAINS} relation. We see that
 the modules at the right and near the center (named Utility, Includes and Char
 respectively) have very few important nodes (as determined by betweenness
 centrality). Each module has two main parts: those relating to
-\gblue{executable functions} those relating to \gorange{proofs of correctness},
+\glblue{executable functions} those relating to \gorange{proofs of correctness},
 occasionally accompanied by a few definitions/proofs on \gviolet{nullability}
-or \gpurple{string length}.
+or \glpurple{string length}.
 
 \subsubsection{Insights}
 
@@ -392,23 +391,82 @@ regular-expressions. A user can use the library of queries to futher explore the
 theory or jump into reading the source code with a much better idea of how
 the different pieces of the puzzle come together.
 
-\subsection{Large: MathComp}
+\subsection{Large: Odd Order Theorem}
 
-Due to the \emph{type} property, each object's type is also visible. For a proof
-object, its type is a statement of the actual theorem being proved, hence this
-feature is incredibly important when coming to grips with a mathematical theory.
-Crucially, it is a \emph{fully expanded} type signature, making explicit any
-assumptions introduced (perhaps hunderds of lines prior in the source code) into
-the environment.
+For the Odd Order Theorem, betweenness centrality, modularity clustering,
+hierarchical layout, grid layout, circular layout and force-directed layout
+produced the most aesthetically pleasing and insightful results. As before,
+only definitions (shown as triangles/$\triangleq$) and proofs (shown as
+squares/$\square$ symbol) are shown, except for Figure~\ref{fig:oot:module}
+which also includes modules (as circles).
 
-Module dependencies are set with the query in Listing~\ref{lst:moddep} by use of
-the \texttt{CONTAINS} relation.  Interactivity is achieved through the Neo4j
-browser interface and the JavaScript visualisations; statistics are achieved
-through the library of queries; graphical representations by both. An important
-limitation of CoqSerAPI is that its statistics are simply three counters,
-whereas this project offers the ability, through a queriable database, to gain
-\emph{any} sort of information a user is interested in.
+This Coq package closely follows the structure of the source material:
+Peterfalvi~\cite{peterfalvi2000oot} and Bender \&
+Glauberman~\cite{bender1994oot}. Each section (chapter) in the original books is
+a file/module in the Coq package; each definition, lemma or proof corresponds to
+the same in the books. Following the convention in the Coq package, Bender \&
+Glauberman will henceforth be abbreviated to BG and Peterfalvi to PF.
 
-And finally, object dependencies are at the heart of this project: by using a
-Neo4j graph database, we can understand and manipulate this relation in a much
-more flexible and scalable manner than any visualisation can manage.
+\subsubsection{Direct \& Modules}
+
+Starting with a force-directed visualisation of nodes,
+Figure~\ref{fig:oot:direct} highlights five major groups: \gdblue{dark-blue},
+\gpink{pink}, \gyellow{yellow}, \gpurple{purple} and \gdgreen{dark-green}, and
+shows that modularity clustering largely agrees with the layout. Clear
+connections are visible between each of the groups, with a central group showing
+a mix of almost all groups.
+
+We can begin to uncover some of the meaning by looking at
+Figure~\ref{fig:oot:module}. The seven \gpink{pink} circles near the center
+are BG sections 1-6 and appendices A and B. As the first sections, they lay the
+groud-work for the rest of the theory; % -- backed up by sugiyama flipped
+
+% Right pink group Puig? and appendices
+% Left pink prime_length? and 1-6
+% Scattered are..?
+
+% Then purple
+
+% the dark blue
+
+% Sugiyama: linearity/multiplicity of tracks/thoughts
+% Grid allows us to estimate proportion of each group
+
+% Direct & Modules
+\begin{figure}[p]
+\centering
+\includegraphics[height=0.45\textheight]{img/oot/direct}
+\caption{Force-directed (some nodes omitted for clarity)}\label{fig:oot:direct}
+\end{figure}
+
+\begin{figure}[p]
+\centering
+\includegraphics[height=0.45\textheight]{img/oot/modules}
+\caption{Modules}\label{fig:oot:module}
+\end{figure}
+
+% Hierarchicals
+\begin{figure}[p]
+\centering
+\includegraphics[height=0.45\textheight]{img/oot/hierarchical}
+\caption{Hierarchical}\label{fig:oot:hier}
+\end{figure}
+
+\begin{figure}[p]
+\centering
+\includegraphics[height=0.45\textheight]{img/oot/hierarchical_flipped}
+\caption{Hierarchical Flipped}\label{fig:oot:hierflip}
+\end{figure}
+
+% Circular & Grid
+\begin{figure}[p]
+\centering
+\includegraphics[height=0.45\textheight]{img/oot/circular_flipped}
+\caption{Circular Flipped}\label{fig:oot:circleflip}
+\end{figure}
+
+\begin{figure}[p]
+\centering
+\includegraphics[height=0.45\textheight]{img/oot/grid}
+\caption{Grid}\label{fig:oot:grid}
+\end{figure}

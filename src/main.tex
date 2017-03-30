@@ -39,12 +39,17 @@
 
 \cleardoublepage{}
 \phantomsection{} % Stop hyperlinks from going to the wrong page
+% Fix this nonsense, bibliography is not a chapter
+% https://en.wikibooks.org/wiki/LaTeX/Bibliography_Management -- tocbibind
+% https://www.sharelatex.com/learn/Bibliography_management_in_LaTeX -- or biblatex
 \addcontentsline{toc}{chapter}{Bibliography}
+\pagestyle{plain}
 \bibliographystyle{plain}
 \bibliography{src/dissertation.bib}
 \cleardoublepage{}
 
 \appendix
+\pagestyle{fancy}
 \input{src/output.tex}
 \cleardoublepage{}
 

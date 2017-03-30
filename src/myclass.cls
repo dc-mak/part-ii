@@ -159,21 +159,37 @@
 \newpage%
 }
 
-% Graph colours
-\definecolor{graphgreen}{RGB}{78,215,62}
-\newcommand*{\ggreen}[1]{\textcolor{graphgreen}{#1}}
+% Graph colours - RegExp
+\definecolor{graphlgreen}{RGB}{78,215,62}
+\newcommand*{\glgreen}[1]{\textcolor{graphlgreen}{#1}}
 
-\definecolor{graphblue}{RGB}{67,139,236}
-\newcommand*{\gblue}[1]{\textcolor{graphblue}{#1}}
+\definecolor{graphlblue}{RGB}{67,139,236}
+\newcommand*{\glblue}[1]{\textcolor{graphlblue}{#1}}
 
-\definecolor{graphpurple}{RGB}{229,67,242}
-\newcommand*{\gpurple}[1]{\textcolor{graphpurple}{#1}}
+\definecolor{graphlpurple}{RGB}{229,67,242}
+\newcommand*{\glpurple}[1]{\textcolor{graphlpurple}{#1}}
 
 \definecolor{graphviolet}{RGB}{68,34,251}
 \newcommand*{\gviolet}[1]{\textcolor{graphviolet}{#1}}
 
 \definecolor{graphorange}{RGB}{255,168,7}
 \newcommand*{\gorange}[1]{\textcolor{graphorange}{#1}}
+
+% Graph colours - OOT
+\definecolor{graphyellow}{RGB}{255,165,0}
+\newcommand*{\gyellow}[1]{\textcolor{graphyellow}{#1}}
+
+\definecolor{graphpink}{RGB}{251,126,129}
+\newcommand*{\gpink}[1]{\textcolor{graphpink}{#1}}
+
+\definecolor{graphdblue}{RGB}{0,14,161}
+\newcommand*{\gdblue}[1]{\textcolor{graphdblue}{#1}}
+
+\definecolor{graphpurple}{RGB}{0,14,161}
+\newcommand*{\gpurple}[1]{\textcolor{graphpurple}{#1}}
+
+\definecolor{graphdgreen}{RGB}{37,92,3}
+\newcommand*{\gdgreen}[1]{\textcolor{graphdgreen}{#1}}
 
 % End
 \endinput
