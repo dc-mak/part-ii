@@ -1,14 +1,54 @@
 \chapter{Conclusions}
 
 \prechapter{%
-  Witty quote.
+  Born from the need to detangle mathematical theories, this project uses graph
+  databases and a host of related approaches to help bring order to the concepts
+  being explained. It attempts and succeeds at going further than tools such as
+  coqdoc, coqdep, dpdgraph and others. A variety of technologies, (Coq, Neo4j,
+  Java, OCaml and R) tools (APOC, RNeo4j, igraph, visNetwork) and algorithms
+  (centrality, clustering and other statistics) make up this project. Its
+  feature set, performance and output on real-world packages show that this
+  project has a genuine potential to be useful in the Coq community.
 }%
-
-\section{Summary}
-
-It was difficult to spend hours staring at the entire Coq compiler code base,
-figuring out the types and transformations.
 
 \section{In Hindsight}
 
-\section{Future work}
+\emph{A lot} was learned throughout the course of this project. Working with
+existing systems \emph{and} creating something novel can be difficult to juggle
+mentally: the cognitive load of imagining what is possible within the given
+frameworks and timescales is a skill, one which was refined over the course of
+the project. Initially, the idea, suggested by the project supervisor, seemed
+fascinating and intriguiging. After the preliminary preparations, the novelty,
+difficulty and usefulness of the concept had taken root.
+
+However, at several instances throughout implementation, it was easy to get
+stuck in the details and spend hours staring at the entire Coq compiler code
+base just to figure out how to get the name of the module an object is contained
+in or how to convert some part of the AST to a string for use elsewhere; the
+lack of good, structure documentation made the whole endeavour even more
+frustrating at times. Other times it was simply the bewildering choice of how
+best to proceed next given many options and no clear way of comparing between
+them. It was rarely \emph{writing} the code which was the issue, but
+\emph{knowing what to aim for}. It was in those moments that having an
+experienced, focused and clear supervisor who reiterated the overarching vision
+of the project was the most useful.
+
+Project management and organisation tended to be easy and helped immensely in
+providing a useful structure for guiding implementation. A good grasp of Unix,
+Git and programming languages proved to be essential to executing this project
+as smoothly as possible. Evaluating the project gave a chance to switch from
+\emph{developing} to \emph{using} and explore what was possible with the project
+in its final form, and how it could be improved and extended given more time.
+
+\section{Future Work}
+
+Immediate extensions to this project could come from fleshing out the model
+further, to include tactics, notation and other aspects of the Coq system.
+More ambitious extensions could involve somehow presenting some information
+to a user \emph{as they are working} on something, or using data science
+techniques to analyse the output model as a means to providing new insights or
+a more helpful compiler which can suggest how to (re)structure a project.
+Although very useful and easily interpretable in the context of mathematical
+theories, this project's core concept could also be applied to any programming
+language and its libraries, to provide new ways of becoming familiar with and
+understanding increasingly complex software projects.

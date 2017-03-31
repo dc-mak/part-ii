@@ -339,13 +339,13 @@ toward the the center of a cluster.
 
 We see that modularity clustering largely corresponds to the how a human might
 group nodes visually: two major clusters with a few, smaller clusters.
-Intuitively, the \glblue{light-blue} cluster represents \glblue{\emph{executable
+Intuitively, the \glblue{light blue} cluster represents \glblue{\emph{executable
 functions}}; the \gorange{orange} cluster represents \gorange{\emph{proofs of
-correctness}}; the \glpurple{light-purple} cluster represents proofs using the
-definition of \glpurple{string length}; the \glgreen{light-green} cluster
+correctness}}; the \glpurple{light purple} cluster represents proofs using the
+definition of \glpurple{string length}; the \glgreen{light green} cluster
 represents proofs involving \glgreen{converting strings to regular-expressions};
 the \gviolet{violet} cluster represents proofs relating to \gviolet{nullable
-strings}. The node at the center of the light-blue cluster is a function which
+strings}. The node at the center of the light blue cluster is a function which
 computes whether a given regular-expression matches a given string; the node at
 the center of the yellow cluster defines what it means for two
 regular-expressions to be equal.
@@ -393,44 +393,116 @@ the different pieces of the puzzle come together.
 
 \subsection{Large: Odd Order Theorem}
 
-For the Odd Order Theorem, betweenness centrality, modularity clustering,
-hierarchical layout, grid layout, circular layout and force-directed layout
-produced the most aesthetically pleasing and insightful results. As before,
-only definitions (shown as triangles/$\triangleq$) and proofs (shown as
-squares/$\square$ symbol) are shown, except for Figure~\ref{fig:oot:module}
-which also includes modules (as circles).
+For the Odd Order Theorem, betweenness centrality (for node size), modularity
+clustering (for node colour), hierarchical layout, grid layout, circular layout
+and force-directed layout produced the most aesthetically pleasing and
+insightful results. As before, only definitions (shown as
+triangles/$\triangleq$) and proofs (shown as squares/$\square$ symbol) are
+shown, except for Figure~\ref{fig:oot:module} which also includes modules (as
+circles). New to this section, edges are coloured. Unless a figure is stated as
+being flipped, the colour of an edge is the same colour as its source (user);
+otherwise, it is the same colour as its destination (used).
 
 This Coq package closely follows the structure of the source material:
 Peterfalvi~\cite{peterfalvi2000oot} and Bender \&
 Glauberman~\cite{bender1994oot}. Each section (chapter) in the original books is
-a file/module in the Coq package; each definition, lemma or proof corresponds to
-the same in the books. Following the convention in the Coq package, Bender \&
-Glauberman will henceforth be abbreviated to BG and Peterfalvi to PF.
+a file/module in the Coq package; each definition/lemma/proof/corollary
+corresponds to the same in the books. Following the convention in the Coq
+package, Bender \& Glauberman will henceforth be abbreviated to BG and
+Peterfalvi to PF.
 
-\subsubsection{Direct \& Modules}
+\subsubsection{Overview}
 
 Starting with a force-directed visualisation of nodes,
-Figure~\ref{fig:oot:direct} highlights five major groups: \gdblue{dark-blue},
-\gpink{pink}, \gyellow{yellow}, \gpurple{purple} and \gdgreen{dark-green}, and
-shows that modularity clustering largely agrees with the layout. Clear
-connections are visible between each of the groups, with a central group showing
-a mix of almost all groups.
+Figure~\ref{fig:oot:direct} highlights five major groups: \gdblue{dark blue},
+\gpink{pink}, \gyellow{yellow}, \gpurple{purple}, \gdgreen{dark green} and
+\gmagenta{magenta}; it shows that modularity clustering largely agrees with the
+layout. Clear connections are visible between each of the groups, with a central
+group showing a mix of almost all groups.
 
-We can begin to uncover some of the meaning by looking at
-Figure~\ref{fig:oot:module}. The seven \gpink{pink} circles near the center
-are BG sections 1-6 and appendices A and B. As the first sections, they lay the
-groud-work for the rest of the theory; % -- backed up by sugiyama flipped
+Figure~\ref{fig:oot:module} shows the same nodes in their module structure; of
+note is the remarkable consistency of clusterings (based \emph{only} on the
+\texttt{USES} edges between proofs and definitions) to fall within their
+grouping the moudule boundaries defined by the \texttt{CONTAINS} relation.
 
-% Right pink group Puig? and appendices
-% Left pink prime_length? and 1-6
-% Scattered are..?
+Figures~\ref{fig:oot:circleflip} and~\ref{fig:oot:grid} show a circular (with
+edge directions flipped) and grid layout of the Coq package. An advantage of the
+flipped circular layout is that is can show which groups are being used the most
+and how; an advantage of the grid layout is one can get an intuition what
+proportion of definitions/proofs belong to a certain group.
 
-% Then purple
+\subsubsection{Groups}
 
-% the dark blue
+%  5 - Pink:        BG 1-6,AB
+%  4 - Dark blue:   PF 1,2,5,6,7
+%  3 - Purple:      BG 7,10,12,14,16 -- PF 3,4,8
+%  1 - Dark green:  BG 7,8,9,10,11,12,13,15 -- PF 8,9,10,11,12,13,14,15
+%  2 - Magenta:     BG 15,16 -- PF (1,8,9) 10,11,12,13,14
+%  7 - Light green: BG (4,7) 10
+% 20 - Yellow:      PF 3 - CyclicT Iso Reflection
+%  6 - Light blue:  Stripped Odd Order
 
-% Sugiyama: linearity/multiplicity of tracks/thoughts
-% Grid allows us to estimate proportion of each group
+We can begin to uncover some of the meaning by looking at the \modulegraph.  The
+seven \gpink{pink} circles (six near the center, one at the far left) are BG
+sections 1-6 and Appendices A/B. As the first sections, one would assume they
+lay the groundwork for the rest of the theory; this assessment is backed-up by
+the \hiergraph. Of about 36 rows in the \gridgraph, 6 of them are \gpink{pink}.
+All sections except BG 5 \emph{surround} the central cluster in the
+\directgraph.  The slight red diagonal on the right of the \circlegraph\ shows
+sparser connections than most of the other groups.
+
+Similarly, the modules containing mostly \gdblue{dark blue} nodes are the early
+chapters (1,2,5,6,7) of PF, expositing mostly foundational material (as seen in
+the \hierflipgraph) but in an extremely directed and linear fashion (as seen in
+the \hiergraph).  They are a dense group (as shown by the left of the
+\circlegraph) and occupy about 6 rows in the \gridgraph. Apart from PF 2 (right)
+and 5 (left), they are tightly-woven into the center of the \directgraph.
+
+\gpurple{Purple} and \gdgreen{dark green} share the later sections (7-16) of BG.
+Where they differ is PF: \gpurple{purple} covers PF 3,4 \& 8 whereas
+\gdgreen{dark green} covers PF 8-15. This difference is apparent in
+\hyperref[fig:oot:hier]{both} \hyperref[fig:oot:hierflip]{hierarchical} graphs:
+\gpurple{purple} nodes occupy the middle of the graphs but green nodes form
+a steep line from top to bottom. Both are clustered in the center of the
+\directgraph, with the exception of PF 4 as two \gpurple{purple} clusters to the
+bottom-left. They dominate the \circlegraph\ and the \gridgraph, occupying
+around 8 rows each.
+
+\gmagenta{Magenta} forms the later sections of both BG (15-16) and PF (8-14), so
+it comes as little surprise that it occupies the upper half of both
+\hyperref[fig:oot:hier]{both} \hyperref[fig:oot:hierflip]{hierarchical} graphs.
+Even though it only constitutes about two rows in the \gridgraph, we see its
+striking bands on the \circlegraph\ because of how often its results are used by
+other nodes in the final sections (15-16) of PF.
+
+Other miscellaneous groups include \glblue{light blue} (a self-contained,
+stripped down proof of just the Odd Order Theorem from first principles),
+\gyellow{yellow} (an entire excursion to proving PF Theorem 3.5) and
+\glgreen{light green} (primarily BG 10).
+
+\subsubsection{Insights}
+
+With some context about the composition of the theory, we can now examine
+\hyperref[fig:oot:hier]{both} \hyperref[fig:oot:hierflip]{hierarchical} graphs
+in a bit more detail to see truly understand what they reveal about this
+monumental Coq package and the books it encodes.
+
+Figure~\ref{fig:oot:hier} shows the hierarchical, Sugiyama layout.  A
+consequence of this algorithm is that nodes are placed \emph{closest to their
+first use}, usually done as a heuristic to minimise edge crossings. Intuitively,
+one can think of this approach as the lazy/ultra-efficient student who only
+studies a particular definition/proof \emph{just before} it is needed by some
+other part of the text (or like call-by-need evaluation in a non-strict
+programming language).
+
+As such, swapping the direction of the edges \emph{does not} simply flip the
+layout vertically, as Figure~\ref{fig:oot:hierflip} shows. One could conjecture
+that Figure~\ref{fig:oot:hier} shows how mathematics is \emph{developed} (a
+narrow foundation, top-down refinement, creating proofs/definitions as and when
+needed, several independent lines of thought) and Figure~\ref{fig:oot:hierflip}
+shows how mathematics is presented (a broad base of \emph{all} the groundwork
+that will be needed first, followed by a bottom-up, rapidly developing, linear
+argument which uses the base extensively).
 
 % Direct & Modules
 \begin{figure}[p]
@@ -454,7 +526,8 @@ groud-work for the rest of the theory; % -- backed up by sugiyama flipped
 
 \begin{figure}[p]
 \centering
-\includegraphics[height=0.45\textheight]{img/oot/hierarchical_flipped}
+\reflectbox{\rotatebox[origin=c]{180}{%
+  \includegraphics[height=0.45\textheight]{img/oot/hierarchical_flipped}}}
 \caption{Hierarchical Flipped}\label{fig:oot:hierflip}
 \end{figure}
 
@@ -470,3 +543,16 @@ groud-work for the rest of the theory; % -- backed up by sugiyama flipped
 \includegraphics[height=0.45\textheight]{img/oot/grid}
 \caption{Grid}\label{fig:oot:grid}
 \end{figure}
+
+\newpage%
+\section{Summary}
+
+To assess the two major aim of this project (choosing the correct model and
+being able to gain insights into mathematical theories), its features,
+performance and output were examined in detail. For its features, a systematic
+comparison with other, existing tools of a similar purpose, showed this project
+went above and beyond what existing tools offer. For its performance, a similar
+comparison of execution times showed this project to be slightly slower, but
+still acceptable and usable for even the most extreme of cases. For its output,
+two Coq packages, each representing a mathematical theory, were explained via
+the insights gained from using this project on them.

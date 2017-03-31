@@ -191,5 +191,16 @@
 \definecolor{graphdgreen}{RGB}{37,92,3}
 \newcommand*{\gdgreen}[1]{\textcolor{graphdgreen}{#1}}
 
+\definecolor{graphmagenta}{RGB}{37,92,3}
+\newcommand*{\gmagenta}[1]{\textcolor{graphmagenta}{#1}}
+
+% Graph references
+\newcommand*{\gridgraph}{\hyperref[fig:oot:grid]{grid graph}}
+\newcommand*{\modulegraph}{\hyperref[fig:oot:module]{module graph}}
+\newcommand*{\circlegraph}{\hyperref[fig:oot:circleflip]{flipped circular graph}}
+\newcommand*{\hiergraph}{\hyperref[fig:oot:hier]{hierarchical graph}}
+\newcommand*{\hierflipgraph}{\hyperref[fig:oot:hierflip]{flipped hierarchical graph}}
+\newcommand*{\directgraph}{\hyperref[fig:oot:direct]{force-directed graph}}
+
 % End
 \endinput
