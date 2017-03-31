@@ -1,2 +1,82 @@
-\chapter{Full Model}
-\label{chapter:fullmodel}
+\chapter{Full Model}\label{chapter:fullmodel}
+
+Here is the full translation of the Coq AST to kinds and subkinds.
+
+\begin{minted}[linenos,obeytabs=true,tabsize=2]{ocaml}
+let kind_of_constref =
+let open Decl_kinds in function
+| IsDefinition def -> ("definition", Some (match def with
+  | Definition -> "definition"
+  | Coercion -> "coercion"
+  | SubClass -> "subclass"
+  | CanonicalStructure -> "canonical_structure"
+  | Example -> "example"
+  | Fixpoint -> "fixpoint"
+  | CoFixpoint -> "cofixpoint"
+  | Scheme -> "scheme"
+  | StructureComponent -> "projection"
+  | IdentityCoercion -> "coercion"
+  | Instance -> "instance"
+  | Method -> "method"))
+| IsAssumption a ->
+  ("assumption", Some (match a with
+  | Definitional -> "definitional"
+  | Logical -> "logical"
+  | Conjectural -> "conjectural"))
+| IsProof th ->
+  ("proof", Some (match th with
+  | Theorem -> "theorem"
+  | Lemma -> "lemma"
+  | Fact -> "fact"
+  | Remark -> "remark"
+  | Property -> "property"
+  | Proposition -> "proposition"
+  | Corollary -> "corollary"))
+
+let kind_of_ind ind =
+let (mib,oib) = Inductive.lookup_mind_specif (Global.env ()) ind in
+if mib.Declarations.mind_record <> None then
+  let open Decl_kinds in
+  begin match mib.Declarations.mind_finite with
+  | Finite -> "recursive_inductive"
+  | BiFinite -> "recursive"
+  | CoFinite -> "corecursive"
+  end
+else
+  let open Decl_kinds in
+  begin match mib.Declarations.mind_finite with
+  | Finite -> "inductive"
+  | BiFinite -> "variant"
+  | CoFinite -> "coinductive"
+  end
+
+let get_constr_type typ =
+  Names.KerName.to_string (Names.MutInd.user typ)
+
+let kind_of_gref gref = 
+if Typeclasses.is_class gref then
+  ("class", None)
+else
+  match gref with
+  | Globnames.ConstRef cst ->
+  kind_of_constref (Decls.constant_kind cst)
+
+  | Globnames.ConstructRef ((typ, _), _) -> 
+  ("type_constructor", None)
+
+  | Globnames.IndRef ind -> 
+  ("inductive_type", Some (kind_of_ind ind))
+
+  | Globnames.VarRef _ ->
+  assert false
+
+
+let kind_of_obj = function
+| G.Node.Gref gref -> 
+  kind_of_gref gref
+| G.Node.Module modpath ->
+      ("module", match modpath with
+      | Names.ModPath.MPbound _ -> Some "bound"
+      | Names.ModPath.MPdot _ -> Some "module"
+      | Names.ModPath.MPfile _ -> Some "file")
+\end{minted}

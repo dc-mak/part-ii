@@ -22,6 +22,7 @@ SRC_MAIN := main.tex \
 	    implementation.tex \
 	    evaluation.tex \
 	    conclusions.tex \
+			output.tex \
 	    dissertation.bib
 DIR_MAIN := src
 SRC_MAIN := $(addprefix $(DIR_MAIN)/, $(SRC_MAIN))
