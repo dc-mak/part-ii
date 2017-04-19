@@ -18,7 +18,7 @@
 
 % Remove ugly boxes around hyperlinks
 \hypersetup{%
-    colorlinks,
+    colorlinks=true,
     linkcolor={black},
     citecolor={green!50!black},
     urlcolor={blue!80!black}
@@ -68,7 +68,7 @@
 ]{geometry}
 
 % More readable; preserves hyphenation
-\RequirePackage[document]{ragged2e}
+% \RequirePackage[document]{ragged2e}
 
 % Sans-serif section headers
 \RequirePackage{sectsty}
