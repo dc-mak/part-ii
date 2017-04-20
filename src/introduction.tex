@@ -26,8 +26,8 @@ proof-scripts encode a mathematical theory, which can be difficult to
 understand in and of itself, they serve as verbose instructions on how to
 create proof-term whose type matches a certain proposition, rather than a
 statement of \emph{why} something is true. There are currently no tools which
-help with the challenge of gaining a high-level understanding of a large Coq
-library.
+help with the challenge of gaining a \emph{high-level} understanding of a large
+Coq library.
 
 The Feit-Thompson Odd Order Theorem~\cite{peterfalvi2000oot, bender1994oot}
 (which has been translated into Coq~\cite{gonthier2013oot}) is an example of a
@@ -60,7 +60,7 @@ definition?''.
 Even a static, graph-based approach on its own is insufficient. Simply
 outputting a dependency graph is ineffective for all but the smallest of
 libraries. Figure~\ref{fig:static} shows one such dependency graph for a
-medium-sized Coq library (Combinators for Algebraic Structures).
+medium-sized Coq library.
 
 \begin{figure}[tp]
 
@@ -107,7 +107,14 @@ In this project, I aimed to write a tool for Coq users that:
   \end{itemize}
 \end{itemize}
 
+Note that the aims centre around the \emph{mechanics and details} of creating a
+model for Coq proof-objects and applying network analysis techniques to it and
+\emph{not creating a polished, user-friendly product}. Since \emph{usability was
+not a \emph{primary} focus of this project}, I did not conduct a user-study whilst
+evaluating this tool.
+
 \newpage
+
 \section{Summary}
 
 First, I explained why Coq libraries difficult to understand. Then, I said
