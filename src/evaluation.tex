@@ -101,38 +101,6 @@ favourably.
 
 \end{table}
 
-The features chosen for comparison reflect the strengths of each tool
-considered.
-
-Bundle with Coq, coqdoc produces \textbf{hyperlinked source code} meaning
-details such as the \textbf{precise kinds} of a proof-object, the
-\textbf{constructors of a type} and the \textbf{type signatures} are immediately
-visible; hence those 5 dimensions were included.  Also include in a Coq system
-is coqdep: a tool for modelling \textbf{module-level dependencies} that can
-output a \texttt{dot} file to present it \textbf{graphically}.
-
-Coq Serialised (S-expression) API is an \textbf{interactive} IDE communication
-protocol with facilities for gathering some basic \textbf{statistics}. Here,
-interactive is used to mean that information is not presented all at-once,
-\emph{statically}, but can instead be queried dynamically at run-time. An
-example of a static dispaly is Figure~\ref{fig:static}; it shows a medium-sized
-Coq library as ouput by dpdgraph.
-
-\begin{figure}[p]
-
-  \centering
-  \includegraphics[width=\textwidth, page=1]{img/static-CAS-small.pdf}
-  \caption{Static Output of dpdgraph (using \texttt{dpd2dot}) on
-    \href{https://github.com/Timothy-G-Griffin/CAS}{CAS}}\label{fig:static}
-
-\end{figure}
-
-In principle, coqdep and dpdgraph can also support some degree of interactivity,
-with support from other tools (which translate \texttt{dot} files to interactive
-JavaScript), although this is rarely done.  What dpdgraph does do well is model
-\textbf{object dependencies}, with some scope for distinguishing precise kinds
-and displaying information graphically.
-
 \subsection{This Project}
 
 It is clear from the table that this project either supports, or can support,
