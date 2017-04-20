@@ -26,40 +26,41 @@ explained}.
 }
 
 \prechapter{%
-  Before commencing implementation of the project, careful consideration was
-  given to planning it. Current solutions were explored, studied and evaluated
-  against the aims described in Section~\ref{intro:aims}. The rest of this
-  chapter will explain the initial set-up, elaborate on  related work and
-  outline the project's starting point.
+  In this chapter, I will describe how I planned this project. I will start by
+  mentioning the development methodology and tools I used. Following that, I
+  will present and explain the requirements I used to guide the implementation
+  of my project. From there, I will state my choice of technologies for this
+  project. I will then go on to elaborate on my starting point for this project.
+  This will consist of a brief commentary on Coq, a comparison of existing tools
+  which aim to help a user understand a Coq library and a description of Neo4j
+  and some of its relevant plugins.
 }
 
 \section{Project Planning}
 
-This project presents a unique idea and breaks new ground. As such, the
-methodology had to suit and reflect the largely exploratory nature of the
-process. A spiral software development model was chosen: think of an idea,
-modify the model (of Coq proof-objects), implement and propogate the necessary
-changes, evaluate the end-result and repeat. This allowed for experimentation
-of ideas and flexibility of implementation strategies.
+This project had two distinct phases: deciding how to model Coq proof-objects
+(an exploratory phase) and applying network-analysis techniques (a technical
+phase). For both, I chose a spiral software development model: think of an idea,
+modify the code, propogate the necessary changes, evaluate the end-result and
+repeat. This allowed me to experiment with ideas flexibly and easily.
 
-Git (\href{http://git-scm.com}{\texttt{git-scm.com}}) and GitHub
-(\href{http://github.com/dc-mak}{\texttt{github.com/dc-mak}}) were invaluable
-during the project, allowing for easy tracking, reverting, reviewing and
-collaborating.  New features could be tested on new branches before being
-merged in and a copy of the work was safely backed up in one more place. GitHub
-extensions such as \href{https://travis-ci.org}{Travis-CI} (continous
-integration) were added in later, as it became apparent that precisely
-specified versioning, build-dependencies and automated tests were useful in
-spotting errors early.
+I found Git (\href{http://git-scm.com}{\texttt{git-scm.com}}) and GitHub
+(\href{http://github.com/dc-mak}{\texttt{github.com/dc-mak}}) invaluable during
+the project; they allowed me to easily track, revert and review changes. I could
+safely test new features on different branches before merging them in and store
+a copy of my work in multiple places. As it became apparent that precisely
+specified versioning, build-dependencies and tests were useful in spotting
+errors early, I added GitHub extensions such as
+\href{https://travis-ci.org}{Travis-CI} for automated continous-integration
+builds.
 
 \section{Requirements Analysis}
-Several components of this project needed to function correctly, both
-individially and in conjuction for it to work. Separate parts for
-modelling/translation (from Coq to the chosen model), displaying and
-interacting (Neo4j/Cypher) and computation (Neo4j/Cypher plugins)
-needed to be developed and brought together. Below is a list of required
-features used throughout development to guide and provide context for
-implementation decisions.
+
+I developed and brought together several distinct components for
+\emph{modelling} and translating (from Coq to the chosen model), displaying and
+\emph{interacting} (Neo4j/Cypher) and \emph{computing} and analysing (plugins).
+Below is a list of required features I used throughout development to guide and
+provide context for implementation decisions.
 
 \begin{itemize}
 
@@ -83,7 +84,7 @@ implementation decisions.
 
   \end{enumerate}
 
-  \item \textbf{Interaction}: Interacting with the model should
+  \item \textbf{Interacting}: Interacting with the model should
   \begin{enumerate}[label=\textbf{I\arabic*},ref={I\arabic*}]
 
     \item\label{req:i1} primarily, allow users to understand the data. The
@@ -101,7 +102,7 @@ implementation decisions.
 
   \end{enumerate}
 
-  \item \textbf {Computation}: Working with the model's data should
+  \item \textbf {Computing}: Working with the model's data should
   \begin{enumerate}[label=\textbf{C\arabic*},ref={C\arabic*}]
 
     \item\label{req:c1} be enabled by a core library of good defaults. Certain,
@@ -123,126 +124,164 @@ implementation decisions.
 Choice of implementation languages was, although an important decision, almost
 completely dictated by the programs at the core of the project (Coq and Neo4j).
 
-Coq and its plugins \textendash~specifically, dpdgraph, which was used as a
-starting point for extracting information about Coq proof-objects from compiled
-proof-scripts \textendash~are written in OCaml
-(\href{http://ocaml.org}{\texttt{ocaml.org}}).  Since it almost always wiser to
-work with and modify existing sytems (and more representative of real-world
-work) and as a functional language, OCaml benefits from strong, static (and
-inferred) type-system (allowing for easy experimentation, greater confidence in
-correctness), sticking to it for other parts of the tools which need not
-necessarily be in OCaml (e.g.\ the \texttt{dpd2} utility) was a welcome and
-easy decision. OCaml has several other benefits too, such as
-inductively-defined datatypes (useful for manipulating Coq constructs) and good
+Coq and its plugins are written in OCaml
+(\href{http://ocaml.org}{\texttt{ocaml.org}}); I stuck with it for two reasons.
+First, it is almost always wiser to work with and modify existing sytems (e.g.\
+integrating with the build-system) and more representative of real-world work.
+Second, as a functional language, OCaml benefits from a strong, static (and
+inferred) type-system (which allows for easy experimentation and greater
+confidence in correctness). Hence, using OCaml for other parts of the tool which
+need not necessarily be in OCaml (e.g.\ the \texttt{dpd2} utility) was a welcome
+and easy decision. OCaml has several other benefits too, such as
+inductively-defined datatypes (useful for working with Coq's grammar) and good
 editing tools.
 
 Similarly, Neo4j and its plugins are (usually) written in Java, but several
 lanaguages are supported for the latter, both by Neo4j officially and by the
-community. As will be explained in Subsection~\ref{subsec:neo4j}, Java
-and R were found to be the most suitable for achieving this project's goals.
+community. As I will explain in Section~\ref{sec:neo4j}, I found Java and
+R to be the most suitable for achieving this project's goals.
+
+\section{Starting Point}
+
+Both Coq and Neo4j have a rich eco-system of tools and libraries built for them.
+I examined the current landscape in detail to determine the software available
+so as to then use the relevant programs as a starting point effectively.
 
 \section{Coq Proof-Assistant}
 
-The Coq proof-assistant -- implemented in OCaml -- can be viewed as both 
-a system of logic -- in which case it is a realisation of the \emph{Calculus of
-Inductive Constructions} -- and as a \emph{dependently-typed} programming
-language. Its power and development are therefore most-suited and often geared
-towards \emph{large scale} developments.
+The Coq proof-assistant, implemented in OCaml, can be viewed as both a system of
+logic -- in which case it is a realisation of the \emph{Calculus of Inductive
+Constructions} -- and as a \emph{dependently-typed} programming language. Its
+power and development are therefore most-suited and often geared towards
+\emph{large-scale} developments.
 
-On the logical side, Coq lays claim to projects such as the Four-Colour
-Theorem~\cite{gonthier2008formal} (60,000 lines) and the aformentioned
-\emph{Feit-Thompson} theorem (approximately 170,000 lines, 15,000
-definitions and 4,200 theorems) are feats of modern software-engineering.
+On the logical side, Coq lays claim to feats of modern software-engineering such
+as the Four-Colour Theorem~\cite{gonthier2008formal} (60,000 lines) and the
+aformentioned \emph{Feit-Thompson} theorem (approximately 170,000 lines, 15,000
+definitions and 4,200 theorems).
 
 On the programming language side, Coq has served as the basis for many equally
-fantastic projects. The \emph{CompCert Verified C
+impressive projects. The \emph{CompCert Verified C
 Compiler}~\cite{leroy2012compcert} demonstrates the practical applications of
 theorem-proving and dependently-typed programming by implementing and proving
 correct an optimising compiler for the C programming language.
 \emph{DeepSpec}~\cite{pierce2016science}, a recently announced meta-project,
 aims to integrate several large projects such as \emph{CertiKOS} (operating
-system kernels, \emph{Kami} (hardware), \emph{Vellvm} (verifying LLVM) and many
+system kernels), \emph{Kami} (hardware), \emph{Vellvm} (verifying LLVM) and many
 more in the hopes to provide complete, \emph{end-to-end} verification of
 real-world systems.
 
-\section{Neo4j Database and the Cypher Language}
+Coq is a \emph{huge} project, devloped by INRIA (France), and its size and
+complexity are best experienced through detangling the source code for oneself.
+Just for the implementation of the system (not including the standard library),
+Coq features approximately 3 major ASTs, 6 transformations between them, 3000
+visible types, 9000 APIs and 521 implementation files containing 228,000 lines
+of dense, functional OCaml.
 
-Neo4j is a graph database system implemented in Java. Traditional, relational
-database theory and systems are designed with the goal of storing and
-manipulating information in the form of \emph{tables}. As such, working with
-highly interconnected data, such as social network graphs is best tackled with
-the alternative approach of \emph{graph databases}.
+However, most of this massive project is sporadically (and tersely) documented.
+Even after I received some guidance via the Coq developers' mailing-list, I
+spent several hours browsing the source code trying to understand how the system
+worked. Although I had some prior familiarity with \emph{using} Coq (as an
+introduction to tactical theorem-proving and dependently-typed programming), it
+was not useful for understanding the internals beyond context and how to compile
+and use programs and libraries. However, it did serve as invaluable insight for
+designing the model during the implementation phase.
 
-Briefly, a (directed) \emph{graph} is defined as $G = (V, E)$ where $V$ is a set
-of vertices or \emph{nodes} and $E \subseteq V \times V$ is a set of edges or
-\emph{relationships} between two nodes. A \emph{graph database} is an OLTP
-(online transaction processing, meaning operated upon live, as data is
-processed) database management system with CRUD (create, read, update and delete)
-operations acting on a graph data model. Relationships are therefore promoted to
-first-class citizens and can be manipulated and analysed.
+\section{Existing Tools for Coq}\label{prep:coqtools}
 
-\subsection{Cypher: An Illustrated Example}
+There are many tools for Coq that, like my project, \emph{aim to help a user
+understand a library}. I studied a number of them to learn their approaches and
+analyse their strengths and weakeness. What follows is a detailed account of
+each tool and why it did not meet the project's aims and requirements.
 
-\emph{Cypher} features heavy use of pattern-matching in an ASCII-art inspired
-syntax.  The following (slightly contrived but hopefully illuminating) example
-in Listing~\ref{lst:cypherexample} illustrates some of the key strengths of
-graph-based modelling using Cypher. 
+\subsection{Coqdoc}
 
-Suppose we have a puppy named ``Cliff'' looking for the nearest and most
-familiar children (for this example, a person under the age of six) to play
-with.
+Coqdoc is a documentation tool for Coq projects, included as part of the Coq
+system. It can output to raw text, HTML, \LaTeX~and a few other formats to help
+a user navigate and understand a Coq library.  Although it supports prettifying
+code with syntax highlighting and unicode characters, its most relevant feature
+was its hyperlinking: potentially useful for building dependency graphs.
 
-To see how Cliff (indirectly) likes/knows this child, we bind \emph{path} to the
-result of the \emph{shortestPath} query.  For the path itself, we start with a
-node following this structure: \mintinline{cypher}{(var:label {attrib: val})}.
-We then have a \emph{labeled, transitive} relationship (explicitly limiting our
-search to paths of up to length four) expressed as an arrow with a label
-\texttt{-[..]->}. As such, we can discard any paths with relationships we do not
-want (e.g.\ \texttt{HATES}). 
+However, the whole tool works on an entirely \emph{lexical} level, with no
+formal parsing, understanding or elaboration of the code structure. Hence, since
+it could not meet any of the modelling requirements (completeness~\ref{req:m1},
+flexibility~\ref{req:m2} and size/precomputation~\ref{req:m3}) this approach was
+abandoned.
 
-To filter based on more complex logic (than possible by pattern-matching directly
-on labels and attributes) we can express the requirement that the age of a dog by
-the name of Cliff be less than or equal to two (and similarly for the age of the
-child) in the \mintinline{cypher}{WHERE} clause.
+\subsection{Coqdep}
 
-Lastly, we return the path and order the results by proximity as a row of
-results, renaming the column of the child's name to simply ``name''.
+Coqdep is a utility included with Coq that helps users understand a Coq
+library's \emph{module-level} dependencies by tracking {\tt Require} and {\tt
+Import} statements.  Although on first impressions, this tool seemed to offer
+more flexibility than coqdoc, it was even more restrictive: it simply searches
+for keywords (such as \texttt{Require} or \texttt{Import} for Coq  and
+\texttt{open} or dot-notation module usage for OCaml) per file and outputs them
+accordingly. As with coqdoc (and for the same reasons), I abandoned this
+approach too.
 
-\begin{listing}[tb]%
+\subsection{CoqSerAPI}
 
-\caption{Example Cypher Query}\label{lst:cypherexample}
+\emph{Coq Serialized (S-expression) API}
+(\href{http://github.com/ejgallego/coq-serapi}{\texttt{github.com/ejgallego/coq-serapi}})
+is a new library and communication protocol aiming to make low-level
+interactions easier (using OCaml datatypes and s-expressions), particularly for
+tool/IDE developers. It has a starting point for gathering some statistics on
+proof-objects in a project. While this is likely to be useful in the future, it
+is still far from complete and is more geared towards interactive
+\emph{construction} (via a tool/IDE) rather than \emph{analysis}. As such,
+tracking dependencies (critical to the modelling requirements) is not possible.
 
-  \begin{minted}{cypher}
-  MATCH path = shortestPath(
-    (puppy:dog {name: "Cliff"})-[:LIKES|:KNOWS*..4]->(child:person))
-  WHERE puppy.age <= 2 AND child.age < 6
-  RETURN path,
-         child.name AS name,
-  ORDER BY other.distance_from_clifford
-  \end{minted}
-
-\end{listing}
-
-\section{Related Work}
-
-Some existing tools offer part of the solutions.%
+\subsection{dpdgraph}
 
 dpdgraph
 (\href{http://github.com/Karmaki/coq-dpdgraph}{\texttt{github.com/Karmaki/coq-dpdgraph}})
-is a tool which analyses dependencies between \emph{compiled} Coq proofs. As
-such, desirable information about notation, tactics, definitions and the
-relationship between a type and its constructors is lost.
+is a project which helps users understand the dependencies between proof-objects
+in a Coq library. It does so by extracting information from compiled Coq
+object-files to a \texttt{.dpd} file. It includes two example tools:
+\texttt{dpd2dot} (for producing a \texttt{.dot} file for static visualisation)
+and \texttt{dpdusage} (for finding unused definitions). Its developers intended
+it to be a starting point for other tools to build upon.
 
-Coqdep is a utility included with Coq which analyses dependencies \emph{at the
-module level} by tracking {\tt Require} and {\tt Import} statements.
+Although lots of information such as notation, the relationship between
+constructors and the types they construct, proof tactics, the precise kind of an
+object (e.g.\  fixpoint, class, lemma, theorem, etc.) and which module an object
+belongs to was missing, I thought it unlikely that the information was not
+present in the compiled object files (since they are necessary for
+term-construction and type-checking).
 
-Coq SerAPI
-(\href{http://github.com/ejgallego/coq-serapi}{\texttt{github.com/ejgallego/coq-serapi}})
-is a work-in-progress library and communication protocol for Coq designed to
-make low-level interaction with Coq easier, especially for IDEs. It has a
-starting point for gathering some statistics of proof-objects in a project.
+Assuming that the data was already present in those files, but simply
+\emph{ignored or unused}, I focused on understanding and augmenting dpdgraph to
+add the missing pieces to the model and output it as to comma-separated values
+(henceforth referred to as CSVs).
 
-\begin{table}[p]
+\subsection{Comparison}\label{subsec:comparison}
+
+I have just discussed the many existing tools for Coq that \emph{aim to help a
+user understand a library}. Table~\ref{table:features1} summarises the main
+features of each. The features chosen reflect the strengths of each tool
+considered and are justified and elaborated upon below. 
+
+Bundle with Coq, coqdoc produces \textbf{hyperlinked source code} meaning
+details such as the \textbf{precise kinds} of a proof-object, the
+\textbf{constructors of a type} and the \textbf{type signatures} are immediately
+visible; hence those 5 dimensions were included.  Also include in a Coq system
+is coqdep: a tool for modelling \textbf{module-level dependencies} that can
+output a \texttt{dot} file to present it \textbf{graphically}.
+
+Coq Serialised (S-expression) API is an \textbf{interactive} IDE communication
+protocol with facilities for gathering some basic \textbf{statistics}. Here,
+interactive is used to mean that information is not presented all at-once,
+\emph{statically}, but can instead be queried dynamically at run-time. An
+example of a static display is Figure~\ref{fig:static}; it shows a medium-sized
+Coq library as ouput by dpdgraph.
+
+In principle, coqdep and dpdgraph can also support some degree of interactivity,
+with support from other tools (which translate \texttt{.dot} files to interactive
+JavaScript), although this is rarely done.  What dpdgraph does do well is model
+\textbf{object dependencies}, with some scope for distinguishing precise kinds
+and displaying information graphically.
+
+\begin{table}[tp]
   \centering
 
   \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} rcccccccccc}
@@ -269,134 +308,41 @@ starting point for gathering some statistics of proof-objects in a project.
   \Y\  Has feature \hfill \N\ Does not have feature \hfill \M\ Can be extended to support it
 
   \bigskip
-  \caption{Comparison of Features}\label{table:features}
+  \caption{Comparison of Features. There are many tools for Coq that, like my
+    project, \emph{aim to help a user understand a library}. This table
+    summarises the main features of each. The features chosen reflect the
+    strengths of each tool considered. Detailed commentary is provided in
+    Subsection~\ref{subsec:comparison}.}\label{table:features1}
 
 \end{table}
 
-The features chosen for comparison reflect the strengths of each tool
-considered.
+\section{Neo4j}\label{sec:neo4j}
 
-Bundle with Coq, coqdoc produces \textbf{hyperlinked source code} meaning
-details such as the \textbf{precise kinds} of a proof-object, the
-\textbf{constructors of a type} and the \textbf{type signatures} are immediately
-visible; hence those 5 dimensions were included.  Also include in a Coq system
-is coqdep: a tool for modelling \textbf{module-level dependencies} that can
-output a \texttt{dot} file to present it \textbf{graphically}.
+Neo4j is a graph database system implemented in Java. Traditional, relational
+database theory and systems are designed with the goal of storing and
+manipulating information in the form of \emph{tables}. As such, working with
+highly interconnected data, such as social network graphs is best tackled with
+the alternative approach of \emph{graph databases}.
 
-Coq Serialised (S-expression) API is an \textbf{interactive} IDE communication
-protocol with facilities for gathering some basic \textbf{statistics}. Here,
-interactive is used to mean that information is not presented all at-once,
-\emph{statically}, but can instead be queried dynamically at run-time. An
-example of a static dispaly is Figure~\ref{fig:static}; it shows a medium-sized
-Coq library as ouput by dpdgraph.
+Briefly, a (directed) \emph{graph} is defined as $G = (V, E)$ where $V$ is a set
+of vertices or \emph{nodes} and $E \subseteq V \times V$ is a set of edges or
+\emph{relationships} between two nodes. A \emph{graph database} is an OLTP
+(online transaction processing, meaning operated upon live, as data is
+processed) database management system with CRUD (create, read, update and delete)
+operations acting on a graph data model. Relationships are therefore promoted to
+first-class citizens and can be manipulated and analysed.
 
-In principle, coqdep and dpdgraph can also support some degree of interactivity,
-with support from other tools (which translate \texttt{dot} files to interactive
-JavaScript), although this is rarely done.  What dpdgraph does do well is model
-\textbf{object dependencies}, with some scope for distinguishing precise kinds
-and displaying information graphically.
-
-\section{Starting Point}
-
-Both Coq and Neo4j have a rich eco-system of tools and libraries built for them.
-Hence, it was worthwhile to examine the current landscape to determine the
-software available and then use it as a starting point effectively.
-
-\subsection{Coq}
-
-Coq is a \emph{large} project, devloped by INRIA (France), and its size and
-complexity are best experienced through detangling the source code for oneself.
-Just for the implementation of the system (not including the standard library),
-Coq features approximately 3 major ASTs, 6 transformations between them, 3000
-visible types, 9000 APIs and 521 implementation files containing 228,000 lines
-of dense, functional OCaml.
-
-However, most of this massive project is sporadically (and tersely) documented.
-Even after consulting the Coq developers' mailing-list, several hours were spent
-browsing the source code to overcome the severe difficulties in understanding
-the project. Prior familiarity with \emph{using} Coq (as an introduction to
-tactical theorem-proving and dependently-typed programming) was not useful for
-understanding the internals beyond context and how to compile and use programs
-and libraries. However, it did serve as invaluable insight for designing the
-data-model during the implementation phase.
-
-\subsection{Existing Tools for Coq}\label{prep:coqtools}
-
-A number of tools were studied to learn their approaches and analyse their
-strengths and weakeness. A full, detailed comparison between all the tools
-mentioned and this project will be presented later, during
-the~\nameref{chapter:evaluation} chapter.  What follows is a brief overview of each tool
-and the reason it was insufficient for the purposes of meeting the project aims
-and requirements.
-
-\subsubsection{Coqdoc}
-
-Coqdoc is a documentation tool for Coq projects, includes as part of the Coq
-system.. It can output to raw text, HTML, \LaTeX~and a few other formats.
-Although it supports prettifying code with syntax highlighting and unicode
-characters, its most relevant feature was its hyperlinking: potentially useful
-for building dependency graphs.
-
-However, the whole tool worked on an entirely \emph{lexical} level, with no
-formal parsing, understanding or elaboration of the code structure. Some efforts
-were made to modify its output into a useful format (e.g.\ comma-separated
-values) for other tools; however these did not prove fruitful because
-tokenisation cannot infer or preserve as much information as full compilation.
-Hence, since it could not meet any of the modelling requirements
-(completeness~\ref{req:m1}, flexibility~\ref{req:m2} and
-size/precomputation~\ref{req:m3}) this approach was abandoned.
-
-\subsubsection{Coqdep}
-Coqdep is a tool which computes inter-module dependencies for Coq and
-OCaml programs, outputtting in a format readable by the \texttt{make} program.
-Although on first impressions, this tool seemed to offer more flexibility than
-coqdoc, it was even more restrictive: it simply searches for keywords (such as
-\texttt{Require} or \texttt{Import} for Coq  and \texttt{open} or dot-notation
-module usage for OCaml) per file and outputs them accordingly.  As with coqdoc
-(and for the same reasons), this approach was also abandoned.
-
-\subsubsection{CoqSerAPI}
-
-\emph{Coq Serialized (S-expression) API} is a new library and communication protocol
-aiming to make low-level interactions easier (using OCaml datatypes and
-s-expressions), particularly for tool/IDE developers. While this is likely to
-be useful in the future, it is still far from complete and is more geared
-towards interactive \emph{construction} (via a tool/IDE) rather than
-\emph{analysis}. As such, tracking dependencies (critical to the modelling
-requirements) is not possible.
-
-\subsubsection{dpdgraph}
-
-dpdgraph is a tool which extracts dependencies between Coq objects from compiled
-Coq object-files to a \texttt{.dpd} file. It includes two example tools:
-\texttt{dpd2dot} (for producing a \texttt{.dot} file for static visualisation)
-and \texttt{dpdusage} (for finding unused definitions). Its developers intended
-it to be a starting point for tools to build upon.
-
-Although lots of information such as notation, the relationship between
-constructors and the types they construct, proof tactics, the precise kind of an
-object (e.g.\  fixpoint, class, lemma, theorem, etc.) and which module an object
-belongs to was missing, it seemed unlikely that the information was not present
-in the compiled object files. Assuming that the data was already present in
-those files, but simply \emph{ignored or unused}, implementation of the
-modelling aspect of this project focused on understanding and augmenting
-dpdgraph to add the missing pieces to the model and convert the whole thing to
-comma-separated values (henceforth referred to as CSVs)
-
-\subsection{Neo4j}\label{subsec:neo4j}
-
-Neo4j is one of the most popular graph database systems. It supports both
-graphical and textual modes of use and is easily extensible (through Cypher
-plugins and several language-specific bindings and libraries). It meets all the
-interaction requirement of helping users to understand data, being flexible in
-its use and extensible in its capabilities. It even includes a tool to import
-CSVs files containing nodes and edges into a new database, which meant modelling
-could be focused towards extracting and expressing in a simple format as much
-information as possible.
+Neo4j supports both graphical and textual modes of use and is easily extensible
+(through Cypher plugins and several language-specific bindings and libraries).
+It meets all the \hyperref[req:i1]{interaction requirements} of helping users to
+understand data, being flexible in its use and extensible in its capabilities.
+It even includes a tool to import CSVs files containing nodes and edges into a
+new database. This meant I could focus on extracting and expressing in a simple
+format as much information as possible.
 
 Neo4j also includes an interactive graphical interface, accessible through an
 ordinary web-browser. As can be seen on Figure~\ref{fig:neo4jbrowser}, the tool
-offers 
+offers
 \begin{itemize}
   \item an overview of the current labels, relationships and properties in the
         database
@@ -414,39 +360,41 @@ offers
 \begin{figure}[tbp]
 
 \includegraphics[width=\textwidth]{img/Neo4j_Browser.png}
-\caption{Neo4j Interactive Browser}\label{fig:neo4jbrowser}
+\caption{Neo4j Interactive Browser. See Section~\ref{sec:neo4j} for a full
+list of features.}\label{fig:neo4jbrowser}
 
 \end{figure}
 
-\subsection{Existing Tools for Neo4j}\label{subsec:existtoolsneo4j}
+\section{Existing Tools for Neo4j}\label{subsec:existtoolsneo4j}
 
-Neo4j features rich-integration with many languages, libraries and tools.
-Of those, the following were the most relevant and useful tools for meeting
-the project requirements.
+Neo4j features rich integration with many languages, libraries and tools.  Of
+those, I found to be the most relevant and useful tools for meeting the project
+requirements.
 
-\subsubsection{APOC: Awesome Procedures on Cypher}
+\subsection{APOC: Awesome Procedures on Cypher}
 
 \href{http://github.com/neo4j-contrib/neo4j-apoc-procedures}{\emph{Awesome
 Procedures on Cypher}, or \emph{APOC}} for short, is a community-maintained Java
-plugin featuring several graph algorithms callable from within Cypher itself.
-Although there are other extension libraries (such as MazeRunner), APOC is well
-documented, up-to-date and the most comprehensive, and therefore the obvious
-choice as a foundation. By being a Java library hooked into Cypher, it offered
-the potential for additional functionality to be built on top of it which
-packaged-up some of the more complex features into \emph{domain-specific}
-queries, intended for Coq users not familiar with Neo4j to get started with.
+plugin featuring several network-analysis algorithms callable from within Cypher
+itself.  Although there are other extension libraries (such as MazeRunner), APOC
+is easy to install, well-documented, up-to-date and the most comprehensive, and
+therefore the obvious choice as a foundation.
+
+Since it is a Java library hooked into Cypher, it offered the potential for
+additional functionality to be built on top of it. For example, a library which
+packages some of the more complex features into \emph{domain-specific} queries,
+intended for Coq users not familiar with Neo4j to get started with.
+
 Thus, APOC helps step towards meeting the \emph{interaction} requirements for
-this project by being easy to understand, flexibile to use and extensible; even
-going part-way towards meeting the \emph{computation} requirements.
+this project by being easy to understand, flexibile to use and extensible; it
+even goes part-way towards meeting the \emph{computation} requirements.
 
-\subsubsection{igraph}\label{subsubsec:neo4jtoolsigraph}
+\subsection{igraph}\label{subsubsec:neo4jtoolsigraph}
 
-APOC has some key strengths that made it a good choice: it is easy to install
-and use and has some basic graph algorithms to get started with.  However, its
-main focus is on interacting with and combining different sorts and sources of
-data and so lacks graph analysis functionality \emph{beyond} the basics. The
-fact that it is implemented in Java further adds to its limitations: it is not
-well-suited to more intense analyses over large graphs of libaries and is
+APOC's main focus is on interacting with and combining different sorts and
+sources of data and so lacks graph analysis functionality \emph{beyond} the
+basics. The fact that it is implemented in Java adds to its limitations: it is
+not well-suited to more intense analyses over large graphs of libaries and is
 insufficient to \emph{fully} meet the \emph{computation} requirements of this
 project.
 
@@ -455,49 +403,30 @@ on its website as a \emph{collection of network analysis tools, with the
 emphasis on efficiency, portability and ease of use}. Written in C/C++ (with
 bindings for R and Python), igraph offers a \emph{comprehensive} set of graph
 algorithms without sacrificing on performance. These alogrithms and their uses
-will be described later, in the Implementation chapter. For now, it suffices to
-surmise that although igraph is not as easy to interact with (via the
-statistics-oriented programming language R, as detailed in the next paragraph)
-as APOC, the extra capabilities afforded were indispensible towards achieving
-the \emph{computation} requirements of a core library of good defaults.
+are described in Subsesction~\ref{subsec:alg}
 
-\subsubsection{visNetwork}
+Although igraph is not as easy to interact with  as APOC, the extra capabilities
+afforded were indispensible towards achieving the \emph{computation}
+requirements of a core library of good defaults.
 
-With igraph and APOC providing starting points for the computational aspects of
-the projects, and the interactive Neo4j browser providing a well-polished,
-graphical mode of interaction with basic, but useful, visualisation, the last
-piece of the project was to incorporate the extra information gained from
-\emph{executing} the graph algorithms.
+\subsection{igraph Algorithms}
 
-\emph{Several} visualisation programs exist for Neo4j; however, many are for
-commercial, industrial use and offer the features/complexity (and pricing) to
-match. All tools which offer live visualisation with built-in Cypher query
-execution (e.g. KeyLines, TomSawyer, Linkurious) are proprietary, requiring a
-fee to use and offering more granularity than required. Offline (and
-open-source) solutions (which require data to be exported in some manner before
-visualisation) such as Gephi or Alchemy.js offer similarly many features, but at
-the cost of a steep learning curve.  Ultimately,
-\href{http://datastorm-open.github.io/visNetwork}{visNetwork}, (an R library
-exporting to JavaScript which can be rendered inside a browser) was chosen due
-to its simplicity and ease of integration with previous tools mentioned above.
-
-As stated previously, igraph provides a comprehensive set of graph algorithms
-with an \emph{emphasis on efficiency, portability and ease of use}.  The
-metrics these algorithms compute and an interpretation of them in the context
-of mathematical theories is given next.  Although a wealth of algorithms are
-available in igraph, visualisation and evaluation was focused on only the most
-common and well-known ones.
+igraph offers a comprehensive set of network-analysis algorithms. Becoming
+familiar with these was a challenge and I spent several hours reading Newman's
+\emph{Networks}~\cite{newman2008} in order to understand and use them correctly.
+Network-analysis typically centres around two broad classes of measures:
+centrality and community detection; both of which are described next.
 
 \subsubsection{Centrality}
 
-\emph{Centrality} measures offer a way to characterise a node's
-\emph{importance}.
+\emph{Centrality} measures offer a way to characterise a node's \emph{importance}.
 
 \textbf{Betweenness} centrality is a measure based on shortest paths. For each
-node ($v$), the number of shortest paths ($\sigma_{st}$) which pass through it
-($\sigma_{st}\left(v\right)$) is its betweenness centrality. When applied to
-mathematical theories, how ``unavoidable'' a given object is for the results
-which mention it.~\cite{freeman1977}
+node ($v$), the number of shortest paths (from source $s$ to target $t$,
+$\sigma_{st}$) which pass through it ($\sigma_{st}\left(v\right)$) is its
+betweenness centrality. When applied to mathematical theories, how
+``unavoidable'' a given object is for the results which mention
+it.~\cite{freeman1977}
 
 \begin{equation}
   g\left(v\right) = \sum_{s \neq v \neq t} \frac{\sigma_{st}\left(v\right)}{\sigma_{st}}
@@ -568,23 +497,97 @@ fallen within the group by chance (and so is a real number between $-0.5$ and
 $1$). Calculating this in an optimal manner is an NP-complete problem, and so
 a fast and greedy version of it was used.~\cite{clauset2004}
 
+\subsection{visNetwork}
 
-\subsubsection{R}
+\emph{Several} visualisation programs exist for Neo4j; however, many are for
+commercial, industrial use and offer the features/complexity (and pricing) to
+match. All tools which offer live visualisation with built-in Cypher query
+execution (e.g. KeyLines, TomSawyer, Linkurious) are proprietary, requiring a
+fee to use and offering more granularity than required. Offline (and
+open-source) solutions (which require data to be exported in some manner before
+visualisation) such as Gephi or Alchemy.js offer similarly many features, but at
+the cost of a steep learning curve. 
 
-\href{http://www.r-project.org}{R is a statistics-oriented programming language},
-part of the Free Software Foundation's GNU poject. It is relevant for this
-project because it offers an easy way to tie together Neo4j (through official
-bindings), igraph and visualisation using visNetwork. This convenience came at
-the price of having to learn R for this project, having been unfamiliar with it
-prior. Nonetheless, it is a well-documented, relatively easy to pick-up language
-and offered even more opportunities for learning during the course of this
-project.
+Ultimately, I chose
+\href{http://datastorm-open.github.io/visNetwork}{visNetwork}, (an R library
+exporting to JavaScript which can be rendered inside a browser) because of its
+simplicity and ease of integration with the previous Neo4j extensions mentioned
+above.
 
+\subsection{R}\label{subsec:R}
+
+\href{http://www.r-project.org}{R is a statistics-oriented programming
+language}, part of the Free Software Foundation's GNU poject. It is relevant for
+this project because it offers an easy way to tie together Neo4j (through
+official bindings), igraph and visualisation using visNetwork.
+
+To take advantage of this convenience, I had to learn R for this project, not
+having used it before. It is a well-documented, relatively easy to pick-up
+language and I learnt a lot from using it over the course of this project.
+
+\newpage
 \section{Summary}
 
-A detailed account into the planning of this project was given. The choice of
-development methodology (spiral) and development tools (Git, GitHub, Travis-CI)
-were noted. Requirements on modelling, interaction and computation were
-explained and the choice of technologies and tools used as statrting points
-(Coq, OCaml, dpdgraph, Neo4j, APOC, igraph, R and visNetwork) were justified
-\emph{in relation} to \emph{which} requirements they satisfied.
+In this chapter, I gave a detailed account of how I planned this project. At the
+start, I mentioned the choice of development methodology (spiral) and
+development tools I used (Git, GitHub, Travis-CI). Following that, I presented
+and explained the requirements my project should meet for modelling, interacting
+and computing with Coq libraries. From there, I stated how the choice of
+technologies was dictated by the decisions to use Coq and Neo4j.
+
+I then elaborated on my starting point for this project. I gave a description of
+Coq, its uses and explained why (complexity and poor documentation) it is a
+difficult system to work with. I also compared existing tools which aim to help
+a user understand a Coq library (coqdoc, coqdep, CoqSerAPI, dpdgraph) in
+relation to my project's requirements and showed that although none satisified
+all of the requirements of my project, dpdgraph provided a limited platform to
+build upon.
+
+Similarly, I gave a description of Neo4j and some of its plugins (APOC, igraph
+and visNetwork), explaining their features, advantages, disadvantages in
+relation to which of the project's requirements they met. I discussed how I
+needed to learn the R programming language to tie together Neo4j, igraph and
+visNetwork in order to meet the project's interacting and computing
+requirements.
+
+% \subsection{Cypher: An Illustrated Example}
+%
+% \emph{Cypher} features heavy use of pattern-matching in an ASCII-art inspired
+% syntax.  The following (slightly contrived but hopefully illuminating) example
+% in Listing~\ref{lst:cypherexample} illustrates some of the key strengths of
+% graph-based modelling using Cypher.
+%
+% Suppose we have a puppy named ``Cliff'' looking for the nearest and most
+% familiar children (for this example, a person under the age of six) to play
+% with.
+%
+% To see how Cliff (indirectly) likes/knows this child, we bind \emph{path} to the
+% result of the \emph{shortestPath} query.  For the path itself, we start with a
+% node following this structure: \mintinline{cypher}{(var:label {attrib: val})}.
+% We then have a \emph{labeled, transitive} relationship (explicitly limiting our
+% search to paths of up to length four) expressed as an arrow with a label
+% \texttt{-[..]->}. As such, we can discard any paths with relationships we do not
+% want (e.g.\ \texttt{HATES}).
+%
+% To filter based on more complex logic (than possible by pattern-matching directly
+% on labels and attributes) we can express the requirement that the age of a dog by
+% the name of Cliff be less than or equal to two (and similarly for the age of the
+% child) in the \mintinline{cypher}{WHERE} clause.
+%
+% Lastly, we return the path and order the results by proximity as a row of
+% results, renaming the column of the child's name to simply ``name''.
+%
+% \begin{listing}[tb]%
+%
+% \caption{Example Cypher Query}\label{lst:cypherexample}
+%
+  % \begin{minted}{cypher}
+  % MATCH path = shortestPath(
+    % (puppy:dog {name: "Cliff"})-[:LIKES|:KNOWS*..4]->(child:person))
+  % WHERE puppy.age <= 2 AND child.age < 6
+  % RETURN path,
+         % child.name AS name,
+  % ORDER BY other.distance_from_clifford
+  % \end{minted}
+%
+% \end{listing}
