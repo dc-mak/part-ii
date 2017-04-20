@@ -141,6 +141,161 @@ lanaguages are supported for the latter, both by Neo4j officially and by the
 community. As will be explained in Subsection~\ref{subsec:neo4j}, Java
 and R were found to be the most suitable for achieving this project's goals.
 
+\section{Coq Proof-Assistant}
+
+The Coq proof-assistant -- implemented in OCaml -- can be viewed as both 
+a system of logic -- in which case it is a realisation of the \emph{Calculus of
+Inductive Constructions} -- and as a \emph{dependently-typed} programming
+language. Its power and development are therefore most-suited and often geared
+towards \emph{large scale} developments.
+
+On the logical side, Coq lays claim to projects such as the Four-Colour
+Theorem~\cite{gonthier2008formal} (60,000 lines) and the aformentioned
+\emph{Feit-Thompson} theorem (approximately 170,000 lines, 15,000
+definitions and 4,200 theorems) are feats of modern software-engineering.
+
+On the programming language side, Coq has served as the basis for many equally
+fantastic projects. The \emph{CompCert Verified C
+Compiler}~\cite{leroy2012compcert} demonstrates the practical applications of
+theorem-proving and dependently-typed programming by implementing and proving
+correct an optimising compiler for the C programming language.
+\emph{DeepSpec}~\cite{pierce2016science}, a recently announced meta-project,
+aims to integrate several large projects such as \emph{CertiKOS} (operating
+system kernels, \emph{Kami} (hardware), \emph{Vellvm} (verifying LLVM) and many
+more in the hopes to provide complete, \emph{end-to-end} verification of
+real-world systems.
+
+\section{Neo4j Database and the Cypher Language}
+
+Neo4j is a graph database system implemented in Java. Traditional, relational
+database theory and systems are designed with the goal of storing and
+manipulating information in the form of \emph{tables}. As such, working with
+highly interconnected data, such as social network graphs is best tackled with
+the alternative approach of \emph{graph databases}.
+
+Briefly, a (directed) \emph{graph} is defined as $G = (V, E)$ where $V$ is a set
+of vertices or \emph{nodes} and $E \subseteq V \times V$ is a set of edges or
+\emph{relationships} between two nodes. A \emph{graph database} is an OLTP
+(online transaction processing, meaning operated upon live, as data is
+processed) database management system with CRUD (create, read, update and delete)
+operations acting on a graph data model. Relationships are therefore promoted to
+first-class citizens and can be manipulated and analysed.
+
+\subsection{Cypher: An Illustrated Example}
+
+\emph{Cypher} features heavy use of pattern-matching in an ASCII-art inspired
+syntax.  The following (slightly contrived but hopefully illuminating) example
+in Listing~\ref{lst:cypherexample} illustrates some of the key strengths of
+graph-based modelling using Cypher. 
+
+Suppose we have a puppy named ``Cliff'' looking for the nearest and most
+familiar children (for this example, a person under the age of six) to play
+with.
+
+To see how Cliff (indirectly) likes/knows this child, we bind \emph{path} to the
+result of the \emph{shortestPath} query.  For the path itself, we start with a
+node following this structure: \mintinline{cypher}{(var:label {attrib: val})}.
+We then have a \emph{labeled, transitive} relationship (explicitly limiting our
+search to paths of up to length four) expressed as an arrow with a label
+\texttt{-[..]->}. As such, we can discard any paths with relationships we do not
+want (e.g.\ \texttt{HATES}). 
+
+To filter based on more complex logic (than possible by pattern-matching directly
+on labels and attributes) we can express the requirement that the age of a dog by
+the name of Cliff be less than or equal to two (and similarly for the age of the
+child) in the \mintinline{cypher}{WHERE} clause.
+
+Lastly, we return the path and order the results by proximity as a row of
+results, renaming the column of the child's name to simply ``name''.
+
+\begin{listing}[tb]%
+
+\caption{Example Cypher Query}\label{lst:cypherexample}
+
+  \begin{minted}{cypher}
+  MATCH path = shortestPath(
+    (puppy:dog {name: "Cliff"})-[:LIKES|:KNOWS*..4]->(child:person))
+  WHERE puppy.age <= 2 AND child.age < 6
+  RETURN path,
+         child.name AS name,
+  ORDER BY other.distance_from_clifford
+  \end{minted}
+
+\end{listing}
+
+\section{Related Work}
+
+Some existing tools offer part of the solutions.%
+
+dpdgraph
+(\href{http://github.com/Karmaki/coq-dpdgraph}{\texttt{github.com/Karmaki/coq-dpdgraph}})
+is a tool which analyses dependencies between \emph{compiled} Coq proofs. As
+such, desirable information about notation, tactics, definitions and the
+relationship between a type and its constructors is lost.
+
+Coqdep is a utility included with Coq which analyses dependencies \emph{at the
+module level} by tracking {\tt Require} and {\tt Import} statements.
+
+Coq SerAPI
+(\href{http://github.com/ejgallego/coq-serapi}{\texttt{github.com/ejgallego/coq-serapi}})
+is a work-in-progress library and communication protocol for Coq designed to
+make low-level interaction with Coq easier, especially for IDEs. It has a
+starting point for gathering some statistics of proof-objects in a project.
+
+\begin{table}[p]
+  \centering
+
+  \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} rcccccccccc}
+
+    \toprule
+
+    & \rot{Source Code} & \rot{Hyperlinks} & \rot{Precise Kinds}
+    & \rot{Constr. \& Types~~} % for vertical space after 'Types'
+    & \rot{Type Sig.} & \rot{Module depend.} & \rot{Graphical rep.}
+    & \rot{Interactivity} & \rot{Statistics} & \rot{Object depend.} \\
+
+    \midrule
+
+    Coqdoc    & \Y & \Y & \Y & \Y & \Y & \N & \N & \N & \N & \N \\
+    Coqdep    & \N & \M & \N & \N & \N & \Y & \Y & \N & \N & \N \\
+    CoqSerAPI & \N & \N & \N & \N & \N & \N & \N & \Y & \Y & \N \\
+    dpdgraph  & \N & \N & \M & \N & \N & \N & \Y & \N & \N & \Y \\
+
+    \bottomrule
+
+  \end{tabular*}
+
+  \medskip
+  \Y\  Has feature \hfill \N\ Does not have feature \hfill \M\ Can be extended to support it
+
+  \bigskip
+  \caption{Comparison of Features}\label{table:features}
+
+\end{table}
+
+The features chosen for comparison reflect the strengths of each tool
+considered.
+
+Bundle with Coq, coqdoc produces \textbf{hyperlinked source code} meaning
+details such as the \textbf{precise kinds} of a proof-object, the
+\textbf{constructors of a type} and the \textbf{type signatures} are immediately
+visible; hence those 5 dimensions were included.  Also include in a Coq system
+is coqdep: a tool for modelling \textbf{module-level dependencies} that can
+output a \texttt{dot} file to present it \textbf{graphically}.
+
+Coq Serialised (S-expression) API is an \textbf{interactive} IDE communication
+protocol with facilities for gathering some basic \textbf{statistics}. Here,
+interactive is used to mean that information is not presented all at-once,
+\emph{statically}, but can instead be queried dynamically at run-time. An
+example of a static dispaly is Figure~\ref{fig:static}; it shows a medium-sized
+Coq library as ouput by dpdgraph.
+
+In principle, coqdep and dpdgraph can also support some degree of interactivity,
+with support from other tools (which translate \texttt{dot} files to interactive
+JavaScript), although this is rarely done.  What dpdgraph does do well is model
+\textbf{object dependencies}, with some scope for distinguishing precise kinds
+and displaying information graphically.
+
 \section{Starting Point}
 
 Both Coq and Neo4j have a rich eco-system of tools and libraries built for them.
@@ -202,7 +357,7 @@ module usage for OCaml) per file and outputs them accordingly.  As with coqdoc
 
 \subsubsection{CoqSerAPI}
 
-\emph{Coq Se(xp)rialized API} is a new library and communication protocol
+\emph{Coq Serialized (S-expression) API} is a new library and communication protocol
 aiming to make low-level interactions easier (using OCaml datatypes and
 s-expressions), particularly for tool/IDE developers. While this is likely to
 be useful in the future, it is still far from complete and is more geared
@@ -325,6 +480,94 @@ the cost of a steep learning curve.  Ultimately,
 \href{http://datastorm-open.github.io/visNetwork}{visNetwork}, (an R library
 exporting to JavaScript which can be rendered inside a browser) was chosen due
 to its simplicity and ease of integration with previous tools mentioned above.
+
+As stated previously, igraph provides a comprehensive set of graph algorithms
+with an \emph{emphasis on efficiency, portability and ease of use}.  The
+metrics these algorithms compute and an interpretation of them in the context
+of mathematical theories is given next.  Although a wealth of algorithms are
+available in igraph, visualisation and evaluation was focused on only the most
+common and well-known ones.
+
+\subsubsection{Centrality}
+
+\emph{Centrality} measures offer a way to characterise a node's
+\emph{importance}.
+
+\textbf{Betweenness} centrality is a measure based on shortest paths. For each
+node ($v$), the number of shortest paths ($\sigma_{st}$) which pass through it
+($\sigma_{st}\left(v\right)$) is its betweenness centrality. When applied to
+mathematical theories, how ``unavoidable'' a given object is for the results
+which mention it.~\cite{freeman1977}
+
+\begin{equation}
+  g\left(v\right) = \sum_{s \neq v \neq t} \frac{\sigma_{st}\left(v\right)}{\sigma_{st}}
+\end{equation}
+
+\textbf{Closeness} centrality is also measure based on shortest paths. For each
+node, the sum of the length of all shortest paths to every other node is its
+closeness centrality. In a directed, dependency graph of mathematical theories,
+this corresponds to how ``foundational'' a node is. It is typically calculated
+as the reciprocal of \emph{farness} ($\sum_{y}d\left(y,x\right)$), scaled by
+the number of nodes in the graph ($N$) to allow comparisons with graphs of
+different sizes.~\cite{bavelas1950}
+
+\begin{equation}
+  C\left(x\right) = \frac{N}{\sum_{y}d\left(y,x\right)}
+\end{equation}
+
+\textbf{PageRank} is a variant of \textbf{eigenvector} centrality.  For an
+adjacency matrix $\mathbf{A}$, the v\textsuperscript{th} component of the
+eigenvector $\mathbf{x}$ (whose entries must all be non-negative, corresponding
+to the greatest eigenvalue $\lambda$) is the v\textsuperscript{th} node's
+\emph{relative, eigenvector} centrality. Normalising the eigenvector provides
+the \emph{absolute eigenvector} centralities.~\cite{newman2008}
+
+The principle behind such a measure is that connections to high-ranking nodes
+contribute more to a node's rank than connections to low-ranking nodes.  As
+such, for mathematical theories, it is like a \emph{weighted
+in-degree/number-of-uses} which takes into account the importance of the nodes
+which is using a given type, proof or defintion.
+
+PageRank is similar; instead of the vector $\mathbf{x}$ such that $\mathbf{Ax}
+= \lambda\mathbf{x}$, for number of nodes $N$, random-jump probability $1-d$,
+stochastic adjacency matrix $\mathbf{L}$, we want $\mathbf{r}$ which satisfies
+equation~\ref{eqn:pagerank}.~\cite{page1999} Hence, it can be viewed as the a
+probability of an easily-confused, randomly-perusing mathematician coming
+across a given proof or definition, perhaps upon a first reading.
+
+\begin{equation}~\label{eqn:pagerank}
+  \mathbf{r} = \frac{\left(1-d\right)}{N} \mathbf{1} + d\mathbf{Lr}
+\end{equation}
+
+\subsubsection{Community Detection}
+
+Complex networks can exhibit community structure; that is, the graph can be
+(roughly) divided into sparsely-connected dense groups. Although mathematical
+theories are often divided into sections, chapters and books, the following
+algorithms provide scope for re-evaluating these groupings.
+
+\textbf{Label propagation} is a simple, near linear time method for
+determining which community a node belongs to. Each node starts with a unique
+label, after which, on successive iterations, it adopts the label held by most
+of its neighbours, until a consensus is reached. This whole procedure is
+repeated a few times and an aggregate result constitutes the
+output.~\cite{raghavan2007}
+
+\textbf{Edge betweenness} (like betweenness centrality), is also based on
+shortest paths, with the idea that edges separating communities are likely to
+have high edge betweenness (since all shortest paths must pass through them).
+Removing the edge with the greatest betweenness value and recomputing over the
+remaining edges successively will result in a rooted tree, a hierarchical map
+(called a dendrogram) where the root represents the whole graph and the leaves
+represent individual nodes.~\cite{newman2004}
+
+\textbf{Modularity} is a measure of how well network can be divided.
+Formally, it is the fraction of edges that fall within a given grouping
+(across the whole graph) minus the expected number of those which could have
+fallen within the group by chance (and so is a real number between $-0.5$ and
+$1$). Calculating this in an optimal manner is an NP-complete problem, and so
+a fast and greedy version of it was used.~\cite{clauset2004}
+
 
 \subsubsection{R}
 

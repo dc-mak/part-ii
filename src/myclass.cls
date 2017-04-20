@@ -49,7 +49,7 @@
 
 % Nice captions
 \RequirePackage[
-  format=hang,
+  format=plain,
   font=small,
   labelfont=sf,
   labelsep=endash

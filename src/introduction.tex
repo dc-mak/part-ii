@@ -11,166 +11,87 @@
 }
 
 \prechapter{%
-  This dissertation offers a solution to problems regarding the presentation of
-  mathematics. Firstly, these problems and the specific systems involved are
-  described. Then, the aims of the project are stated; in later chapters, details
-  of the prepration and implementation carried out are expounded. Lastly, the
-  chapters on evaluation and conclusion provide evidence for the success of the
-  project, reflections on the process and suggestions for future work.
+  Coq is an interactive proof-assistant~\cite{Coq:manual}; it allows users to
+  formalise mathematical theories into machine-check proofs. Coq libraries,
+  which encode mathematical theories, are difficult to understand. In this
+  dissertation, I will describe a new tool I implemented for Coq users which
+  applies network-analysis techniques (usually associated with social-networks)
+  to generate new data and uncover new insights about Coq libraries.
 }
 
-\section{Problem}
+\section{Motivation}
 
-Mathematics textbooks aimed at professionals/researchers follow a well-established
-rhythm: define some constructions and some properties on them and prove
-theorems on both, with lemmas, corollaries and notation interspersed
-throughout. Such a presentation is concise but limiting: it is linear; it forces
-the reader to keep track of dependencies such as implicit assumptions, previously
-defined results and the types and conventions behind any notation used;
-and it offers little opportunity to consider and compare different approaches
-for arriving at a result (i.e.\ number of assumptions, number of steps, some
-notion of the importance of a result such as number of uses by later
-results).
+Coq proof-scripts are notoriously difficult to understand. Not only do these
+proof-scripts encode a mathematical theory, which can be difficult to
+understand in and of itself, they serve as verbose instructions on how to
+create proof-term whose type matches a certain proposition, rather than a
+statement of \emph{why} something is true. There are currently no tools which
+help with the challenge of gaining a high-level understanding of a large Coq
+library.
 
-With the increasing popularity of interactive proof-assistants such as
-Coq~\cite{Coq:manual} and Isabelle~\cite{nipkow2002isabelle}, many mathematical
-theories (such as the formidably large Feit-Thompson Odd Order
-Theorem~\cite{peterfalvi2000oot, bender1994oot}) have
-been~\cite{gonthier2013oot} or are being translated and formalised into
-machine-checked proof-scripts. However, these proof-scripts on their own
-inherit the same disadvantages as the aforementioned textbooks, as well as some
-new ones: they are usually more verbose and explicit and are primarily designed
-for automation/computation than readability. The former (usually out of
-necessity to convey to the computer the intended meaning) leads to unnecessary
-``noise'' in the proof and the latter departs from the vocabulary or flow of a
-natural-language presentation.
+The Feit-Thompson Odd Order Theorem~\cite{peterfalvi2000oot, bender1994oot}
+(which has been translated into Coq~\cite{gonthier2013oot}) is an example of a
+large Coq library. It is a part of larger, general trend of formalising
+substantial bodies of mathematics and marks the first time that we have a new
+way representing mathematics, different from the combination of formulas and
+natural-language prose usually used. Such a turning point provides an
+opportunity to explore the novel representations and analyses possible.
 
-The database world is currently experiencing a tremendous explosion of creativity
-with the emergence of new data models and new ways of representing and querying
-large data sets. \emph{Graph databases} have been developed to deal with highly
-connected data sets and path-oriented queries. That is, graph databases are
-optimised for computing transitive-closure and related queries, which pose a
-huge challenge for traditional, relational databases.
+However, when a user approaches a large Coq library, it is still that case
+that they are left to understand and keep track of several aspects of the
+library (such as implicit assumptions, previously defined results and the
+types and conventions behind any notation) by themself. There is very little
+opportunity to consider and compare different approaches for arriving at a
+result (i.e.\ number of assumptions, number of steps, some notion of the
+importance such as number of uses).
 
-\section{Solution}
+I obtained such an opportunity by using a query-based approach: by creating a
+tool that expresses Coq library as databases, then I was able (a) query them
+and (b) analyse them to gain insights such as those mentioned above.
 
-A graph-based approach to the representation and exploration of the structure of
-proof-objects would  be a far more natural expression of the complex
-relationships (i.e.\ chains of dependencies) involved in
-constructing mathematical theories. Questions such as ``What depends on this
-lemma and how many such things are there?'' or ``What are the components of
-this definition?'' could thus be expressed concisely (questions which are not
-even expressible with standard relational databases systems such as
-SQL). A popular graph database, Neo4j~\cite{neo4j} with an expressive query
-language \emph{Cypher} will be used for this project.
+\section{A Database Approach}
 
-\section{Coq Proof-Assistant}
+Mathematical theories are highly interconnected structures of definitions and
+proofs. As such, relational or a document-oriented models are not adequate
+representations for answering questions such as ``What depends on this lemma
+and how many such things are there?'' or ``What are the components of this
+definition?''.
 
-The Coq proof-assistant -- implemented in OCaml -- can be viewed as both 
-a system of logic -- in which case it is a realisation of the \emph{Calculus of
-Inductive Constructions} -- and as a \emph{dependently-typed} programming
-language. Its power and development are therefore most-suited and often geared
-towards \emph{large scale} developments.
+Even a static, graph-based approach on its own is insufficient. Simply
+outputting a dependency graph is ineffective for all but the smallest of
+libraries. Figure~\ref{fig:static} shows one such dependency graph for a
+medium-sized Coq library (Combinators for Algebraic Structures).
 
-On the logical side, Coq lays claim to projects such as the Four-Colour
-Theorem~\cite{gonthier2008formal} (60,000 lines) and the aformentioned
-\emph{Feit-Thompson} theorem (approximately 170,000 lines, 15,000
-definitions and 4,200 theorems) are feats of modern software-engineering.
+\begin{figure}[tp]
 
-On the programming language side, Coq has served as the basis for many equally
-fantastic projects. The \emph{CompCert Verified C
-Compiler}~\cite{leroy2012compcert} demonstrates the practical applications of
-theorem-proving and dependently-typed programming by implementing and proving
-correct an optimising compiler for the C programming language.
-\emph{DeepSpec}~\cite{pierce2016science}, a recently announced meta-project,
-aims to integrate several large projects such as \emph{CertiKOS} (operating
-system kernels, \emph{Kami} (hardware), \emph{Vellvm} (verifying LLVM) and many
-more in the hopes to provide complete, \emph{end-to-end} verification of
-real-world systems.
+  \centering
+  \includegraphics[width=\textwidth, page=1]{img/static-CAS-small.pdf}
+  \caption{Static graph of
+    \href{https://github.com/Timothy-G-Griffin/CAS}{CAS} Coq library. For all
+    but the smallest of libraries, simply outputting a dependency graph is an
+    ineffective way of understanding them.}\label{fig:static}
 
-\section{Neo4j Database and the Cypher Language}
+\end{figure}
 
-Neo4j is a graph database system implemented in Java. Traditional, relational
-database theory and systems are designed with the goal of storing and
-manipulating information in the form of \emph{tables}. As such, working with
-highly interconnected data, such as social network graphs is best tackled with
-the alternative approach of \emph{graph databases}.
+\emph{Graph databases} have been developed to deal with highly connected data
+sets and path-oriented queries. That is, graph databases are optimised for
+computing transitive-closure and related queries, which pose a huge challenge
+for traditional, relational databases. Due to the emergence of massive data
+sets thanks to large-scale social and advertising networks, new techniques for
+representing and analysing such data have been developed.
 
-Briefly, a (directed) \emph{graph} is defined as $G = (V, E)$ where $V$ is a set
-of vertices or \emph{nodes} and $E \subseteq V \times V$ is a set of edges or
-\emph{relationships} between two nodes. A \emph{graph database} is an OLTP
-(online transaction processing, meaning operated upon live, as data is
-processed) database management system with CRUD (create, read, update and delete)
-operations acting on a graph data model. Relationships are therefore promoted to
-first-class citizens and can be manipulated and analysed.
-
-\subsection{Cypher: An Illustrated Example}
-
-\emph{Cypher} features heavy use of pattern-matching in an ASCII-art inspired
-syntax.  The following (slightly contrived but hopefully illuminating) example
-in Listing~\ref{lst:cypherexample} illustrates some of the key strengths of
-graph-based modelling using Cypher. 
-
-Suppose we have a puppy named ``Cliff'' looking for the nearest and most
-familiar children (for this example, a person under the age of six) to play
-with.
-
-To see how Cliff (indirectly) likes/knows this child, we bind \emph{path} to the
-result of the \emph{shortestPath} query.  For the path itself, we start with a
-node following this structure: \mintinline{cypher}{(var:label {attrib: val})}.
-We then have a \emph{labeled, transitive} relationship (explicitly limiting our
-search to paths of up to length four) expressed as an arrow with a label
-\texttt{-[..]->}. As such, we can discard any paths with relationships we do not
-want (e.g.\ \texttt{HATES}). 
-
-To filter based on more complex logic (than possible by pattern-matching directly
-on labels and attributes) we can express the requirement that the age of a dog by
-the name of Cliff be less than or equal to two (and similarly for the age of the
-child) in the \mintinline{cypher}{WHERE} clause.
-
-Lastly, we return the path and order the results by proximity as a row of
-results, renaming the column of the child's name to simply ``name''.
-
-\begin{listing}[tb]%
-
-\caption{Example Cypher Query}\label{lst:cypherexample}
-
-  \begin{minted}{cypher}
-  MATCH path = shortestPath(
-    (puppy:dog {name: "Cliff"})-[:LIKES|:KNOWS*..4]->(child:person))
-  WHERE puppy.age <= 2 AND child.age < 6
-  RETURN path,
-         child.name AS name,
-  ORDER BY other.distance_from_clifford
-  \end{minted}
-
-\end{listing}
-
-\section{Related Work}
-
-Some existing tools offer part of the solutions.%
-
-dpdgraph
-(\href{http://github.com/Karmaki/coq-dpdgraph}{\texttt{github.com/Karmaki/coq-dpdgraph}})
-is a tool which analyses dependencies between \emph{compiled} Coq proofs. As
-such, desirable information about notation, tactics, definitions and the
-relationship between a type and its constructors is lost.
-
-Coqdep is a utility included with Coq which analyses dependencies \emph{at the
-module level} by tracking {\tt Require} and {\tt Import} statements.
-
-Coq SerAPI
-(\href{http://github.com/ejgallego/coq-serapi}{\texttt{github.com/ejgallego/coq-serapi}})
-is a work-in-progress library and communication protocol for Coq designed to
-make low-level interaction with Coq easier, especially for IDEs. It has a
-starting point for gathering some statistics of proof-objects in a project.
+\newpage
+For this project, I used the Neo4j~\cite{neo4j} graph database system (and its
+expressive query language \emph{Cypher}) to create a tool for Coq users which
+applies such network-analysis techniques to Coq libraries to aid understanding
+them.
 
 \section{Aims of the Project}\label{intro:aims}
 
-This project aims to:
+In this project, I aimed to write a tool for Coq users that:
 
 \begin{itemize}
-\item represent Coq libraries as Neo4j graph databases, which wil involve
+\item represents Coq libraries as Neo4j graph databases, which consists of
   \begin{itemize}
   \item exploring and choosing the correct model
   \item converting and extending existing code to output CSVs
@@ -182,13 +103,17 @@ This project aims to:
 \item create a library of Neo4j queries, intended
   \begin{itemize}
   \item to highlight the structure of and relationship between proof-objects
-  \item by coalescing and implementing several graph-related metrics.
+  \item by coalescing and implementing several network-analysis techniques.
   \end{itemize}
 \end{itemize}
 
+\newpage
 \section{Summary}
 
-An explanation of the problems which conventional presentations of mathematics
-suffer from was given, with \emph{graph databases} proposed as a solution. 
-Existing tools were mentioned and the requirements for a successful project
-were listed.
+First, I explained why Coq libraries difficult to understand. Then, I said
+that the trend of formalising large bodies of mathematics such as the
+Feit-Thompson Odd Order Theorem~\cite{peterfalvi2000oot, bender1994oot}
+presents an opportunity to develop new representations and analyses of
+mathetmatical theories. After that, I outlined why databases, specifically
+graph databases, were a promising approach to this new opportunity. Finally, I
+listed the aims of this project.
