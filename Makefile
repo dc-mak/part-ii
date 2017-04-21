@@ -52,6 +52,7 @@ SRC_OOT := $(addprefix $(DIR_OOT)/, $(SRC_OOT))
 SRC_IMG := Neo4j_Browser.PNG \
 					 static-CAS-small.pdf \
 					 timings.tex \
+					 structure.tex \
 				   $(SRC_REGEXP)
 DIR_IMG := img
 SRC_IMG := $(addprefix $(DIR_IMG)/, $(SRC_IMG))
