@@ -110,6 +110,7 @@
 
 % Graphs
 \RequirePackage{pgfplots}
+\usetikzlibrary{shapes.geometric, arrows, intersections}
 
 % Evaluation table
 \RequirePackage{adjustbox}

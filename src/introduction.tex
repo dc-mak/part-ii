@@ -1,3 +1,5 @@
+% vim: set spell spelllang=en_gb
+
 \chapter{Introduction}
 
 
@@ -12,11 +14,12 @@
 
 \prechapter{%
   Coq is an interactive proof-assistant~\cite{Coq:manual}; it allows users to
-  formalise mathematical theories into machine-check proofs. Coq libraries,
+  formalise mathematical theories into machine-checked proofs. Coq libraries,
   which encode mathematical theories, are difficult to understand. In this
-  dissertation, I will describe a new tool I implemented for Coq users which
-  applies network-analysis techniques (usually associated with social-networks)
-  to generate new data and uncover new insights about Coq libraries.
+  dissertation, I will describe a new tool I implemented for Coq users that
+  creates a graph database from compiled Coq proof-scripts and applies
+  network-analysis techniques (usually associated with social-networks) to
+  generate new data and uncover new insights about Coq libraries.
 }
 
 \section{Motivation}
@@ -37,8 +40,8 @@ way representing mathematics, different from the combination of formulas and
 natural-language prose usually used. Such a turning point provides an
 opportunity to explore the novel representations and analyses possible.
 
-However, when a user approaches a large Coq library, it is still that case
-that they are left to understand and keep track of several aspects of the
+However, it is still the case that when a user approaches a large Coq library, 
+they are left to understand and keep track of several aspects of the
 library (such as implicit assumptions, previously defined results and the
 types and conventions behind any notation) by themself. There is very little
 opportunity to consider and compare different approaches for arriving at a
@@ -97,13 +100,13 @@ In this project, I aimed to write a tool for Coq users that:
   \item converting and extending existing code to output CSVs
   \item writing new programs to extract extra information \\
       (omitted from other, existing tools)
-  \item writing new programs to automate database creation; and to
+  \item writing new programs to automate database creation.
   \end{itemize}
 
-\item create a library of Neo4j queries, intended
+\item provides a library of Neo4j queries, intended
   \begin{itemize}
   \item to highlight the structure of and relationship between proof-objects
-  \item by coalescing and implementing several network-analysis techniques.
+  \item to provide several network-analysis techniques.
   \end{itemize}
 \end{itemize}
 
@@ -121,6 +124,6 @@ First, I explained why Coq libraries difficult to understand. Then, I said
 that the trend of formalising large bodies of mathematics such as the
 Feit-Thompson Odd Order Theorem~\cite{peterfalvi2000oot, bender1994oot}
 presents an opportunity to develop new representations and analyses of
-mathetmatical theories. After that, I outlined why databases, specifically
+mathematical theories. After that, I outlined why databases, specifically
 graph databases, were a promising approach to this new opportunity. Finally, I
 listed the aims of this project.
