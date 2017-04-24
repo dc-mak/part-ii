@@ -17,10 +17,12 @@
   formalise mathematical theories into machine-checked proofs. Coq libraries,
   which encode mathematical theories, are difficult to understand. In this
   dissertation, I will describe a new tool I implemented for Coq users that
-  creates a graph database from compiled Coq proof-scripts and applies
-  network-analysis techniques (usually associated with social-networks) to
-  generate new data and uncover new insights about Coq libraries.
+  aimed to (a) represent Coq libraries as Neo4j (graph) databases and (b)
+  provide a library of queries with the goal of highlighting the structure and
+  relationship between the representations of the proof-objects by using
+  network-analysis techniques usually associated with social-networks.
 }
+
 
 \section{Motivation}
 
@@ -49,8 +51,8 @@ result (i.e.\ number of assumptions, number of steps, some notion of the
 importance such as number of uses).
 
 I obtained such an opportunity by using a query-based approach: by creating a
-tool that expresses Coq library as databases, then I was able (a) query them
-and (b) analyse them to gain insights such as those mentioned above.
+tool that expresses Coq library as databases, then I was able query them and
+analyse them to gain insights such as those mentioned above.
 
 \section{A Database Approach}
 
