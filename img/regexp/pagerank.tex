@@ -1,0 +1,30 @@
+\begin{minted}{cypher}
+MATCH (n) WITH collect(n) AS nodes
+CALL apoc.algo.pageRank(nodes) YIELD node, score
+RETURN node.name, LABELS(node), node.path, score
+ORDER BY score DESC LIMIT 5
+\end{minted}
+
+\centering
+
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} lllc}
+
+  \toprule
+ \textbf{node.name} & \textbf{node.path} & \textbf{LABELS(node)} & \textbf{score} \\
+
+  \midrule
+
+  RegExp   & RegExp.Definitions & inductive\_type, inductive & 7.12518 \\
+  matches  & RegExp.Definitions & definition, fixpoint       & 3.12445 \\
+  Or       & RegExp.Definitions & type\_constructor          & 2.35997 \\
+  re\_eq   & RegExp.Definitions & definition                 & 2.30212 \\
+  Cat      & RegExp.Definitions & type\_constructor          & 2.04202 \\
+
+  \bottomrule
+
+\end{tabular*}
+
+\bigskip
+\caption{Top 5 proof-objects by PageRank in CoqRegExp, with the modules they
+  are in, their kinds, their PageRank values, and the query used to
+  obtain them above the table.}\label{table:regexp:pagerank}

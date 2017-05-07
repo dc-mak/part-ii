@@ -50,13 +50,20 @@
 % Nice captions
 \RequirePackage[
   format=plain,
-  font=small,
-  labelfont=sf,
+  labelfont=bf,
   labelsep=endash
 ]{caption}
+\renewcommand{\captionfont}{\small\sffamily}
 
 % Fancy headers
 \RequirePackage{fancyhdr}
+
+% Full-width footnote rule
+\renewcommand{\footnoterule}{%
+  \kern-3pt
+  \hrule width \textwidth height 1pt
+  \kern2pt
+}%
 
 % Margins
 \RequirePackage[
@@ -192,7 +199,7 @@
 \definecolor{graphdgreen}{RGB}{37,92,3}
 \newcommand*{\gdgreen}[1]{\textcolor{graphdgreen}{#1}}
 
-\definecolor{graphmagenta}{RGB}{37,92,3}
+\definecolor{graphmagenta}{RGB}{255,0,126}
 \newcommand*{\gmagenta}[1]{\textcolor{graphmagenta}{#1}}
 
 % Graph references

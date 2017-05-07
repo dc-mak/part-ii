@@ -1,143 +1,71 @@
+% vim: set spell spelllang=en_gb tw=80:
 \chapter{Evaluation}\label{chapter:evaluation}
 
-\guidance{%
-  This is where Assessors will be looking for \textbf{signs of success} and for
-  \textbf{evidence of thorough and systematic testing}. \textbf{Sample output},
-  tables of timings and photographs of workstation screens, oscilloscope traces
-  or circuit boards may be included.\\
-  As with code, voluminous examples of sample output are usually best left to
-  appendices or omitted altogether.\\
-  There are some obvious questions which this chapter will address. \textbf{How
-  many of the original goals were achieved? Were they proved to have been
-  achieved? Did the program, hardware, or theory really work?}\\
-  Assessors are well aware that large programs will very likely include some
-  residual bugs. It should always be possible to demonstrate that a
-  \textbf{program works in simple cases} and it is instructive to
-  \textbf{demonstrate how close it is to working in a really ambitious case}.\\
-}
+% \guidance{%
+%   This is where Assessors will be looking for \textbf{signs of success} and for
+%   \textbf{evidence of thorough and systematic testing}. \textbf{Sample output},
+%   tables of timings and photographs of workstation screens, oscilloscope traces
+%   or circuit boards may be included.\\
+%   As with code, voluminous examples of sample output are usually best left to
+%   appendices or omitted altogether.\\
+%   There are some obvious questions which this chapter will address. \textbf{How
+%   many of the original goals were achieved? Were they proved to have been
+%   achieved? Did the program, hardware, or theory really work?}\\
+%   Assessors are well aware that large programs will very likely include some
+%   residual bugs. It should always be possible to demonstrate that a
+%   \textbf{program works in simple cases} and it is instructive to
+%   \textbf{demonstrate how close it is to working in a really ambitious case}.\\
+% }
 
 \prechapter{%
-  Here, the project's resounding success, in relation its aims (as listed in
-  Section~\ref{intro:aims}), will be justified. A comparison with existing
-  tools will demonstrate the advantages of this project over existing tools
-  (those mentioned in Subsection~\ref{prep:coqtools}). Sample output will be
-  shown and the interesting insights they provide will be explained.
+  In this chapter, I will show that the project meets its aims (as listed in
+  Section~\ref{intro:aims}) by presenting the evidence for this claim. I will
+  do so by (a) comparing the project with existing tools that aim to help a
+  user understand a Coq library and (b) providing sample output and explaining
+  the insights they provide.
 }%
-
-\begin{figure}[tbp]
-
-  \raggedright
-  This project aims to:
-
-  \begin{itemize}
-  \item represent Coq libraries as Neo4j graph databases, which wil involve
-    \begin{itemize}
-    \item exploring and choosing the correct model
-    \item converting and extending existing code to output CSVs
-    \item writing new programs to extract extra information \\
-        (omitted from other, existing tools)
-    \item writing new programs to automate database creation; and to
-    \end{itemize}
-
-  \item create a library of Neo4j queries, intended
-    \begin{itemize}
-    \item to highlight the structure of and relationship between proof-objects
-    \item by coalescing and implementing several graph-related metrics.
-    \end{itemize}
-  \end{itemize}
-
-  \hrule%
-  \bigskip
-  \caption{Aims of the Project}\label{fig:aims}
-
-\end{figure}
 
 \section{Features}\label{eval:compare}
 
-For convenience, the aims of the project, as listed in
-Section~\ref{intro:aims}, are reproduced above, in Figure~\ref{fig:aims}.
-Within the first major bullet-point (representing Coq libraries as Neo4j
-databases), the latter three aims (of adapting, extending and writing new
-programs to output CSV, extracting extra information and automating database
-creation) were exposited in the~\nameref{chap:impl} chapter.
+I talked through most of the first aim (how I represent Coq libraries as Neo4j
+databases) in the~\nameref{chap:impl} chapter. To asses the capabilities of my
+project, and thereby the suitability of my chosen model, I will compare all of
+the programs listed in Subsection~\ref{prep:coqtools},~\nameref{prep:coqtools}
+with this project against the features listed there (features chosen to reflect
+strengths of each tool considered).
 
-So, to assess the first aim of the project (exploring and choosing the
-correct model), all of the programs listed in
-Subsection~\ref{prep:coqtools},~\nameref{prep:coqtools}, are compared
-side-by-side in Table~\ref{table:features}, in which this project comes out
-favourably.
-
-\subsection{Other Tools}
-
-\begin{table}[p]
-  \centering
-
-  \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} rcccccccccc}
-
-    \toprule
-
-    & \rot{Source Code} & \rot{Hyperlinks} & \rot{Precise Kinds}
-    & \rot{Constr. \& Types~~} % for vertical space after 'Types'
-    & \rot{Type Sig.} & \rot{Module depend.} & \rot{Graphical rep.}
-    & \rot{Interactivity} & \rot{Statistics} & \rot{Object depend.} \\
-
-    \midrule
-
-    Coqdoc    & \Y & \Y & \Y & \Y & \Y & \N & \N & \N & \N & \N \\
-    Coqdep    & \N & \M & \N & \N & \N & \Y & \Y & \N & \N & \N \\
-    CoqSerAPI & \N & \N & \N & \N & \N & \N & \N & \Y & \Y & \N \\
-    dpdgraph  & \N & \N & \M & \N & \N & \N & \Y & \N & \N & \Y \\
-    Project   & \M & \Y & \Y & \Y & \Y & \Y & \Y & \Y & \Y & \Y \\
-
-    \bottomrule
-
-  \end{tabular*}
-
-  \medskip
-  \Y\  Has feature \hfill \N\ Does not have feature \hfill \M\ Can be extended to support it
-
-  \bigskip
-  \caption{Comparison of Features}\label{table:features}
-
-\end{table}
-
-\subsection{This Project}
-
-It is clear from the table that this project either supports, or can support,
-every feature supported by other tools. However, it is important to note, that
-in many cases, this project does not simply match the feature, but exceeds it in
-ways described next.
-
-Linking to source code could be supported by modifying either the model,
-database or JavaScript visualisations (outuput by the library of queries) to
-link to the relevant webpages output by coqdoc. So, a user could switch between
-a graphical overview and a detailed inspection at will.
+The project \emph{can be extended} to support \textbf{linking to source code}
+by modifying either the model, database or JavaScript visualisations (output
+by the library of queries) to link to the relevant webpages output by coqdoc.
+So, a user could switch between a graphical overview and a detailed inspection
+at will.
 
 Whenever a node is visible, it can be expanded to see the nodes it depends on,
-so in that sense, it supports hyperlinks, though, unlike hyperlinks, such
-expansion is done in place, thus retaining the \emph{context} of its use.
+so in that sense, it supports \textbf{hyperlinks}, though, unlike hyperlinks,
+such expansion is done in place, thus retaining the \emph{context} of its use.
 
 Thanks to the \emph{kind} and \emph{subkind} labels, the project supports
-precise kinds.  Also, any (co-)inductive type can, via the
-\texttt{CONSTRUCTED\_BY} relation, be expanded to see its constructors.
+\textbf{precise kinds}.  Also, any (co-)inductive \textbf{type} can, via the
+\texttt{CONSTRUCTED\_BY} relation, be expanded to see its
+\textbf{constructors}.
 
-Due to the \emph{type} property, each object's type is also visible. For a proof
-object, its type is a statement of the actual theorem being proved, hence this
-feature is incredibly important when coming to grips with a mathematical theory.
-Crucially, it is a \emph{fully expanded} type signature, making explicit any
-assumptions introduced (perhaps hunderds of lines prior in the source code) into
-the environment.
+Due to the \textbf{type} property, each object's type is also visible.
+Crucially, it is a fully-expanded type signature, making explicit any
+assumptions introduced (perhaps hundreds of lines prior or in a different file)
+into the environment.
 
-Module dependencies are set with the query in Listing~\ref{lst:moddep} by use of
-the \texttt{CONTAINS} relation.  Interactivity is achieved through the Neo4j
-browser interface and the JavaScript visualisations; statistics are achieved
-through the library of queries; graphical representations by both. An important
-limitation of CoqSerAPI is that its statistics are (at the time of writing)
-simply three counters, whereas this project offers many sophisticated graph
-metrics and the ability (through a queriable database) to gain \emph{any} sort
-of information a user is interested in.
+\textbf{Module dependencies} are set with the query in Listing~\ref{lst:moddep}
+by use of the \texttt{CONTAINS} relation. \textbf{Interactivity} is achieved
+through the Neo4j browser interface and the JavaScript visualisations;
+\textbf{statistics} are achieved through the library of queries;
+\textbf{graphical representations} by both.
 
-\begin{listing}[p]%
+An important limitation of CoqSerAPI is that its \textbf{statistics} are (at
+the time of writing) simply three counters, whereas this project offers many
+sophisticated graph metrics and the ability (through a queriable database) to
+gain \emph{any} sort of information a user is interested in.
+
+\begin{listing}[tp]%
 
 \caption{Query to set Module Dependencies}\label{lst:moddep}
 
@@ -153,56 +81,50 @@ of information a user is interested in.
 
 \end{listing}
 
-And finally, object dependencies are at the heart of this project: by using a
-Neo4j graph database, we can understand and manipulate this relation in a much
-more flexible and scalable manner than any visualisation can manage.
+And finally, \textbf{object dependencies} are at the heart of the project: by
+using a Neo4j graph database, a user can understand and manipulate this
+relation in a much more flexible and scalable manner than any visualisation can
+manage.
+
+Therefore, the project either supports, or can be extended to support, every
+feature supported by other tools. 
 
 \section{Performance}
 
-This project could have all the features any user could ever want but if it ran
-so slowly that nobody would have the patience to use it, then it would be wrong
-to consider it as having met its aims. So, here, this project's execution time
-is compared to most of the tools from the previous section. Although it is
-slightly slower than other existing tools, this can be directly accounted for
-by its larger feature set and increased flexibility.
+Now, I will compare the project's execution time to most of the tools from the
+previous section. Although the project is slightly slower than other existing
+tools, this can be directly accounted for by its larger feature set and
+increased flexibility.
 
 \subsection{Setup}
 
-To evaluate timings, the Coq (8.6) Standard Library was used, due to its sheer
+To evaluate timings, I used the Coq (8.6) Standard Library, due to its sheer
 size (564 modules, 5823 definitions, 23,892 proofs). For coqdoc and coqdep,
-Coq's Makefiles were modified to measure execution time using bash's \emph{time}
-command. At the time of writing, CoqSerAPI's statistics were not fully/usably
-implemented, so it was not measured. For dpdgraph, seprate measurements were
-taken for outputting a \texttt{dpd} file and converting that file to a dot
-Format. A similar approach~\textendash of measuring database creation (model
-output, CSV translation and data import) and library analysis
-separately~\textendash was taken for this project, so that the comparison was as
-fair as possible. Each set of timings was repeated five times (with the
-exception of \texttt{dpd2dot} which, at nearly \emph{27 minutes}, was not
-repeated because of time and system-usability constraints).
+Coq's Makefiles were modified to measure execution time using bash's
+\emph{time} command. At the time of writing, CoqSerAPI's statistics were not
+fully/usably implemented, so I did not include in this comparison. For
+dpdgraph, I took separate measurements for outputting a \texttt{.dpd} file and
+converting that file to a \texttt{.dot} format. I took a similar approach for
+this project, so that the comparison was as fair as possible. Each set of
+timings was repeated five times (with the exception of \texttt{dpd2dot} which,
+at nearly \emph{27 minutes}, was not repeated because of time and
+system-usability constraints).
 
 \begin{figure}[tp]
 \centering
 \input{img/timings.tex}
-\caption{Comparison of Execution Times}\label{fig:exectimes}
+\caption{Comparison of Execution Times. Note that the data is presented on a
+  \emph{logarithmic} scale. We see coqdoc takes very little time to run, and
+  coqdep even less (which is to be expected considering their purely lexical
+  approach). Somewhat surprisingly, dpdgraph runs just as quickly as coqdoc;
+  its increase in system time can be explained by the 14MB \texttt{dpd} file
+  output by dpdgraph. Although at first it appears that there is an
+  order-of-magnitude slowdown with this project, more detailed examination in
+  Subsection~\ref{subsec:ineff} explains precisely \emph{what} occurs during
+  database creation and where inefficiencies lie.}\label{fig:exectimes}
 \end{figure}
 
-\subsection{Results}
-
-Figure~\ref{fig:exectimes} shows the results of the comparison, as broken-down
-by bash's time command into time spent in user-code, system calls and overall.
-Note that the data is presented on a \emph{logarithmic} scale. Immediately
-we see coqdoc takes very little time to run, approximately 10 seconds and coqdep
-even less at around 4 seconds, which, considering their purely lexical
-approaches, is to be expected.
-
-So it is somewhat surprising that dpdgraph runs just as quickly as coqdoc. The
-increase in system time can be explained by the 14MB \texttt{dpd} file output by
-dpdgraph. Although at first it appears that there is an order-of-magnitude
-slowdown with this project, more detailed examination explains precisely
-\emph{what} occurs during database creation and where ineffeciencies lie.
-
-\subsection{Inefficiencies}
+\subsection{Inefficiencies}\label{subsec:ineff}
 
 Setting up a graph database from scratch can take some time. Assuming a Coq
 project is already compiled, the following steps need to take place:
@@ -211,195 +133,269 @@ project is already compiled, the following steps need to take place:
   \item\label{step:gen} generating file with a list of all the modules to be
     examined (15 ms),
   \item\label{step:compile} compile that file using the Coq compiler (12.6 s),
-  \item\label{step:dpd2csv} convert the output \texttt{dpd} file to CSV files (72.7 s),
+  \item\label{step:dpd2csv} convert the output \texttt{.dpd} file to CSV files (72.7 s),
   \item create a Neo4j database from those CSV files (12.8 s)
 \end{enumerate}
 
 When steps~\ref{step:gen} and~\ref{step:compile} are taken on their own, we see
-that the changes to accomodate a more detailed model resulted in a 25\%
+that the changes to accommodate a more detailed model resulted in a 25\%
 slowdown, which is acceptable given this is a stress-test and the difference is
 on the order of seconds. Creating a database from CSV files takes a similar
 amount of time, also acceptable given the size of the graph (31,088 nodes and
 850,434 edges).
 
-So, the real bottleneck is step~\ref{step:dpd2csv}: converting \texttt{dpd}
-files to CSV. During execution, \texttt{dpd2} reads in a 25MB \texttt{dpd} file
-and outputs two CSV files of size 7MB (nodes) and 8MB (edges), so IO is likely
-to be a factor, as is reconstructing the graph in memory. Outputting to
-\texttt{dpd} was done to facilitate easy extension with other tools. It is
-likely that outputting a CSV directly would have resulted in being able to
-bypass this phase altogether, though, from a software-engineering
+So, the real bottleneck is step~\ref{step:dpd2csv}: converting \texttt{.dpd}
+files to CSV. During execution, \texttt{dpd2} reads in a 25MB \texttt{.dpd}
+file and outputs two CSV files of size 7MB (nodes) and 8MB (edges), so IO is
+likely to be a factor, as is reconstructing the graph in memory. I output the
+model to a \texttt{.dpd} to make it easier to extend this project with other
+tools. It is likely that outputting a CSV directly would have resulted in being
+able to bypass this phase altogether, but from a software-engineering
 point-of-view, the trade-off there is increased coupling.
 
 \subsection{Graph Analysis \& Visualisation}
 
-Once a graph is created (whether it be in the form of \texttt{dpd} file or a
-dabtabase) the last step is to \emph{use} the data by analysing and visualising
+Once a graph is created (whether it be in the form of \texttt{.dpd} file or a
+database) the last step is to \emph{use} the data by analysing and visualising
 it. Here, this project shows a significant improvement over \texttt{dpd2dot}.
 
 At nearly \emph{27 minutes}, its execution time dwarfs the analyses carried out
-by this project. Whereas \texttt{dpd2dot} converted the output 13MB \texttt{dpd}
-file to a 24MB dot file, in about one-quarter of the time, an R script was able
-to run (a) PageRank and closeness centrality algorithms over all proofs and
-defintions and (b) output \emph{8} different 9MB visualisations of the data.
-Analyses took less than a minute; visualisations ranged from 20 to 90 seconds.
+by this project. Whereas \texttt{dpd2dot} converted the output 13MB
+\texttt{.dpd} file to a 24MB dot file, in about one-quarter of the time, an R
+script was able to run (a) PageRank and closeness centrality algorithms over
+all proofs and definitions and (b) output \emph{8} different 9MB visualisations
+of the data. Analyses took less than a minute; visualisations ranged from 20 to
+90 seconds.
 
-It should be noted that \texttt{dpd2dot} did not do graph \emph{layout}: it just
-split the graph into subgraphs (based on modules) and assigned a colour and label
-to each node (based on their properties). Converting the dot file to a viewable
-format (e.g.\ a scalable vector-graphic or SVG) is up to another tool (that
-being said, the command \texttt{dot -Tsvg} to produce an SVG visualisation had to
-be cancelled after failing terminate within a few \emph{hours}).
+It should be noted that \texttt{dpd2dot} does not do graph \emph{layout}: it
+just splits the graph into sub-graphs (based on modules) and assigns a colour
+and label to each node (based on their properties). Converting the
+\texttt{.dot} file to a viewable format (e.g.\ a scalable vector-graphic or
+SVG) is up to another tool (that being said, I cancelled the command
+\texttt{dot -Tsvg} to produce an SVG after it failed terminate within a few
+\emph{hours}).
 
 \section{Library of Queries}\label{sec:libeval}
 
-Within the second major bullet-point (creating a library of Neo4j queries), the
-second aim (of coalescing and implementing graph-related metrics) was dealt
-with in the~\nameref{chap:impl} chapter. To assess the first aim (of
-highlighting the structure of and relationship between proof-objects), the
-library will be shown to work on the small case of a Coq Regular-Expression
-package and on the large case of the project's moonshot, the Odd Order Theorem.
+I talked through how I provide several-network analysis techniques in
+the~\nameref{chap:impl} chapter. To assess whether this tool highlights the
+structure of and relationship between proof-objects (the second aim), I will
+show the output of the library of queries on the small case of a Coq
+Regular-Expression library and on the large case of the project's moonshot, the
+Odd Order Theorem.
 
-\begin{figure}[p]
-\centering
-\includegraphics[width=0.8\textwidth]{img/regexp/direct.png}
-\caption{Force-directed with Betweenness Centrality}\label{fig:regexp:direct}
-\end{figure}
-
-\begin{figure}[p]
-\centering
-\includegraphics[width=0.8\textwidth]{img/regexp/hierarchical.png}
-\caption{Hierarchical with Betweenness Centrality}\label{fig:regexp:hier}
-\end{figure}
-
-\begin{figure}[tp]
-  \begin{minipage}{0.5\textwidth-0.5em}
-    \centering
-    \includegraphics[width=\textwidth]{img/regexp/grid.png}
-    \caption{Grid Layout with PageRank}\label{fig:regexp:grid}
-  \end{minipage}%
-  \hspace{1em}%
-  \begin{minipage}{0.5\textwidth-0.5em}
-    \centering
-    \includegraphics[width=\textwidth]{img/regexp/module.png}
-    \caption{Force-directed with Modules}\label{fig:regexp:module}
-  \end{minipage}
-\end{figure}
+\emph{All} visualisations show only definitions (shown as triangles,
+reminiscent of the $\triangleq$ symbol sometimes used for definitions) and
+proofs (shown as squares, reminiscent of the end-of-proof $\square$ symbol),
+except for Figures~\ref{fig:regexp:module} and~\ref{fig:oot:module} which also
+includes modules (as circles).
 
 \subsection{Small: CoqRegExp}
 
-For this package, PageRank, betweenness centrality, modularity clustering,
-hierarchical layout, grid layout and force-directed layout produced the most
-aesthetically pleasing and insightful results. All graphs show only definitions
-(shown as triangles, reminiscent of the $\triangleq$ symbol sometimes used for
-definitions) and proofs (shown as squares, reminiscent of the end-of-proof
-$\square$ symbol), except for Figure~\ref{fig:regexp:module} which also includes
-modules (as circles).
+I will now show, how, without studying any code, a Coq user can use this
+project to understand the structure of the CoqReqExp library.
 
-\subsubsection{Direct}
+\subsubsection{Neo4j \& APOC}
 
-Figure~\ref{fig:regexp:direct} shows a force-directed visualisation. The size of
-the nodes corresponds to betweenness centrality scores (split up into 10
-logarithmically equal-width buckets). Colours correspond to groups assigned by modularity
-clustering. Edges represent the \texttt{USES} relation; edge-directions
-(source-uses-destination) are omitted for clarity since they generally point
-toward the the center of a cluster.
+As visible by the examples in Tables~\ref{table:regexp:kinds}
+and~\ref{table:regexp:pagerank}, and Figure~\ref{fig:regexp:meta}, a user can
+make arbitrary queries on the CoqRegExp library database. The first gives an
+indication of the most common kinds of proof-objects: mostly lemmas, with
+definitions and proofs following.  The second uses an APOC procedure for
+PageRank over all proof-objects to quantify the importance of each. The
+definition of a regular-expression and the definition of what it means for a
+regular-expression to match a string top the table, with other, fundamental
+theory components/proof-objects following. The third also uses an APOC
+procedure to produce a visual representation of the schema of the database.
 
-We see that modularity clustering largely corresponds to the how a human might
-group nodes visually: two major clusters with a few, smaller clusters.
-Intuitively, the \glblue{light blue} cluster represents \glblue{\emph{executable
+\begin{table}[tp]
+  \input{img/regexp/kinds.tex}
+\end{table}
+
+\begin{table}[tp]
+  \input{img/regexp/pagerank.tex}
+\end{table}
+
+\begin{figure}[tp]
+\begin{minted}{cypher}
+CALL apoc.meta.graph
+\end{minted}
+\centering
+\includegraphics[width=\textwidth]{img/regexp/meta.png}
+\caption{Meta-graph of CoqRegExp representing the labels (kinds/subkinds) and
+  relations (\texttt{USES}, \texttt{CONTAINS}, \texttt{CONSTRUCTED\_BY})
+  between them. Above the figure is the Cypher query which calls the APOC
+  procedure to produce this. At the bottom, red nodes represent types and
+  constructors; above them, blue nodes represent definitions; above them, green
+  nodes represent proofs. The grey node represents a scheme; the pink node
+  represents an instance and the two purple nodes at the top represent files
+  and modules.}\label{fig:regexp:meta}
+\end{figure}
+
+\subsubsection{Visualisation}\label{subsubsec:visualisation}
+
+Intuitively, in Figures~\ref{fig:regexp:direct} and~\ref{fig:regexp:module},
+the \glblue{light blue} cluster represents \glblue{\emph{executable
 functions}}; the \gorange{orange} cluster represents \gorange{\emph{proofs of
 correctness}}; the \glpurple{light purple} cluster represents proofs using the
 definition of \glpurple{string length}; the \glgreen{light green} cluster
-represents proofs involving \glgreen{converting strings to regular-expressions};
-the \gviolet{violet} cluster represents proofs relating to \gviolet{nullable
-strings}. The node at the center of the light blue cluster is a function which
-computes whether a given regular-expression matches a given string; the node at
-the center of the yellow cluster defines what it means for two
-regular-expressions to be equal.
+represents proofs involving \glgreen{converting strings to
+regular-expressions}; the \gviolet{violet} cluster represents proofs relating
+to \gviolet{nullable strings}. The node at the centre of the \glblue{light
+blue} cluster is a function which computes whether a given regular-expression
+matches a given string; the node at the centre of the \gorange{orange} cluster
+defines what it means for two regular-expressions to be equal.
 
-\subsubsection{Hierarchical}
+\begin{figure}[tp]
+\centering
+\includegraphics[height=0.3\textheight]{img/regexp/direct.png}
+\caption{Force-directed visualisation of definitions and proofs in CoqRegExp.
+  Colours assigned by modularity clustering largely correspond to the how a
+  human might group nodes visually: two major clusters with a few, smaller
+  clusters (see~\ref{subsubsec:visualisation}~\nameref{subsubsec:visualisation}
+  for an interpretation of what each colour corresponds to). The size of the
+  nodes correspond to betweenness centrality scores (split up into 10
+  logarithmically equal-width buckets). Edges represent the \texttt{USES}
+  relation; edge-directions (source-uses-destination) are omitted for clarity
+  since they generally point toward the centre of a
+  cluster.}\label{fig:regexp:direct}
+\end{figure}
 
-As far as insights are concerned, we see that this enables us to get a
-high-level view of the threads of thought in the theory. We can see how these
-threads develop by looking at Figure~\ref{fig:regexp:hier}.  Here, a Sugiyama
-layout is used (the direction of edges always points downwards). If nodes were
-partially ordered according the \texttt{USES} relation (destination $<$ source
-if and only if source \texttt{USES} destination) then this layout ensures that
-if a node (destination) is \emph{below} another node connected to it (source)
-then the source \texttt{USES} destination.
-
-Applied to mathematical theories, this layout is essentially a visual
-study-guide, a plan for how to best tackle the material. It can be applied to
-subgraphs, refined by declaring the maximum depth or the lowest layer to include
-and filtered based on the kind or importance of a node.
-
-\subsubsection{Grid and Modules}
-
-Given a strategy for how to approach the material, knowing how important each
-section is can be useful for gauging how much time to spend on understanding it.
-As indicators of importance, measures of centrality are a useful way to do
-precisely that. Figure~\ref{fig:regexp:grid} represents PageRank through node
-size on uniform grid, useful for visually determining relative importance.
-
-And finally, Figure~\ref{fig:regexp:module} shows the proofs and defintions
-with modules, where edges represent the \texttt{CONTAINS} relation. We see that
-the modules at the right and near the center (named Utility, Includes and Char
-respectively) have very few important nodes (as determined by betweenness
-centrality). Each module has two main parts: those relating to
-\glblue{executable functions} those relating to \gorange{proofs of correctness},
-occasionally accompanied by a few definitions/proofs on \gviolet{nullability}
-or \glpurple{string length}.
-
-\subsubsection{Insights}
-
-Without studying even \emph{one line} of source code, we have been able to gleam
-an intuitive and impressively detailed conceptual-scaffolding of this theory of
-regular-expressions. A user can use the library of queries to futher explore the
-theory or jump into reading the source code with a much better idea of how
-the different pieces of the puzzle come together.
+\begin{figure}[tp]
+\centering
+\includegraphics[height=0.3\textheight]{img/regexp/module.png}
+\caption{Force-directed visualisation of definitions, proofs and modules in
+  CoqRegExp. Setup is similar to Figure~\ref{fig:regexp:direct} above, except
+  edges represent the \texttt{CONTAINS} relation. Each module tends to have two
+  main parts: those relating to \glblue{executable functions} those relating to
+  \gorange{proofs of correctness}, occasionally accompanied by a few
+  definitions/proofs on \gviolet{nullability} or \glpurple{string
+  length}.}\label{fig:regexp:module}
+\end{figure}
 
 \subsection{Large: Odd Order Theorem}
 
-For the Odd Order Theorem, betweenness centrality (for node size), modularity
-clustering (for node colour), hierarchical layout, grid layout, circular layout
-and force-directed layout produced the most aesthetically pleasing and
-insightful results. As before, only definitions (shown as
-triangles/$\triangleq$) and proofs (shown as squares/$\square$ symbol) are
-shown, except for Figure~\ref{fig:oot:module} which also includes modules (as
-circles). New to this section, edges are coloured. Unless a figure is stated as
-being flipped, the colour of an edge is the same colour as its source (user);
+This Coq library closely follows the structure of the source material it
+encodes: Peterfalvi~\cite{peterfalvi2000oot} and Bender \&
+Glauberman~\cite{bender1994oot}. Each section (chapter) in the original books
+is a file/module in the Coq library; each definition/lemma/proof/corollary
+corresponds to the same in the books. Following the convention in the Coq
+library, `Bender \& Glauberman' will henceforth be abbreviated to `BG' and
+`Peterfalvi' to `PF'. For brevity, `Odd Order Theorem' will also be
+abbreviated, to `OOT'.
+
+I will now show, how, without studying any code, or reading BG or PF, a Coq
+user can use this project to understand aspects of BG and PF.
+
+New to this section, edges are coloured. Unless a figure is stated as being
+`flipped', the colour of an edge is the same colour as its source (user);
 otherwise, it is the same colour as its destination (used).
 
-This Coq package closely follows the structure of the source material:
-Peterfalvi~\cite{peterfalvi2000oot} and Bender \&
-Glauberman~\cite{bender1994oot}. Each section (chapter) in the original books is
-a file/module in the Coq package; each definition/lemma/proof/corollary
-corresponds to the same in the books. Following the convention in the Coq
-package, Bender \& Glauberman will henceforth be abbreviated to BG and
-Peterfalvi to PF.
+\subsubsection{Neo4j}
 
-\subsubsection{Overview}
+By modelling Coq libraries as Neo4j graph databases, we can answer powerful
+questions. For example: there are 1064 proofs in BG and PF, \emph{does every
+one of them ultimately lead to the proof of the Feit-Thompson OOT?} In
+general, how many ``dead-ends'' -- proofs, definitions or types -- are there
+in these two books, and where are they? These questions have been answered in
+Tables~\ref{table:oot:leadto} and~\ref{table:oot:unused} respectively.
 
-Starting with a force-directed visualisation of nodes,
-Figure~\ref{fig:oot:direct} highlights five major groups: \gdblue{dark blue},
-\gpink{pink}, \gyellow{yellow}, \gpurple{purple}, \gdgreen{dark green} and
-\gmagenta{magenta}; it shows that modularity clustering largely agrees with the
-layout. Clear connections are visible between each of the groups, with a central
-group showing a mix of almost all groups.
+\begin{table}[tp]
+  \input{img/oot/leadto.tex}
+\end{table}
 
-Figure~\ref{fig:oot:module} shows the same nodes in their module structure; of
-note is the remarkable consistency of clusterings (based \emph{only} on the
-\texttt{USES} edges between proofs and definitions) to fall within their
-grouping the moudule boundaries defined by the \texttt{CONTAINS} relation.
+\begin{table}[tp]
+  \input{img/oot/unused.tex}
+\end{table}
 
-Figures~\ref{fig:oot:circleflip} and~\ref{fig:oot:grid} show a circular (with
-edge directions flipped) and grid layout of the Coq package. An advantage of the
-flipped circular layout is that is can show which groups are being used the most
-and how; an advantage of the grid layout is one can get an intuition what
-proportion of definitions/proofs belong to a certain group.
+\subsubsection{Visualisation}\label{subsubsec:oot:visual}
 
-\subsubsection{Groups}
+In Figure~\ref{fig:oot:direct}, we see that modularity clustering over proofs
+and definitions connected by the \texttt{USES} relation is able to
+distinguish/explain \emph{some} or the grouping achieved by modularity
+clustering but not the amalgamation of all the groups in the central cluster.
+
+Figure~\ref{fig:oot:module} shows visually what one might expect intuitively:
+\emph{proofs and definitions within the same module tend to belong to the same
+group}. However, it does not explain why the groups \emph{cross} module
+boundaries and represent \emph{multiple} modules.
+
+Figure~\ref{fig:oot:modhier} explains why the groups cross module boundaries:
+they demarcate different parts/phases of BG and PF. Both the figure and the list
+below show this Coq library is not quite the linear chain of dependencies ranges
+one may expect. Instead, the overlapping ranges of these groups suggest that the
+material is heavily interconnected and that there are other ways of approaching
+the material other the linear presentation of BG and PF.
+
+\begin{itemize}
+  \item \gpink{\textbf{pink:}  BG 1-6 and BG Appendices A/B/C}
+  \item \gdgreen{\textbf{dark green:} BG 7-13 and PF 9-10 and 12-14}
+  \item \gpurple{\textbf{purple:} BG 14/16 and PF 3-4/8}
+  \item \gyellow{\textbf{yellow:} CyclicTIisoReflexion in PF 3}
+  \item \gmagenta{\textbf{magenta:} BG 15 and PF 11}
+  \item \gdblue{\textbf{dark blue:} PF 1-2 and 5-7.}
+  \item \glblue{\textbf{light blue:} self-contained proof of the OOT.}
+\end{itemize}
+
+% next figures show non-linear, two extremes (eager/lazy), not surprising that
+% eager and mod look similar (how typically presented) but arguably better lazy?
+
+Figure 4.10 shows the hierarchical, Sugiyama layout. A consequence of this
+algorithm is that nodes are placed closest to their first use, usually done as a
+heuristic to minimise edge crossings. Intuitively, one can think of this
+approach as the lazy/ultra-efficient student who only studies a particular
+definition/proof just before it is needed by some other part of the text (or
+like call-by-need evaluation in a non-strict programming language).
+
+As such, swapping the direction of the edges does not simply flip the layout
+vertically, as Figure 4.11 shows. One could conjecture that Figure 4.10 shows
+how mathematics is developed (a narrow foundation, top-down refinement, creating
+proofs/definitions as and when needed, several independent lines of thought) and
+Figure 4.11 shows how mathematics is presented (a broad base of all the
+groundwork that will be needed first, followed by a bottom-up, rapidly
+developing, linear argument which uses the base extensively).
+
+% Direct
+\begin{figure}[tp]
+\centering
+\includegraphics[height=0.35\textheight]{img/oot/direct}
+\caption{Force-directed visualisation of definitions and proofs in the OOT Coq
+  library (some nodes omitted for clarity). Setup is the same as that of
+  Figure~\ref{fig:regexp:direct}. Observe that modularity clustering is able to
+  distinguish between nodes in the centre as belonging to different groups. This
+  distinction is more evident in Figures~\ref{fig:oot:module},
+  \ref{fig:oot:modhier}, \ref{fig:oot:hier}
+  and~\ref{fig:oot:hierflip}; it is explained in
+  \ref{subsubsec:oot:visual}~\nameref{subsubsec:oot:visual}.}\label{fig:oot:direct}
+\end{figure}
+
+% Modules
+\begin{figure}[tp]
+\centering
+\includegraphics[height=0.35\textheight]{img/oot/modules}
+\caption{Force-directed visualisation of definitions, proofs and modules in
+  the OOT Coq library. Setup is the same as that of
+  Figure~\ref{fig:regexp:module}. The module in \gyellow{yellow} --
+  a self-contained result by the name of `CyclicTIisoReflexion' -- is
+  the only one \emph{nested} inside another (PF~3). Unlike CoqRegExp, here,
+  proofs and definitions in each module tend to belong to the same group. Note
+  that groupings \emph{cross} module boundaries; this is elaborated upon in
+  \ref{subsubsec:oot:visual}~\nameref{subsubsec:oot:visual}.}\label{fig:oot:module}
+\end{figure}
+
+% Hierarchical Modules
+\begin{figure}[tp]
+\centering
+\includegraphics[height=0.35\textheight]{img/oot/module_hierarchical}
+\caption{Sugiyama (hierarchical) layout (the direction of edges always
+  points downwards, above \texttt{DEPENDS\_ON} below) of \textbf{modules} in the
+  OOT Coq library. Modules are coloured according the most frequent (mode)
+  colour of all definitions and proofs in it. Edges represent the
+  \texttt{DEPENDS\_ON} relation between modules defined in
+  Listing~\ref{lst:moddep}. This visually represents the chapter dependencies in
+  BG and PF, starting with BG~1 at the bottom and ending with PF~14 (containing
+  the actual proof of the Feit-Thompson OOT) at the top.}\label{fig:oot:modhier}
+\end{figure}
 
 %  5 - Pink:        BG 1-6,AB
 %  4 - Dark blue:   PF 1,2,5,6,7
@@ -410,106 +406,30 @@ proportion of definitions/proofs belong to a certain group.
 % 20 - Yellow:      PF 3 - CyclicT Iso Reflection
 %  6 - Light blue:  Stripped Odd Order
 
-We can begin to uncover some of the meaning by looking at the \modulegraph.  The
-seven \gpink{pink} circles (six near the center, one at the far left) are BG
-sections 1-6 and Appendices A/B. As the first sections, one would assume they
-lay the groundwork for the rest of the theory; this assessment is backed-up by
-the \hiergraph. Of about 36 rows in the \gridgraph, 6 of them are \gpink{pink}.
-All sections except BG 5 \emph{surround} the central cluster in the
-\directgraph.  The slight red diagonal on the right of the \circlegraph\ shows
-sparser connections than most of the other groups.
-
-Similarly, the modules containing mostly \gdblue{dark blue} nodes are the early
-chapters (1,2,5,6,7) of PF, expositing mostly foundational material (as seen in
-the \hierflipgraph) but in an extremely directed and linear fashion (as seen in
-the \hiergraph).  They are a dense group (as shown by the left of the
-\circlegraph) and occupy about 6 rows in the \gridgraph. Apart from PF 2 (right)
-and 5 (left), they are tightly-woven into the center of the \directgraph.
-
-\gpurple{Purple} and \gdgreen{dark green} share the later sections (7-16) of BG.
-Where they differ is PF: \gpurple{purple} covers PF 3,4 \& 8 whereas
-\gdgreen{dark green} covers PF 8-15. This difference is apparent in
-\hyperref[fig:oot:hier]{both} \hyperref[fig:oot:hierflip]{hierarchical} graphs:
-\gpurple{purple} nodes occupy the middle of the graphs but green nodes form
-a steep line from top to bottom. Both are clustered in the center of the
-\directgraph, with the exception of PF 4 as two \gpurple{purple} clusters to the
-bottom-left. They dominate the \circlegraph\ and the \gridgraph, occupying
-around 8 rows each.
-
-\gmagenta{Magenta} forms the later sections of both BG (15-16) and PF (8-14), so
-it comes as little surprise that it occupies the upper half of both
-\hyperref[fig:oot:hier]{both} \hyperref[fig:oot:hierflip]{hierarchical} graphs.
-Even though it only constitutes about two rows in the \gridgraph, we see its
-striking bands on the \circlegraph\ because of how often its results are used by
-other nodes in the final sections (15-16) of PF.
-
-Other miscellaneous groups include \glblue{light blue} (a self-contained,
-stripped down proof of just the Odd Order Theorem from first principles),
-\gyellow{yellow} (an entire excursion to proving PF Theorem 3.5) and
-\glgreen{light green} (primarily BG 10).
-
-\subsubsection{Insights}
-
-With some context about the composition of the theory, we can now examine
-\hyperref[fig:oot:hier]{both} \hyperref[fig:oot:hierflip]{hierarchical} graphs
-in a bit more detail to see truly understand what they reveal about this
-monumental Coq package and the books it encodes.
-
-Figure~\ref{fig:oot:hier} shows the hierarchical, Sugiyama layout.  A
-consequence of this algorithm is that nodes are placed \emph{closest to their
-first use}, usually done as a heuristic to minimise edge crossings. Intuitively,
-one can think of this approach as the lazy/ultra-efficient student who only
-studies a particular definition/proof \emph{just before} it is needed by some
-other part of the text (or like call-by-need evaluation in a non-strict
-programming language).
-
-As such, swapping the direction of the edges \emph{does not} simply flip the
-layout vertically, as Figure~\ref{fig:oot:hierflip} shows. One could conjecture
-that Figure~\ref{fig:oot:hier} shows how mathematics is \emph{developed} (a
-narrow foundation, top-down refinement, creating proofs/definitions as and when
-needed, several independent lines of thought) and Figure~\ref{fig:oot:hierflip}
-shows how mathematics is presented (a broad base of \emph{all} the groundwork
-that will be needed first, followed by a bottom-up, rapidly developing, linear
-argument which uses the base extensively).
-
-% Direct & Modules
-\begin{figure}[p]
-\centering
-\includegraphics[height=0.45\textheight]{img/oot/direct}
-\caption{Force-directed (some nodes omitted for clarity)}\label{fig:oot:direct}
-\end{figure}
-
-\begin{figure}[p]
-\centering
-\includegraphics[height=0.45\textheight]{img/oot/modules}
-\caption{Modules}\label{fig:oot:module}
-\end{figure}
-
-% Hierarchicals
-\begin{figure}[p]
-\centering
-\includegraphics[height=0.45\textheight]{img/oot/hierarchical}
-\caption{Hierarchical}\label{fig:oot:hier}
-\end{figure}
-
-\begin{figure}[p]
-\centering
-\reflectbox{\rotatebox[origin=c]{180}{%
-  \includegraphics[height=0.45\textheight]{img/oot/hierarchical_flipped}}}
-\caption{Hierarchical Flipped}\label{fig:oot:hierflip}
-\end{figure}
-
-% Circular & Grid
-\begin{figure}[p]
-\centering
-\includegraphics[height=0.45\textheight]{img/oot/circular_flipped}
-\caption{Circular Flipped}\label{fig:oot:circleflip}
-\end{figure}
-
-\begin{figure}[p]
-\centering
-\includegraphics[height=0.45\textheight]{img/oot/grid}
-\caption{Grid}\label{fig:oot:grid}
+% Hierarchical
+\begin{figure}[tp]
+  \begin{minipage}{0.5\textwidth-0.5em}
+    \centering
+    \includegraphics[width=\textwidth]{img/oot/hierarchical}
+    \caption{Sugiyama (hierarchical) layout (the direction of edges point
+      downwards) of definitions and proofs in the OOT Coq
+      library. Colours are assigned by modularity clustering. Edges represent
+      the \texttt{USES} relation: above \emph{uses} below. A by-product of
+      this layout is that nodes are are placed higher/closest to their
+      \emph{users}.}\label{fig:oot:hier}
+  \end{minipage}%
+  \hspace{1em}%
+  \begin{minipage}{0.5\textwidth-0.5em}
+    \centering
+		\reflectbox{\rotatebox[origin=c]{180}{%
+			\includegraphics[width=\textwidth]{img/oot/hierarchical_flipped}}}
+      \caption{Setup is the same as Figure~\ref{fig:oot:hierflip}, except that
+      (a) the edge directions are \emph{reversed} and (b) the image is
+      reflected vertically. It is still the case that above \emph{uses} below.
+      However, doing this has the effect of placing a node lower/closest to
+      the nodes \emph{using} it. An interpretation of this is provided
+      in~\ref{subsubsec:oot:visual}~\nameref{subsubsec:oot:visual}.}\label{fig:oot:hierflip}
+  \end{minipage}
 \end{figure}
 
 \newpage%
@@ -522,5 +442,5 @@ comparison with other, existing tools of a similar purpose, showed this project
 went above and beyond what existing tools offer. For its performance, a similar
 comparison of execution times showed this project to be slightly slower, but
 still acceptable and usable for even the most extreme of cases. For its output,
-two Coq packages, each representing a mathematical theory, were explained via
+two Coq libraries, each representing a mathematical theory, were explained via
 the insights gained from using this project on them.

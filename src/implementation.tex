@@ -1,21 +1,20 @@
-% vim: set spell spelllang=en_gb
-
+% vim: set spell spelllang=en_gb tw=80:
 \chapter{Implementation}\label{chap:impl}
 
-\guidance{%
-  This chapter should describe what was actually produced: the programs which
-  were written, the hardware which was built or the theory which was developed.
-	Any design strategies that \textbf{looked ahead to the testing stage} might
-	profitably be referred to (the professional approach again).\\
-  Descriptions of programs may include fragments of high-level code but large
-  chunks of code are usually best left to appendices or omitted altogether.
-  Analogous advice applies to circuit diagrams.\\ 
-  \textbf{Draw attention to the parts of the work which are not your own}. Making
-  effective use of powerful tools and pre-existing code is often laudable, and
-  will count to your credit if properly reported.\\
-  It should not be necessary to give a day-by-day account of the progress of the
-  work but \textbf{major milestones may sometimes be highlighted with advantage}.\\
-}
+% \guidance{%
+%   This chapter should describe what was actually produced: the programs which
+%   were written, the hardware which was built or the theory which was developed.
+% 	Any design strategies that \textbf{looked ahead to the testing stage} might
+% 	profitably be referred to (the professional approach again).\\
+%   Descriptions of programs may include fragments of high-level code but large
+%   chunks of code are usually best left to appendices or omitted altogether.
+%   Analogous advice applies to circuit diagrams.\\ 
+%   \textbf{Draw attention to the parts of the work which are not your own}. Making
+%   effective use of powerful tools and pre-existing code is often laudable, and
+%   will count to your credit if properly reported.\\
+%   It should not be necessary to give a day-by-day account of the progress of the
+%   work but \textbf{major milestones may sometimes be highlighted with advantage}.\\
+% }
 
 \prechapter{%
   In this chapter, I will describe how I implemented my project. What follows is
@@ -82,11 +81,11 @@ relationships between the proof-objects.
   
   \item For each node in the set of nodes, output all of its attributes
     (attributes described in Subsection~\ref{subsec:modelling}; output format described in
-    Subsection~\ref{subsec:translation})
+    Subsection~\ref{subsec:translation}).
 
   \item For each edge in the set of edges, output all of its attributes (source,
     destination and weight; output format described in
-    Subsection~\ref{subsec:translation})
+    Subsection~\ref{subsec:translation}).
 
 \end{enumerate}
 
@@ -142,7 +141,7 @@ and adding all the ``ancestors'' of a module with the correct relationships
 \subsubsection{Types and Constructors}\label{subsubsec:typecon}
 
 One of the most glaring omissions from dpdgraph's initial model was the
-inability to relate an type to to its constructor(s). To fix this,
+inability to relate a type to its constructor(s). To fix this,
 I improved the dependency-collection code.
 
 Expanding an AST term for type-constructors shows which type it constructed
@@ -505,13 +504,13 @@ it.
 
 Both direct-parsing and glob-file approaches to notation, tactics and functors
 were limited and time-consuming. Functors are rarely-used with many projects
-(especially given the popularity and ease of use of \emph{typeclasses} for
+(especially given the popularity and ease of use of \emph{type-classes} for
 expressing generalisations) and thus risked violation requirement~\ref{req:m1}
 (by (a) potentially obfuscating information through their inclusion in the model
 and (b) making the model more difficult to use).
 
 Also, in light of requirement~\ref{req:m3}, given that names \emph{and
-structures} of instantiated modules are duplicated, it is possible to
+structures} of instantiated modules are duplicated, it could be possible to
 \emph{reconstruct} generalisations \emph{representing functors} once the
 database is created. As such, extracting information directly from Coq
 source-files contributed little to the overall project, but presents clear ways
