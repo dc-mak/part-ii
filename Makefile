@@ -34,17 +34,22 @@ SRC_MAIN := $(addprefix $(DIR_MAIN)/, $(SRC_MAIN))
 SRC_REGEXP := direct.png  \
 							grid.png  \
 							hierarchical.png  \
-							module.png
+							meta.png  \
+							module.png  \
+							kinds.tex  \
+							pagerank.tex
 DIR_REGEXP := regexp
 SRC_REGEXP := $(addprefix $(DIR_REGEXP)/, $(SRC_REGEXP))
 
 # oot
-SRC_OOT := circular_flipped.png \
+SRC_OOT := circular_flipped.jpg \
 				   direct.png \
-				   grid.png \
-				   hierarchical_flipped.png \
-				   hierarchical.png \
-				   modules.png
+				   grid.jpg \
+				   hierarchical_flipped.jpg \
+				   hierarchical.jpg \
+				   modules.png \
+				   leadto.tex \
+				   unused.tex
 DIR_OOT := oot
 SRC_OOT := $(addprefix $(DIR_OOT)/, $(SRC_OOT))
 
@@ -53,7 +58,8 @@ SRC_IMG := Neo4j_Browser.PNG \
 					 static-CAS-small.pdf \
 					 timings.tex \
 					 structure.tex \
-				   $(SRC_REGEXP)
+				   $(SRC_REGEXP) \
+				   $(SRC_OOT)
 DIR_IMG := img
 SRC_IMG := $(addprefix $(DIR_IMG)/, $(SRC_IMG))
 

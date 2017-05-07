@@ -1,0 +1,39 @@
+\begin{minted}{cypher}
+MATCH (q) WHERE NOT((q:module) OR ()-[:USES]->(q))
+RETURN LABELS(q),
+       REPLACE(q.path, "mathcomp.odd_order.", "") AS path, 
+       COUNT(*) AS total
+ORDER BY total DESC LIMIT 7
+\end{minted}
+
+\centering
+
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} llc}
+
+  \toprule
+
+  \textbf{LABELS(q)} & \textbf{path} & \textbf{total} \\
+
+  \midrule
+
+  definition, scheme & stripped\_odd\_order\_theorem & 27 \\
+  proof, lemma       & BGsection16                   & 6 \\
+  proof, lemma       & BGsection15                   & 5 \\
+  proof, lemma       & PFsection8                    & 5 \\
+  proof, lemma       & BGsection10                   & 4 \\
+  proof, remark      & BGsection14                   & 4 \\
+  proof, lemma       & PFsection5                    & 4 \\
+
+  \bottomrule
+
+\end{tabular*}
+
+\bigskip
+\caption{Top 7 kinds of proof-objects in the OOT Coq library which are never
+  used again (of which there are 107), grouped by module and ordered by
+  frequency.  Module names (path property) have been shortened to remove
+  redundant information. The ``stripped\_odd\_order\_theorem'' is a
+  self-contained proof of the entire OOT relying only on basic Coq features and
+  is not part of BG or PF. Many unused results are simply called `lemma'
+  instead of the more descriptive and conventional `corollary' or
+  `remark'.}\label{table:oot:unused}

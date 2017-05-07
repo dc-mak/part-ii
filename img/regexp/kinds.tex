@@ -1,0 +1,28 @@
+\begin{minted}{cypher}
+MATCH (obj) RETURN LABELS(obj), count(*) AS total
+ORDER BY total DESC LIMIT 5
+\end{minted}
+
+\centering
+
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} lc}
+
+  \toprule
+  \textbf{LABELS(obj)} & \textbf{total} \\
+
+  \midrule
+
+  proof, lemma         & 79 \\
+  definition           & 17 \\
+  proof, theorem       & 16 \\
+  definition, instance & 14 \\
+  type\_constructor    & 8 \\
+
+  \bottomrule
+
+\end{tabular*}
+
+\bigskip
+\caption{Top 5, most common kinds of proof-objects in CoqRegExp with their
+  frequency and the query used to obtain them above the
+  table.}\label{table:regexp:kinds}

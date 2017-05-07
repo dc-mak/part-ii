@@ -1,0 +1,35 @@
+\begin{minted}{cypher}
+MATCH (q:proof) 
+WHERE NOT (:proof {path: "mathcomp.odd_order.PFsection14",
+                   name : "Feit_Thompson"})
+          -[:USES*]->(q:proof)
+RETURN q.name, replace(q.path, "mathcomp.odd_order.", "") AS path
+\end{minted}
+
+\centering
+
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} ll}
+
+  \toprule
+
+	\textbf{q.name}	& \textbf{path} \\
+
+	\midrule
+
+	pcore\_Fcore     & BGsection15 \\
+	main            & stripped\_odd\_order\_theorem\ldots\\
+	ell\_sigma\_leq\_2 & BGsection14 \\
+	Ptype\_trans     & BGsection14 \\
+	P1type\_trans    & BGsection14 \\
+
+  \bottomrule
+
+\end{tabular*}
+
+\bigskip
+\caption{Five (of 89), proofs the Odd Order Theorem Coq library which do not
+  ultimately lead to the proof of the Feit-Thompson Odd Order Theorem. Module
+  names (path property) have been shortened to remove redundant
+  information. The ``stripped\_odd\_order\_theorem'' is a self-contained proof
+  relying on only basic Coq features and is not part of BG or
+  PF.}\label{table:oot:leadto}
