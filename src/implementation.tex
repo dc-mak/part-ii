@@ -79,11 +79,11 @@ relationships between the proof-objects.
         \end{enumerate}
     \end{enumerate}
   
-  \item For each node in the set of nodes, output all of its attributes
+  \item For each node in the set of nodes, output all its attributes
     (attributes described in Subsection~\ref{subsec:modelling}; output format described in
     Subsection~\ref{subsec:translation}).
 
-  \item For each edge in the set of edges, output all of its attributes (source,
+  \item For each edge in the set of edges, output all its attributes (source,
     destination and weight; output format described in
     Subsection~\ref{subsec:translation}).
 
@@ -91,7 +91,7 @@ relationships between the proof-objects.
 
 \subsection{Modelling}\label{subsec:modelling}
 
-Although I used dpdgraph as a starting point, I rewrote all of the
+Although I used dpdgraph as a starting point, I rewrote all the
 attribute-assigning code because the meaning of the attributes it initially
 collected was not obvious and terminology it used did not correspond to
 recognisable Coq constructs.
@@ -115,7 +115,7 @@ keyword; instead \texttt{Theorem}, \texttt{Lemma}, \texttt{Fact},
 all are \emph{synonyms} for proofs. Full details can be found in
 Appendix~\ref{chapter:fullmodel}.
 
-So to model this categorisation, I assigned each node a ``kind'' \emph{label}:
+So, to model this categorisation, I assigned each node a ``kind'' \emph{label}:
 labels are strings used to group nodes into subsets; since a node can belong to
 more than one subset, it can have more than one label assigned to it. To model
 the more precise distinctions, I optionally assigned some nodes a ``subkind''
@@ -310,8 +310,8 @@ utility functions to use. Of note are:
 \begin{itemize}
 
   \item the ability to examine a \emph{meta-graph} showing which labels and
-    relationship-types are available in the database and how they are connected, 
-    allowing a user to see an overview of the model;
+    relations are available in the database and how they are connected, allowing
+    a user to see an overview of the model;
 
   \item a few key graph algorithms, such as node and path expansion, spanning
     tree, Dijkstra's shortest paths, A*, label propagation (for community
@@ -352,19 +352,6 @@ There are many interesting ways to visualise the plethora of data that
 analysing large mathematical theories in the form of Coq libraries using graph
 databases makes available.
 
-Simply plotting the density/spread of and correlation between metrics such as
-in- and out-degrees, PageRank, centrality measures is a good start and can
-occasionally yield useful information. Here, R's strength as a
-statistics-oriented programming language shone through, making it easy for me
-to rapidly explore different ideas.
-
-Another, more direct, way of displaying information is by displaying the graph
-itself. As I will show in
-Section~\ref{sec:libeval}~\nameref{sec:libeval},~\nameref{sec:libeval}, there
-are a number of different layouts possible (layered, circular and
-force-directed), each contributing to a more comprehensive, overall, picture of
-understanding the theory.
-
 Surprisingly, igraph was able to help with this aspect of the project as well.
 Whilst visNetwork -- with its own JavaScript, force-directed, physics rendering
 -- produced more aesthetically pleasing results for smaller graphs, the webpages
@@ -402,7 +389,7 @@ Although the project never failed to build locally, there were occasionally
 problems when trying to build it on the project supervisor's machine. The
 problem was compounded when it became apparent that smaller libraries (such as
 CoqRegExp and the solved problems) relied on a version of Coq (8.5.2) older than
-the one Mathematical Components (needed for the project's moonshot, the Odd
+the one Mathematical Components (needed for the project's moon-shot, the Odd
 Order Theorem) relied on (8.6). I set up Travis-CI for continuous-integration
 builds to make version dependencies precise and explicit, and removed much of
 the hassle and uncertainty surrounding builds on other machines.
@@ -410,10 +397,9 @@ the hassle and uncertainty surrounding builds on other machines.
 \subsection{Tooling}
 
 At first, I ran the project half on Windows and half on a Linux VM (virtual
-machine), using shared folders. I had a number of reasons for this: I had
-already set up Coq and Neo4j on Windows, both are easier to interact with in a
-graphical environment and starting up a VM just for some experimentation took
-too long.
+machine), using shared folders. I had a few reasons for this: I had already set
+up Coq and Neo4j on Windows, both are easier to interact with in a graphical
+environment and starting up a VM just for some experimentation took too long.
 
 Eventually, this set-up became confusing and time-consuming and I made the leap
 to running the project fully on a Linux VM. Nevertheless, I had serious issues
@@ -491,36 +477,30 @@ whole situation quite ugly to work with).
 
 \end{enumerate}
 
-Even though I had made some progress in tackling these issues via parsing, I
-kept looking for a simpler solution. \emph{Glob files}, produced during
-compilation, retain much of the information in the source code (as a list of
-globally-resolved names and paths for each file) in a simpler format. I
-prototyped a tool (in the form of a shell-script) that converted glob files to
-CSVs. Although it was promising for tactics and notation, glob files suffer from
-the same inability to distinguish between modules and functors, so I abandoned
-it.
 
 \subsubsection{Resolution}
 
-Both direct-parsing and glob-file approaches to notation, tactics and functors
-were limited and time-consuming. Functors are rarely-used with many projects
+I made some progress in tackling these issues, but it took too long, so I could
+not justify spending more time on it. Functors are not used in many projects,
 (especially given the popularity and ease of use of \emph{type-classes} for
-expressing generalisations) and thus risked violation requirement~\ref{req:m1}
-(by (a) potentially obfuscating information through their inclusion in the model
-and (b) making the model more difficult to use).
+expressing generalisations). 
 
-Also, in light of requirement~\ref{req:m3}, given that names \emph{and
-structures} of instantiated modules are duplicated, it could be possible to
-\emph{reconstruct} generalisations \emph{representing functors} once the
-database is created. As such, extracting information directly from Coq
-source-files contributed little to the overall project, but presents clear ways
-forward for future-work.
+Furthermore, including functors risked violating requirement~\ref{req:m1} (by
+retaining information that could be difficult to understand or use).
+Additionally, given that names \emph{and structures} of instantiated modules are
+duplicated, it could be possible to \emph{reconstruct} generalisations
+\emph{representing functors} once the database is created (hence respecting
+requirement~\ref{req:m3} by not pre-computing too much data).
+
+As such, extracting information directly from Coq source-files did not
+contribute to the overall project, but presents clear ways forward for future
+work.
 
 \section{Summary}
 
 I just presented an in-depth account of the programs written (dpdgraph++, dpd2,
 Query \& R libraries), problems encountered (recursive modules, relating types
-and constructors, incorporating type signatures, CSV translation, dependency and
+and constructors, incorporating type-signatures, CSV translation, dependency and
 version tracking, impenetrable build-systems and parsing information directly
 from Coq source-files), solutions implemented and tests conducted. Throughout, I
 referenced the project requirements to justify important decisions.
