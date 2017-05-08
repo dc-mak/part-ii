@@ -146,7 +146,7 @@ R to be the most suitable for achieving this project's goals.
 
 Both Coq and Neo4j have a rich ecosystem of tools and libraries built for them.
 I examined the current landscape in detail to determine the software available
-so as to then use the relevant programs as a starting point effectively.
+to see if I could use any of them as a starting point.
 
 \section{Coq Proof-Assistant}
 
@@ -191,9 +191,9 @@ designing the model during the implementation phase.
 \section{Existing Tools for Coq}\label{prep:coqtools}
 
 There are many tools for Coq that, like my project, \emph{aim to help a user
-understand a library}. I studied a number of them to learn their approaches and
-analyse their strengths and weakness. What follows is a detailed account of
-each tool and why it did not meet the project's aims and requirements.
+understand a library}. I studied several to learn their approaches and analyse
+their strengths and weakness. What follows is a detailed account of each tool
+and why it did not meet the project's aims and requirements.
 
 \subsection{Coqdoc}
 
@@ -250,10 +250,10 @@ belongs to was missing, I thought it unlikely that the information was not
 present in the compiled object files (since they are necessary for
 term-construction and type-checking).
 
-Assuming that the data was already present in those files, but simply
-\emph{ignored or unused}, I focused on understanding and augmenting dpdgraph to
-add the missing pieces to the model and output it to comma-separated values
-(henceforth referred to as CSVs).
+Assuming the data was already present in those files, but simply \emph{ignored
+or unused}, I focused on understanding and augmenting dpdgraph to add the
+missing pieces to the model and output it to comma-separated values (henceforth
+referred to as CSVs).
 
 \subsection{Comparison}\label{subsec:comparison}
 
@@ -264,7 +264,7 @@ considered and are justified and elaborated upon below.
 
 Bundle with Coq, coqdoc produces \textbf{hyperlinked source code} meaning
 details such as the \textbf{precise kinds} of a proof-object, the
-\textbf{constructors of a type} and the \textbf{type signatures} are immediately
+\textbf{constructors of a type} and the \textbf{type-signatures} are immediately
 visible; hence those 5 dimensions were included.  Also include in a Coq system
 is coqdep: a tool for modelling \textbf{module-level dependencies} that can
 output a \texttt{dot} file to present it \textbf{graphically}.
@@ -291,7 +291,7 @@ and displaying information graphically.
 
     & \rot{Source Code} & \rot{Hyperlinks} & \rot{Precise Kinds}
     & \rot{Constr. \& Types~~} % for vertical space after 'Types'
-    & \rot{Type Sig.} & \rot{Module depend.} & \rot{Graphical rep.}
+    & \rot{Type-Sig.} & \rot{Module depend.} & \rot{Graphical rep.}
     & \rot{Interactivity} & \rot{Statistics} & \rot{Object depend.} \\
 
     \midrule
@@ -322,7 +322,7 @@ and displaying information graphically.
 Neo4j is a graph database system implemented in Java. Traditional, relational
 database theory and systems are designed with the goal of storing and
 manipulating information in the form of \emph{tables}. As such, working with
-highly interconnected data, such as social network graphs is best tackled with
+highly interconnected data (such as a social-network graph) is best tackled with
 the alternative approach of \emph{graph databases}.
 
 Briefly, a (directed) \emph{graph} is defined as $G = (V, E)$ where $V$ is a set
@@ -391,10 +391,10 @@ even goes part-way towards meeting the \emph{computation} requirements.
 
 \subsection{igraph}\label{subsubsec:neo4jtoolsigraph}
 
-APOC's main focus is on interacting with and combining different sorts and
-sources of data and so lacks graph analysis functionality \emph{beyond} the
-basics. The fact that it is implemented in Java adds to its limitations: it is
-not well-suited to more intense analyses over large graphs of libraries and is
+APOC's focus is on interacting with and combining different sorts and sources of
+data and so lacks graph analysis functionality \emph{beyond} the basics. The
+fact that it is implemented in Java adds to its limitations: it is not
+well-suited to more intense analyses over large graphs of libraries and is
 insufficient to \emph{fully} meet the \emph{computation} requirements of this
 project.
 
@@ -485,7 +485,7 @@ output.~\cite{raghavan2007}
 \textbf{Edge betweenness} (like betweenness centrality), is also based on
 shortest paths, with the idea that edges separating communities are likely to
 have high edge betweenness (since all shortest paths must pass through them).
-Removing the edge with the greatest betweenness value and recomputing over the
+Removing the edge with the greatest betweenness value and re-computing over the
 remaining edges successively will result in a rooted tree, a hierarchical map
 (called a dendrogram) where the root represents the whole graph and the leaves
 represent individual nodes.~\cite{newman2004}
@@ -537,11 +537,10 @@ technologies was dictated by the decisions to use Coq and Neo4j.
 
 I then elaborated on my starting point for this project. I gave a description of
 Coq, its uses and explained why (complexity and poor documentation) it is a
-difficult system to work with. I also compared existing tools that aim to help
-a user understand a Coq library (coqdoc, coqdep, CoqSerAPI, dpdgraph) in
-relation to my project's requirements and showed that although none satisfied
-all of the requirements of my project, dpdgraph provided a limited platform to
-build upon.
+difficult system to work with. I also compared existing tools that aim to help a
+user understand a Coq library (coqdoc, coqdep, CoqSerAPI, dpdgraph) in relation
+to my project's requirements and showed that although none satisfied all the
+requirements of my project, dpdgraph provided a limited platform to build upon.
 
 Similarly, I gave a description of Neo4j and some of its plugins (APOC, igraph
 and visNetwork), explaining their features, advantages, disadvantages in
@@ -549,45 +548,3 @@ relation to which of the project's requirements they met. I discussed how I
 needed to learn the R programming language to tie together Neo4j, igraph and
 visNetwork in order to meet the project's interacting and computing
 requirements.
-
-% \subsection{Cypher: An Illustrated Example}
-%
-% \emph{Cypher} features heavy use of pattern-matching in an ASCII-art inspired
-% syntax.  The following (slightly contrived but hopefully illuminating) example
-% in Listing~\ref{lst:cypherexample} illustrates some of the key strengths of
-% graph-based modelling using Cypher.
-%
-% Suppose we have a puppy named ``Cliff'' looking for the nearest and most
-% familiar children (for this example, a person under the age of six) to play
-% with.
-%
-% To see how Cliff (indirectly) likes/knows this child, we bind \emph{path} to the
-% result of the \emph{shortestPath} query.  For the path itself, we start with a
-% node following this structure: \mintinline{cypher}{(var:label {attrib: val})}.
-% We then have a \emph{labeled, transitive} relationship (explicitly limiting our
-% search to paths of up to length four) expressed as an arrow with a label
-% \texttt{-[..]->}. As such, we can discard any paths with relationships we do not
-% want (e.g.\ \texttt{HATES}).
-%
-% To filter based on more complex logic (than possible by pattern-matching directly
-% on labels and attributes) we can express the requirement that the age of a dog by
-% the name of Cliff be less than or equal to two (and similarly for the age of the
-% child) in the \mintinline{cypher}{WHERE} clause.
-%
-% Lastly, we return the path and order the results by proximity as a row of
-% results, renaming the column of the child's name to simply ``name''.
-%
-% \begin{listing}[tb]%
-%
-% \caption{Example Cypher Query}\label{lst:cypherexample}
-%
-  % \begin{minted}{cypher}
-  % MATCH path = shortestPath(
-    % (puppy:dog {name: "Cliff"})-[:LIKES|:KNOWS*..4]->(child:person))
-  % WHERE puppy.age <= 2 AND child.age < 6
-  % RETURN path,
-         % child.name AS name,
-  % ORDER BY other.distance_from_clifford
-  % \end{minted}
-%
-% \end{listing}
