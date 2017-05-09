@@ -17,10 +17,10 @@
 % }
 
 \prechapter{%
-  In this chapter, I will describe how I implemented my project. What follows is
-  an account of the programs I wrote, problems I encountered, solutions I
-  implemented and tests I conducted using the project structure shown in
-  Figure~\ref{fig:structure} as a guide.
+  In this chapter, I will describe how I implemented this project. What follows
+  is an account of the programs I wrote, problems I encountered, solutions I
+  implemented and tests I conducted.  Figure~\ref{fig:structure} shows an
+  overview of this project's components and how they fit together.
 }
 
 \begin{figure}[t]
@@ -32,19 +32,18 @@
 
 \section{Coq object-files to CSV}
 
-This section of implementation corresponds to ``dpdgraph++'' and ``\texttt{dpd2
-csv}''on Figure~\ref{fig:structure}: modelling the data contained in and the
-structure of a Coq library (of \texttt{.vo} compiled proof-scripts) as CSVs.
-First, I will briefly describe the algorithm I used to construct a dependency
-graph constructed from a compiled Coq library. Then, I will elaborate upon how I
-modelled the Coq library by going through the attributes of each edge and node
-in the dependency graph. Finally, I will describe the output format of the
-\texttt{.dpd} file containing the graph constructed from the compiled Coq
-library.
+This section of implementation corresponds to `dpdgraph++' and `\texttt{dpd2
+csv}' on Figure~\ref{fig:structure}: modelling the data contained in and the
+structure of a Coq library as CSVs.  First, I will briefly describe the
+algorithm I used to construct a dependency graph constructed from a compiled Coq
+library. Then, I will elaborate upon how I modelled the Coq library by going
+through the attributes of each node and edge in the dependency graph. Finally, I
+will describe the format of the \texttt{.dpd} file output, which contains the
+graph constructed from the compiled Coq library.
 
 \subsection{Algorithm}
 
-This is a high-level overview of the algorithm I used in ``dpdgraph++'' to
+This is a high-level overview of the algorithm I used in `dpdgraph++' to
 construct a dependency graph from a compiled Coq library.
 
 \textbf{Input:} A Coq script containing a list of files in the library (I wrote
@@ -53,7 +52,7 @@ Coq library.
 
 \textbf{Output:} A \texttt{.dpd} file containing a description of a graph whose
 nodes represent Coq proof-objects and whose edges represent various
-relationships between the proof-objects.
+relations between the proof-objects.
 
 \begin{enumerate}
 
@@ -115,27 +114,27 @@ keyword; instead \texttt{Theorem}, \texttt{Lemma}, \texttt{Fact},
 all are \emph{synonyms} for proofs. Full details can be found in
 Appendix~\ref{chapter:fullmodel}.
 
-So, to model this categorisation, I assigned each node a ``kind'' \emph{label}:
+So, to model this categorisation, I assigned each node a `kind' \emph{label}:
 labels are strings used to group nodes into subsets; since a node can belong to
 more than one subset, it can have more than one label assigned to it. To model
-the more precise distinctions, I optionally assigned some nodes a ``subkind''
+the more precise distinctions, I optionally assigned some nodes a `subkind'
 label.
 
 \subsubsection{Recursive Modules}\label{subsubsec:recmodules}
 
 Every proof-object is contained within a module and every module is either
 contained in a file, is a file or is a directory. To model this inclusion
-relationship, analyse module-level dependencies (like coqdep) and contrast the
-results community detection algorithms with the module structure of a library, I
-augmented ``dpdgraph++'' to include modules in the graph. Using the Coq API, I
-could get the fully-qualified path (path from the library's root) of a
-proof-object. Using a variant datatype, I expanded the type of a node in the
+relation, analyse module-level dependencies (like coqdep) and compare the
+results of community detection algorithms with the module structure of a
+library, I augmented `dpdgraph++' to include modules in the graph. Using the
+Coq API, I could get the fully-qualified path (path from the library's root) of
+a proof-object. Using a variant datatype, I expanded the type of a node in the
 graph to include modules and propagated the changes throughout the project.
 
 However, because the Coq API returned module paths as strings, modules were in
 the model as a flat structure: modules could be related to objects but not to
 other modules. I fixed this by inferring (splitting the fully-qualified path)
-and adding all the ``ancestors'' of a module with the correct relationships
+and adding all the ``ancestors'' of a module with the correct relations
 (parent as source, child as destination, repeatedly up to the root module).
 
 \subsubsection{Types and Constructors}\label{subsubsec:typecon}
@@ -147,7 +146,7 @@ I improved the dependency-collection code.
 Expanding an AST term for type-constructors shows which type it constructed
 (note that types have no information about which constructors construct them).
 Since dependencies were constructed in a depth-first manner \emph{down} the AST,
-I had to store the type and type-constructor relationship reversed but output it
+I had to store the type and type-constructor relation reversed but output it
 in the correct order.
 
 To do so, I compared each pair of nodes to see if it (a) was a type and a
@@ -161,27 +160,27 @@ direction of the edge output.
 % Chapter~\ref{chapter:evaluation}) spurred the addition of \emph{type
 % signatures} to the model.
 
-Another glaring omission from dpdgraph's initial model was the inability to see
-the type of a proof-object. Type theory is central to a Coq user's work and
+Another unmissable omission from dpdgraph's initial model was the inability to
+see the type of a proof-object. Type theory is central to a Coq user's work and
 being able to include them in the model, would, along with kinds, subkinds and
 modules, help towards meeting the modelling requirement~\ref{req:m1} of
 including as much relevant data as possible. 
 
-Coq's type-checking algorithms is complex. To replicate it within
-``dpdgraph++'', I followed the functions called for the Coq command
+Coq's type-checking algorithm is complex. To replicate it within
+`dpdgraph++', I followed the functions called for the Coq command
 \texttt{Check} \emph{<expression>} (for printing the type of a given
 expression).  This led to the algorithm for \emph{getting} the type, which I
 then implemented.
 
-A subtlety I overcame was \emph{using} the output in \texttt{.dpd} and CSV
-files. I replaced newlines, quotation marks, and commas with hash signs,
-single-quote marks and underscores respectively, because the latter were used to
+A subtlety I had to overcome was \emph{using} the output in \texttt{.dpd} and
+CSV files. I replaced newlines, quotation marks, and commas with hash signs,
+single-quote marks and underscores respectively, because the former were used to
 delimit data in \texttt{.dpd} and CSV files and would have otherwise caused
 errors when they were being parsed into subsequent programs.
 
-\subsubsection{Relationships}
+\subsubsection{Relations}
 
-Modelling relationships was the most interesting aspect of deciding how to
+Modelling relations was the most interesting aspect of deciding how to
 represent information. I wanted to keep consistent the notion of expanding a
 node to see more details: if a user is looking at an object, they should be able
 to expand the object to see what the object depends on; if a user is looking at
@@ -189,36 +188,36 @@ a module, they should be able to expand the module to see the objects contained
 within that module; if a user is looking at a type, they should
 be able to expand the type and see its constructors.
 
-I modelled this idea with the following relationships:
+I modelled this idea with the following relations:
 \mintinline{cypher}{(src)-[:USES]->(dst)} for dependencies,
-\mintinline{cypher}{(type)-[:CONSTRUCTED_BY]->(constr)} for (co-)inductive
-types, and \mintinline{cypher}{(module)-[:CONTAINS]->(object)} for modules.
+\mintinline{cypher}{(type)-[:CONSTRUCTED_BY]->(constr)} for types, and
+\mintinline{cypher}{(module)-[:CONTAINS]->(object)} for modules.
 
-I had two problems whilst implementing these relationships. First was finding
+I had two problems whilst implementing these relations. First was finding
 and matching types and constructors (details of which are described
 in~\ref{subsubsec:typecon}~\nameref{subsubsec:typecon} on
 page~\pageref{subsubsec:typecon}).
 
 Second was balancing expressiveness against simplicity. I considered
-relationships of the following format, \texttt{X\_USES\_Y} for kinds X and Y.
+relations of the following format, \texttt{X\_USES\_Y} for kinds X and Y.
 Although this was useful for fewer kinds, I decided its specificity when
 subkinds are included in the model made the model too large and complex (on the
-order of $n^{2}$ relationships). Since Cypher allows pattern-matching and
+order of $n^{2}$ relations). Since Cypher allows pattern-matching and
 filtering based on kinds and subkinds anyway, I chose the simplified model
 presented above.
 
 \subsection{Translation}\label{subsec:translation}
 
-This subsection corresponds to ``\texttt{dpd2 csv}'' on
+This subsection corresponds to `\texttt{dpd2 csv}' on
 Figure~\ref{fig:structure}.  Once a model is constructed (in the form of a
-graph) by ``dpdgraph++'' and output to a \texttt{.dpd} file, it is translated by
+graph) by `dpdgraph++' and output to a \texttt{.dpd} file, it is translated by
 the \texttt{dpd2} tool to a CSV file for use by Neo4j's import tool to create a
 database. I will now present an overview of the \texttt{.dpd} and CSV formats,
 as well as the \texttt{dpd2} tool itself.
 
 \subsubsection{\texttt{dpd} Format}
 
-``dpdgraph++'' outputs the graph representing the model as a \texttt{.dpd} file
+`dpdgraph++' outputs the graph representing the model as a \texttt{.dpd} file
 with the following format for nodes (one per line):
 
 {\tt N: \emph{<id>} "\emph{<name>}" [\emph{<property>}=\emph{<value>}];}
@@ -240,7 +239,7 @@ for example,
 Once it is output as a \texttt{.dpd} file, a model can be translated to various
 other formats. For example, dpdgraph includes a tool to output a \texttt{.dot}
 file (a format used extensively for \emph{visualising} graphs by many tools)
-from a \texttt{.dpd} file. This is what was used to generate
+from a \texttt{.dpd} file. This is what I used to generate
 Figure~\ref{fig:static}.
 
 However, for the purpose of this project, I translated the \texttt{.dpd} file
@@ -252,19 +251,19 @@ headers.
 
 Here we see name, path and type declared as properties, kind and subkind
 declared as labels and the objectId field declared as unique identifier (or in
-relational terms, a key) for the nodes (in this schema, called ``Objects'') in
+relational terms, a key) for the nodes (in this schema, called `Objects') in
 the graph.
 
 \texttt{:START\_ID(Object), :END\_ID(Object), weight:int, :TYPE}
 
-Similarly, here we see relationships (between ``Objects'' as declared
+Similarly, here we see relations (between `Objects' as declared
 previously) named according to the value under the \texttt{:TYPE} column (e.g.
 \texttt{CONTAINS}, \texttt{USES} or \texttt{CONSTRUCTED\_BY}), each with an
 integer property, weight.
 
-By using a CSV format, adding extra properties, labels and relationships becomes
-very straightforward and allows for easy integration (with external tools) and
-extension for new features.
+Using a CSV format makes adding extra properties, labels and relations very
+straightforward. This means it is easy to integrate other tools with this
+project and so extend this project with new features.
 
 \subsubsection{\texttt{dpd2} Tool}\label{subsubsec:dpd2}
 
@@ -272,127 +271,116 @@ Initially, this tool started out as the \texttt{dpd2dot} utility (bundled with
 dpdgraph). I refactored it into a more general, \texttt{dpd2} tool which could
 accept the file-type (\texttt{.dot} or CSV) as a command-line argument.
 
-In using this tool, I discovered it had a bug. By default, \texttt{dpd2}
+Whilst using this tool, I discovered it had a bug. By default, \texttt{dpd2}
 attempts to remove reflexive and transitive dependencies (i.e. $a \rightarrow a$
-and removing $a \rightarrow c$ if $a \rightarrow b$ and $b \rightarrow c$) in a
-depth-first manner.  For large graphs, doing so is stack-intensive, and thus
-causes the aforementioned error.  Since this ``feature'' was unnecessary
+and removing $a \rightarrow c$ if $a \rightarrow b$ and $b \rightarrow^{+} c$)
+in a depth-first manner.  For large graphs, doing so is stack-intensive, and
+thus causes the aforementioned error.  Since this ``feature'' was unnecessary
 (because it \emph{removed} useful information) and appeared time-consuming to
 fix, I passed \texttt{-keep-trans} flag on subsequent uses to avoid the issue
 altogether.
 
 \section{CSV to Neo4j}
 
-The ``import tool'' in Figure~\ref{fig:structure} is a command-line program
-that is included with Neo4j. When given a target directory, a CSV file
-containing the nodes of the graph and a separate CSV file containing the edges
-of the graph, this import tool constructs a database. As explained
+The `import tool' in Figure~\ref{fig:structure} is a command-line program that
+is included with Neo4j. Given a target directory, a CSV file containing the
+nodes of the graph and a separate CSV file containing the edges of the graph,
+the import tool constructs a database. As explained
 in~\ref{subsubsec:translationcsv}~\nameref{subsubsec:translationcsv} on
 page~\pageref{subsubsec:translationcsv}, the headers determine the labels,
-properties, IDs of nodes as well as the start- and end-points, properties and
-type of edges.
+properties and IDs of nodes as well as the sources, destinations, properties and
+types of edges.
 
 \section{Query Library}
 
-This section of the implementation corresponds to the ``Query Library''
-(including the ``R Library'') shown in Figure~\ref{fig:structure}. I will now
-outline the extensions I included to meet the interaction
-(\ref{req:i1},~\ref{req:i2},~\ref{req:i3}) and computation
-(\ref{req:c1},~\ref{req:c2}) requirements on page~\pageref{req:i1}.
-
+This section of the implementation corresponds to the `Query Library' and the
+`R Library' shown in Figure~\ref{fig:structure}. I will now outline the
+plugins I worked with to meet the interaction and computation requirements
+(page~\pageref{req:i1}).
 
 \subsection{Java Library}
 
-Briefly, APOC (Awesome Procedures on Cypher) provides, out of the box (by
-placing a jar file into a database's plugins directory), many convenient,
-utility functions to use. Of note are:
+APOC (Awesome Procedures on Cypher) provides many convenient procedures. Of
+note are:
 
 \begin{itemize}
 
-  \item the ability to examine a \emph{meta-graph} showing which labels and
-    relations are available in the database and how they are connected, allowing
-    a user to see an overview of the model;
+  \item functions for constructing and examining a \emph{meta-graph} showing
+    which labels and relations are in the database and how they are connected.
+    They allow a user to see an overview of the model.
 
-  \item a few key graph algorithms, such as node and path expansion, spanning
-    tree, Dijkstra's shortest paths, A*, label propagation (for community
-    detection), centrality measures (betweenness and closeness) and PageRank;
+  \item a few key graph algorithms, such as: node and path expansion, spanning
+    tree, Dijkstra's shortest paths, A* search, label propagation (for community
+    detection) and centrality measures (betweenness, closeness and PageRank).
 
-  \item some utility functions for regular-expressions and mathematics, useful
-    for selecting nodes based on statistics (e.g. PageRank) or selecting nodes
-    based on their path.
+  \item functions for regular-expressions and mathematics, useful for selecting
+    nodes based on statistics (e.g. PageRank) or selecting nodes based on their
+    path property.
 
 \end{itemize}
 
 Each of these can be called directly from within Cypher; for example, writing
-\texttt{call apoc.meta.graph()} would return the meta-graph of the database.
-
-% \subsubsection{Additions}
-%
-% APOC is used as a foundation for simpler, domain-specific query library.  As an
-% example, a user can write \texttt{coq.assumptions(<node>, <depth>)} to examine
-% the n\textsuperscript{th} level assumptions behind a given node. More
-% convenience functions are defined for executing some of the listed algorithms on
-% all nodes in a given module or of a given type. For more complex, efficient and
-% scalable/scriptable analyses however, igraph and R must be used.
+\texttt{CALL apoc.meta.graph()} would return the meta-graph of the database.
 
 \subsection{R Library}
 
-For the R side of the library of queries, to meet requirement~\ref{req:c1} for
-a core set of good, out-of-the-box defaults, I wrote several example programs
-written which automatically processed data from a new database, stored the
-information again for later use (to avoid re-computation) and output
-appropriate visualisations. Since processing could take on the order of
-minutes, I also provided status updates, informing the user of the task being
-executed, the time it took to execute once complete, as well as progress-bars
-where possible and relevant (e.g.\ committing a transaction to the database).
+For the `R Library', (to meet requirement~\ref{req:c1} for a core set of good
+defaults) I wrote several example programs which automatically processed data
+from a new database, stored the information again for later use (to avoid
+re-computation) and output appropriate visualisations.  Since processing could
+take on the order of minutes, I also provided status updates (informing the user
+of the tasks being executed), execution times for each task, as well as
+progress-bars where possible and relevant (e.g.\ committing a transaction to the
+database).
 
 \subsubsection{Visualisation}
 
 There are many interesting ways to visualise the plethora of data that
-analysing large mathematical theories in the form of Coq libraries using graph
-databases makes available.
+translating Coq libraries (representing mathematical theories) into graph
+databases produces.
 
-Surprisingly, igraph was able to help with this aspect of the project as well.
-Whilst visNetwork -- with its own JavaScript, force-directed, physics rendering
--- produced more aesthetically pleasing results for smaller graphs, the webpages
-it output for larger graphs took intolerably long to render inside a typical
-web-browser (Firefox/Opera). Thanks to an (experimental) integration with igraph
-(specifically, igraph's layout mechanisms), I could pre-compute graph layouts in
-fast, native C/C++ \emph{before} rendering graphs in a web-browser.
+Surprisingly, igraph was able to help with visualising graphs as well analysing
+them.  Whilst visNetwork -- with its own JavaScript, force-directed, physics
+rendering -- produced more aesthetically pleasing results for smaller graphs,
+the webpages it output for larger graphs took intolerably long to render inside
+a typical web-browser (Firefox/Opera). Thanks to an (experimental) integration
+with igraph (specifically, igraph's layout mechanisms), I could pre-compute
+graph layouts in fast, native C/C++ \emph{before} rendering graphs in a
+web-browser.
 
 \section{Project Related}
 
-During implementation, I learn several skills and lessons about correct project
+During implementation, I learnt several skills and lessons about correct project
 management. Small things, such as grep-ing a code base or keeping track of time
-and a log of work done, proved to be useful. However, to ensure the project ran
-smoothly on a larger-scale, I focussed more on the following areas.
+and a log of work done, proved to be useful. However, to ensure this project ran
+smoothly on a larger-scale, I focused more on the following areas.
 
 \subsection{Testing}
 
-For most of the project, I conducted testing manually by inspecting the output.
+For most of this project, I conducted testing manually by inspecting the output.
 Though this was tedious, it was the only way to do so when the model was
-undergoing continual development. As soon as the model was settled and focus
-shifted to visualisation, I used automated tests (which came in particularly
-useful when the project had to be \emph{bifurcated} to support two different
-versions of Coq).
+undergoing continual development. Once I fixed the model, I shifted my focus to
+visualisation and used automated tests. These tests were particularly useful
+when I had to duplicate this project because for compatibility with libraries I
+was using to test this project (see Subsection~\ref{subsec:cibuilds}).
 
-I used some of my older Coq proof-scripts -- problems I solved when learning
-Coq -- to check output on a small scale (where I knew every single aspect of the
+I used some of my older Coq proof-scripts -- problems I solved when learning Coq
+-- to check output on a small scale (where I knew every single aspect of the
 library, and testing turnaround was quick). I used Coq's Standard Library as a
 large-scale stress-test, to ensure all constructs were translated correctly.
-When I did find problems, they could usually be traced back to output from debug
-statements I had embedded into ``dpdgraph++''.
+When I did find problems, I could usually trace them back to output from debug
+statements I had embedded into `dpdgraph++'.
 
-\subsection{Continuous-Integration Builds}
+\subsection{Continuous-Integration Builds}\label{subsec:cibuilds}
 
-Although the project never failed to build locally, there were occasionally
+Although this project never failed to build locally, there were occasionally
 problems when trying to build it on the project supervisor's machine. The
 problem was compounded when it became apparent that smaller libraries (such as
 CoqRegExp and the solved problems) relied on a version of Coq (8.5.2) older than
-the one Mathematical Components (needed for the project's moon-shot, the Odd
+the one Mathematical Components (needed for this project's moon-shot, the Odd
 Order Theorem) relied on (8.6). I set up Travis-CI for continuous-integration
-builds to make version dependencies precise and explicit, and removed much of
-the hassle and uncertainty surrounding builds on other machines.
+builds, made version dependencies precise and explicit, and removed much of the
+hassle and uncertainty surrounding builds on other machines.
 
 \subsection{Tooling}
 
@@ -423,7 +411,7 @@ I have now finished describing the whole project; all parts of
 Figure~\ref{fig:structure}. I will now explain why I did not further pursue a
 couple of seemingly obvious, alternative strategies to modelling Coq libraries.
 Both centre around the same theme: analysing the Coq source-files directly
-instead of compiling them and then analysing the \texttt{.vo} files.
+instead of compiling them and then analysing the object-files.
 
 
 \subsection{Coqdoc}
@@ -443,7 +431,7 @@ The former arises from the use of \emph{functors}: modules that take other
 modules as arguments (used to abstract over arguments, tactics, definitions and
 proofs). A concrete example (from the Coq Standard Library) is the theory of
 total orders, minimums and maximums, which is applied to naturals, integers and
-rational numbers (as well as any further ordered types). Such functors cannot be
+rational numbers (as well as any other ordered types). Such functors cannot be
 compiled unless fully applied (explaining the \emph{absence} of some modules);
 when fully applied, they essentially copy their \emph{structure} into each
 instance (explaining the \emph{duplication} of some module names and
@@ -451,9 +439,9 @@ structures).
 
 \subsubsection{Exploring Solutions}
 
-However, \emph{several} issues stop parsing from being a pragmatic solution,
-least of which are the size of the AST and complexity of parsing Coq files (Coq
-uses an \emph{extensible grammar} by using non-standard OCaml tools, making the
+\emph{Several} issues stop parsing from being a pragmatic solution, least of
+which are the size of the AST and complexity of parsing Coq files (Coq uses
+non-standard OCaml tools to implement an \emph{extensible grammar}, making the
 whole situation quite ugly to work with).
 
 \begin{enumerate}
@@ -465,7 +453,7 @@ whole situation quite ugly to work with).
 
   \item \emph{Module types}, or \emph{signatures}, must be incorporated into
     the model for functors to make sense. Modules and signatures share a
-    many-to-many relationship: a signature can be satisfied by multiple modules
+    many-to-many relation: a signature can be satisfied by multiple modules
     and a module can satisfy multiple signatures. To express this correctly
     would require \emph{signature-matching}, a notoriously difficult task (and
     the reason why few languages support ML-style modules).
@@ -473,10 +461,9 @@ whole situation quite ugly to work with).
   \item Further issues involve resolving objects into a global namespace and
     knowing which compiler flags were given during compilation (to match
     physical directories to logical modules), all of which complicate matching
-    and merging with the compiled proof objects.
+    and merging with the compiled proof-objects.
 
 \end{enumerate}
-
 
 \subsubsection{Resolution}
 
@@ -498,9 +485,10 @@ work.
 
 \section{Summary}
 
-I just presented an in-depth account of the programs written (dpdgraph++, dpd2,
-Query \& R libraries), problems encountered (recursive modules, relating types
+I just presented an in-depth account of the programs I wrote (dpdgraph++, dpd2,
+Query \& R libraries), problems I encountered (recursive modules, relating types
 and constructors, incorporating type-signatures, CSV translation, dependency and
 version tracking, impenetrable build-systems and parsing information directly
-from Coq source-files), solutions implemented and tests conducted. Throughout, I
-referenced the project requirements to justify important decisions.
+from Coq source-files), solutions I implemented and tests I conducted.
+Throughout, I referenced the project requirements to justify important
+decisions.

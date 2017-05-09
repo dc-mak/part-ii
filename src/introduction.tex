@@ -17,11 +17,10 @@
   which encode mathematical theories, are difficult to understand. In this
   dissertation, I will describe a new tool I implemented for Coq users that
   aimed to (a) represent Coq libraries as Neo4j (graph) databases and (b)
-  provide a library of queries with the goal of highlighting the structure and
-  relationship between the representations of the proof-objects by using
-  network-analysis techniques usually associated with social-networks.
+  provide a library of queries with the goal of highlighting the structure of
+  and relationship between proof-objects by using network-analysis techniques
+  usually associated with social-networks.
 }
-
 
 \section{Motivation}
 
@@ -37,9 +36,9 @@ The Feit-Thompson Odd Order Theorem~\cite{peterfalvi2000oot, bender1994oot}
 (which has been translated into Coq~\cite{gonthier2013oot}) is an example of a
 large Coq library. It is a part of larger, general trend of formalising
 substantial bodies of mathematics and marks the first time that we have a new
-way representing mathematics, different from the combination of formulas and
-natural-language prose usually used. Such a turning point provides an
-opportunity to explore the novel representations and analyses possible.
+way representing mathematics, different from the usual combination of formulas
+and natural-language prose. Such a turning point provides an opportunity to
+explore the novel representations and analyses possible.
 
 However, it is still the case that when a user approaches a large Coq library, 
 they are left to understand and keep track of several aspects of the
@@ -50,16 +49,16 @@ result (i.e.\ number of assumptions, number of steps, some notion of the
 importance such as number of uses).
 
 I obtained such an opportunity by using a query-based approach: by creating a
-tool that expresses Coq library as databases, then I was able query them and
-analyse them to gain insights such as those mentioned above.
+tool that expresses Coq library as databases, then I was able query and analyse
+them to gain insights such as those mentioned above.
 
 \section{A Database Approach}
 
 Mathematical theories are highly interconnected structures of definitions and
 proofs. As such, relational or a document-oriented models are not adequate
-representations for answering questions such as ``What depends on this lemma
-and how many such things are there?'' or ``What are the components of this
-definition?''.
+representations for answering questions such as `What depends on this lemma
+and how many such things are there?' or `What are the components of this
+definition?'.
 
 Even a static, graph-based approach on its own is insufficient. Simply
 outputting a dependency graph is ineffective for all but the smallest of
@@ -87,10 +86,10 @@ representing and analysing such data have been developed.
 \newpage
 For this project, I used the Neo4j~\cite{neo4j} graph database system (and its
 expressive query language \emph{Cypher}) to create a tool for Coq users which
-applies such network-analysis techniques to Coq libraries to aid understanding
+applies such network-analysis techniques to Coq libraries and help understand
 them.
 
-\section{Aims of the Project}\label{intro:aims}
+\section{Aims of this Project}\label{intro:aims}
 
 In this project, I aimed to write a tool for Coq users that:
 
@@ -114,8 +113,8 @@ In this project, I aimed to write a tool for Coq users that:
 Note that the aims centre around the \emph{mechanics and details} of creating a
 model for Coq proof-objects and applying network analysis techniques to it and
 \emph{not creating a polished, user-friendly product}. Since \emph{usability was
-not a \emph{primary} focus of this project}, I did not conduct a user-study whilst
-evaluating this tool.
+not a focus of this project}, I did not conduct a user-study whilst evaluating
+this tool.
 
 \newpage
 
