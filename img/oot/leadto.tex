@@ -1,3 +1,4 @@
+%TC:ignore
 \begin{minted}{cypher}
 MATCH (q:proof) 
 WHERE NOT (:proof {path: "mathcomp.odd_order.PFsection14",
@@ -5,6 +6,7 @@ WHERE NOT (:proof {path: "mathcomp.odd_order.PFsection14",
           -[:USES*]->(q:proof)
 RETURN q.name, replace(q.path, "mathcomp.odd_order.", "") AS path
 \end{minted}
+%TC:endignore
 
 \centering
 

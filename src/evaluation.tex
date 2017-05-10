@@ -67,6 +67,7 @@ gain \emph{any} sort of information a user is interested in.
 
 \caption{Query to set Module Dependencies}\label{lst:moddep}
 
+%TC:ignore
   \begin{minted}{cypher}
     MATCH (a)-[:USES]->(b),
           (src:module)-[:CONTAINS]->(a),
@@ -76,6 +77,7 @@ gain \emph{any} sort of information a user is interested in.
     SET r.weight = coalesce(r.weight, 0) + 1
     RETURN r
   \end{minted}
+%TC:endignore
 
 \end{listing}
 
@@ -220,9 +222,11 @@ procedure to produce a visual representation of the schema of the database.
 \end{table}
 
 \begin{figure}[tp]
+%TC:ignore
 \begin{minted}{cypher}
 CALL apoc.meta.graph
 \end{minted}
+%TC:endignore
 \centering
 \includegraphics[width=\textwidth]{img/regexp/meta.png}
 \caption{Meta-graph of CoqRegExp representing the labels (kinds/subkinds) and

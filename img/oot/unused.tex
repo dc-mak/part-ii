@@ -1,3 +1,4 @@
+%TC:ignore
 \begin{minted}{cypher}
 MATCH (q) WHERE NOT((q:module) OR ()-[:USES]->(q))
 RETURN LABELS(q),
@@ -5,6 +6,7 @@ RETURN LABELS(q),
        COUNT(*) AS total
 ORDER BY total DESC LIMIT 7
 \end{minted}
+%TC:endignore
 
 \centering
 

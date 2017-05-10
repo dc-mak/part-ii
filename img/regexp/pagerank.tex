@@ -1,9 +1,11 @@
+%TC:ignore
 \begin{minted}{cypher}
 MATCH (n) WITH collect(n) AS nodes
 CALL apoc.algo.pageRank(nodes) YIELD node, score
 RETURN node.name, LABELS(node), node.path, score
 ORDER BY score DESC LIMIT 5
 \end{minted}
+%TC:endignore
 
 \centering
 
