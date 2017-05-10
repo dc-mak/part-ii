@@ -50,7 +50,7 @@ importance such as number of uses).
 
 I obtained such an opportunity by using a query-based approach: by creating a
 tool that expresses Coq library as databases, then I was able query and analyse
-them to gain insights such as those mentioned above.
+them to gain insights like those mentioned above.
 
 \section{A Database Approach}
 
@@ -65,14 +65,22 @@ outputting a dependency graph is ineffective for all but the smallest of
 libraries. Figure~\ref{fig:static} shows one such dependency graph for a
 medium-sized Coq library.
 
-\begin{figure}[tp]
+\begin{figure}[t]
 
   \centering
   \includegraphics[width=\textwidth, page=1]{img/static-CAS-small.pdf}
-  \caption{Static graph of
-    \href{https://github.com/Timothy-G-Griffin/CAS}{CAS} Coq library. For all
-    but the smallest of libraries, simply outputting a dependency graph is an
-    ineffective way of understanding them.}\label{fig:static}
+
+  \caption{Static graph of \href{https://github.com/Timothy-G-Griffin/CAS}{CAS}
+    Coq library. For all but the smallest of libraries, simply outputting a
+    dependency graph is an ineffective way of understanding them. For example,
+    if a user wanted to know whether or not X was used by Y, with a picture,
+    they would have to visually trace backwards from Y to every node it depended
+    on and check if X was one of them. In a relational database, such a query
+    would not be possible with standard relational algebra (only with a
+    highly-inefficient recursive-join); in a document database, a user would
+    have to explicitly construct relations and joins at the application level.
+    With graph databases, a user could simply enter a query (like the one in
+    Table~\ref{table:oot:leadto}).}\label{fig:static}
 
 \end{figure}
 
@@ -83,7 +91,6 @@ for traditional, relational databases. Due to the emergence of massive data
 sets thanks to large-scale social and advertising networks, new techniques for
 representing and analysing such data have been developed.
 
-\newpage
 For this project, I used the Neo4j~\cite{neo4j} graph database system (and its
 expressive query language \emph{Cypher}) to create a tool for Coq users which
 applies such network-analysis techniques to Coq libraries and help understand
@@ -115,8 +122,6 @@ model for Coq proof-objects and applying network analysis techniques to it and
 \emph{not creating a polished, user-friendly product}. Since \emph{usability was
 not a focus of this project}, I did not conduct a user-study whilst evaluating
 this tool.
-
-\newpage
 
 \section{Summary}
 
