@@ -80,3 +80,63 @@ let kind_of_obj = function
       | Names.ModPath.MPdot _ -> Some "module"
       | Names.ModPath.MPfile _ -> Some "file")
 \end{minted}
+
+\chapter{Timings}\label{chapter:timings}
+
+Below is the table of measurements I conducted of different tools that aim to
+help a user understand a Coq library on a Surface Pro 3 (Intel Haswell i7-4650U
+1.7-3GHz, 8GB RAM, 512GB SSD) running Fedora 24 inside VirtualBox 5.1.16 on
+Windows 10 (Creator's Update). I rebooted the VM between measurements to reduce
+the effects of caching.
+
+\begin{table}[h]
+
+  \centering
+  \small
+  \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} lrrrrrrr}
+
+    \toprule
+
+    \textbf{Timing} & \textbf{Test 1}	& \textbf{Test 2}	& \textbf{Test 3}	&
+    \textbf{Test 4}	& \textbf{Test 5}	& \textbf{Mean} & \textbf{Std. Dev.} \\
+
+    \midrule
+
+    DOC: U & 7886    & 7885    & 7879    & 7875    & 7879    & 7880.8    & 4.6 \\
+    DOC: S & 307     & 303     & 288     & 295     & 300     & 298.6     & 7.4 \\
+    DOC: R & 10018   & 9997    & 9997    & 10017   & 10007   & 10007.2   & 10.3 \\
+
+    DEP: U & 1363    & 1365    & 1357    & 1359    & 1363    & 1361.4    & 3.3 \\
+    DEP: S & 2307    & 2299    & 2314    & 2292    & 2297    & 2301.8    & 8.7 \\
+    DEP: R & 4263    & 4254    & 4257    & 4257    & 4256    & 4257.4    & 3.4 \\
+
+    DPD: U & 6869    & 6868    & 6872    & 6878    & 6876    & 6872.6    & 4.3 \\
+    DPD: S & 654     & 631     & 639     & 646     & 650     & 644       & 9.1 \\
+    DPD: R & 9396    & 9381    & 9390    & 9404    & 9382    & 9390.6    & 9.7 \\
+
+    CRT: U & 79544   & 79529   & 79510   & 79526   & 79517   & 79525.2   & 12.9 \\
+    CRT: S & 2522    & 2518    & 2528    & 2522    & 2523    & 2522.6    & 3.6 \\
+    CRT: R & 98146   & 98173   & 98165   & 98156   & 98159   & 98159.8   & 10.1 \\
+
+    2DT: U & 1272235 & 1272244 & 1272264 & 1272250 & 1272239 & 1272246.4 & 11.3 \\
+    2DT: S & 2517    & 2537    & 2519    & 2517    & 2515    & 2521      & 9.1 \\
+    2DT: R & 1588302 & 1588305 & 1588304 & 1588305 & 1588299 & 1588303   & 2.5 \\
+
+    ANL: U & 255915  & 255909  & 255922  & 255914  & 255927  & 255917.4  & 7.1 \\
+    ANL: S & 49568   & 49565   & 49567   & 49565   & 49572   & 49567.4   & 2.9 \\
+    ANL: R & 371877  & 371884  & 371876  & 371890  & 371886  & 371882.6  & 6.0 \\
+
+    \bottomrule
+
+  \end{tabular*}
+  \normalsize
+
+  \bigskip 
+
+  \caption{Table of execution time measurements of tools that aim to help a
+    user understand a Coq library. All timings are in milliseconds. DOC=coqdoc,
+    DEP=coqdep, DPD=dpd2graph, CRT=creation, 2DT=dpd2dot, ANL=analysis, U=user,
+    S=system, R=real. Mean and sample standard deviation rounded to the nearest
+    decimal point.}
+
+\end{table}
