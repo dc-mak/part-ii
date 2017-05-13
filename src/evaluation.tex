@@ -108,14 +108,17 @@ command. At the time of writing, CoqSerAPI's statistics were not fully/usably
 implemented, so I did not include it in this comparison. For dpdgraph, I took
 separate measurements for outputting a \texttt{.dpd} file and converting that
 file to a \texttt{.dot} format. I took a similar approach for this project, so
-that the comparison was as fair as possible.
+that the comparison was as fair as possible. Details of experimental setup can
+be found in Appendix~\ref{chapter:timings}.
 
 \begin{figure}[tp]
 \centering
 \input{img/timings.tex}
+
 \caption{Comparison of Execution Times. Note that the data is presented on a
-  \emph{logarithmic} scale. We see coqdoc takes very little time to run, and
-  coqdep even less (which is to be expected considering their purely lexical
+  \emph{logarithmic} scale. Details of experimental setup can be found in
+  Appendix~\ref{chapter:timings}.  We see coqdoc takes very little time to run,
+  and coqdep even less (which is to be expected considering their purely lexical
   approach). Somewhat surprisingly, dpdgraph runs just as quickly as coqdoc; its
   increase in system time can be explained by the 14MB \texttt{.dpd} file output
   by dpdgraph. There is an order-of-magnitude slowdown with this project when
