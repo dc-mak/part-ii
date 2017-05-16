@@ -148,7 +148,7 @@ project is already compiled, the following steps need to take place:
 When steps~\ref{step:gen} and~\ref{step:compile} are taken on their own, we see
 that the changes to accommodate a more detailed model \emph{only resulted in a
 25\% slowdown}, which is acceptable given this is a stress-test and the
-difference is on the order of seconds. Creating a database from CSV files takes
+difference is of the order of seconds. Creating a database from CSV files takes
 a similar amount of time, also acceptable given the size of the graph (31,088
 nodes and 850,434 edges).
 
@@ -168,7 +168,7 @@ and visualising it. Here, this project shows a significant improvement over
 \texttt{dpd2dot}.
 
 \texttt{dpd2dot}'s  execution time dwarfs the analyses carried out by this
-project. Whereas \texttt{dpd2dot} took\emph{27 minutes}, to convert a 13MB
+project. Whereas \texttt{dpd2dot} took \emph{27 minutes}, to convert a 13MB
 \texttt{.dpd} file to a 24MB dot file, in about one-quarter of the time, an R
 script ran (a) PageRank and closeness centrality algorithms over all proofs and
 definitions in the database and (b) output \emph{8} different 9MB visualisations
@@ -290,8 +290,8 @@ respectively.
 \subsection{Large: Odd Order Theorem}
 
 This Coq library closely follows the structure of the source material it
-encodes: Peterfalvi~\cite{peterfalvi2000oot} and Bender \&
-Glauberman~\cite{bender1994oot}. Each section (chapter) in the original books is
+encodes: Peterfalvi~{\citep{peterfalvi2000oot}} and Bender \&
+Glauberman~{\citep{bender1994oot}}. Each section (chapter) in the original books is
 a file/module in the Coq library; each definition/lemma/corollary/etc.\
 corresponds to the same in the books. Following the convention in the Coq
 library, `Bender \& Glauberman' will henceforth be abbreviated to `BG' and

@@ -126,13 +126,13 @@ Choice of implementation languages was, although an important decision, almost
 completely dictated by the programs at the core of the project (Coq and Neo4j).
 
 Coq and its plugins are written in OCaml
-(\href{http://ocaml.org}{\texttt{ocaml.org}}); I stuck with it for two reasons.
-First, it is almost always wiser to work with and modify existing systems (e.g.\
+(\href{http://ocaml.org}{\texttt{ocaml.org}}); I continued using it for two reasons.
+First, it is almost always wiser to work with and modify existing systems (for example,\
 integrating with the build-system) and more representative of real-world work.
 Second, as a functional language, OCaml benefits from a strong, static (and
 inferred) type-system (which allows for easy experimentation and greater
 confidence in correctness). Hence, using OCaml for other parts of the tool which
-need not necessarily be in OCaml (e.g.\ the \texttt{dpd2} utility) was a welcome
+need not necessarily be in OCaml (for example,\ the \texttt{dpd2} utility) was a welcome
 and easy decision. OCaml has several other benefits too, such as
 inductively-defined datatypes (useful for working with Coq's grammar) and good
 editing tools.
@@ -153,31 +153,31 @@ and see if I could use any of them as a starting point.
 The Coq proof-assistant, implemented in OCaml, can be viewed as both a system of
 logic -- in which case it is a realisation of the \emph{Calculus of Inductive
 Constructions} -- and as a \emph{dependently-typed} programming language. Its
-power and development are therefore most-suited and often geared towards
+expressiveness and automation facilities make it well-suited to
 \emph{large-scale} developments.
 
-On the logical side, Coq lays claim to feats of modern software-engineering such
-as the Four-Colour Theorem~\cite{gonthier2008formal} (60,000 lines) and the
+On the logical side, Coq lays claim to feats of modern software projects such
+as the Four-Colour Theorem~{\citep{gonthier2008formal}} (60,000 lines) and the
 aforementioned \emph{Feit-Thompson} theorem (approximately 170,000 lines, 15,000
 definitions and 4,200 theorems).
 
 On the programming language side, Coq has served as the basis for many equally
 impressive projects. The \emph{CompCert Verified C
-Compiler}~\cite{leroy2012compcert} demonstrates the practical applications of
+Compiler}~{\citep{leroy2012compcert}} demonstrates the practical applications of
 theorem-proving and dependently-typed programming by implementing and proving
 correct an optimising compiler for the C programming language.
-\emph{DeepSpec}~\cite{pierce2016science}, a recently announced meta-project,
+\emph{DeepSpec}~{\citep{pierce2016science}}, a recently announced meta-project,
 aims to integrate several large projects such as \emph{CertiKOS} (operating
 system kernels), \emph{Kami} (hardware), \emph{Vellvm} (verifying LLVM) and many
-more in the hopes to provide complete, \emph{end-to-end} verification of
+more in the hope of providing complete, \emph{end-to-end} verification of
 real-world systems.
 
 Coq is a \emph{huge} project, developed by INRIA (France), and its size and
 complexity are best experienced through untangling the source code for oneself.
 Just for the implementation of the system (not including the standard library),
-Coq features approximately 3 major ASTs, 6 transformations between them, 3000
-visible types, 9000 APIs and 521 implementation files containing 228,000 lines
-of dense, functional OCaml.
+Coq features approximately 3 major ASTs (Abstract Syntax Trees), 6
+transformations between them, 3000 visible types, 9000 APIs and 521
+implementation files containing 228,000 lines of dense, functional OCaml.
 
 However, most of this massive project is sporadically (and tersely) documented.
 Even after I received some guidance via the Coq developers' mailing-list, I
@@ -225,7 +225,7 @@ either.
 \emph{Coq Serialized (S-expression) API}
 (\href{http://github.com/ejgallego/coq-serapi}{\texttt{github.com/ejgallego/coq-serapi}})
 is a new library and communication protocol aiming to make low-level
-interactions easier (using OCaml datatypes and s-expressions), particularly for
+interactions easier using OCaml datatypes and s-expressions, particularly for
 tool/IDE developers. It has a starting point for gathering some statistics on
 proof-objects in a project. While this is likely to be useful in the future, it
 is still far from complete and is more geared towards interactive
@@ -245,15 +245,14 @@ it to be a starting point for other tools to build upon.
 
 Although lots of information such as notation, the relationship between
 constructors and the types they construct, proof tactics, the precise kind of an
-object (e.g.\  fixpoint, class, lemma, theorem, etc.) and which module an object
+object (for example,\  fixpoint, class, lemma, theorem, etc.) and which module an object
 belongs to was missing, I thought it unlikely that the information was not
 present in the compiled object files (since they are necessary for
 term-construction and type-checking).
 
 So, assuming the data was already present in those files, but simply
 \emph{ignored or unused}, I focused on understanding and augmenting dpdgraph to
-add the missing pieces to the model and output it to comma-separated values
-(henceforth referred to as CSVs).
+add the missing pieces to the model and output it to CSVs.
 
 \subsection{Comparison}\label{subsec:comparison}
 
@@ -262,15 +261,15 @@ user understand a library}. Table~\ref{table:features1} summarises the main
 features of each. The features chosen reflect the strengths of each tool
 and are justified and elaborated upon below. 
 
-Bundle with Coq, coqdoc produces \textbf{hyperlinked source code} meaning
+Bundled with Coq, coqdoc produces \textbf{hyperlinked source code}, meaning
 details such as \textbf{precise kinds} of a proof-object, \textbf{constructors
 of a type} and \textbf{type-signatures} are immediately visible; hence those
 five dimensions were included.  Also included in a Coq system is coqdep: a tool
-for modelling \textbf{module-level dependencies} that can output a \texttt{dot}
+for modelling \textbf{module-level dependencies} that can output a \texttt{.dot}
 file to present the dependencies \textbf{graphically}.
 
-Coq Serialised (S-expression) API is an \textbf{interactive} IDE communication
-protocol with facilities for gathering some basic \textbf{statistics}. Here,
+The Coq Serialised (s-expression) API is an \textbf{interactive} IDE communication
+protocol with facilities for there gathering of some basic \textbf{statistics}. Here,
 interactive is used to mean that information is not presented all at-once,
 \emph{statically}, but can instead be queried dynamically at run-time. An
 example of a static display is Figure~\ref{fig:static}; it shows a medium-sized
@@ -337,7 +336,7 @@ Neo4j supports both graphical and textual modes of use and is easily extensible
 (through Cypher plugins and several language-specific bindings and libraries).
 It meets all the \hyperref[req:i1]{interaction requirements} of helping users to
 understand data because it is flexible in its use and extensible in its
-capabilities.  It even includes a tool to import CSVs files containing nodes and
+capabilities.  It even includes a tool to import CSV files containing nodes and
 edges into a new database. This allowed me to focus on extracting as much
 information as possible and expressing it in a simple format.
 
@@ -387,7 +386,7 @@ even goes part-way towards meeting the \emph{computation} requirements.
 \subsection{igraph}\label{subsubsec:neo4jtoolsigraph}
 
 APOC's focus is on interacting with and combining different sorts and sources of
-data and so lacks graph analysis functionality \emph{beyond} the basics. The
+data and so it lacks graph analysis functionality \emph{beyond} the basics. The
 fact that it is implemented in Java adds to its limitations: it is not
 well-suited to more intense analyses over large graphs of libraries and is
 insufficient to \emph{fully} meet the \emph{computation} requirements of this
@@ -395,10 +394,10 @@ project.
 
 For such tasks, \href{http://www.igraph.org}{igraph} is ideal: it is described
 on its website as a \emph{collection of network analysis tools, with the
-emphasis on efficiency, portability and ease of use}. Written in C/C++ (with
-bindings for R and Python), igraph offers a \emph{comprehensive} set of graph
-algorithms without sacrificing on performance. Some of these algorithms and
-their uses are described in Subsection~\ref{subsec:igraphalg}.
+emphasis on efficiency, portability and ease of use}. igraph offers lots of
+high-performance graph algorithms (it is written in C/C++, with bindings for R
+and Python). Some of these algorithms and their uses are described in
+Subsection~\ref{subsec:igraphalg}.
 
 Although igraph is not as easy to interact with  as APOC, the extra capabilities
 it provided were indispensable towards achieving the \emph{computation}
@@ -408,7 +407,7 @@ requirements of a core library of good defaults.
 
 igraph offers a comprehensive set of network-analysis algorithms. Becoming
 familiar with these was a challenge and I spent several hours reading Newman's
-\emph{Networks}~\cite{newman2008} in order to understand and use them correctly.
+\emph{Networks}~{\citep{newman2008}} in order to understand and use them correctly.
 Network-analysis typically centres around two broad classes of measures:
 centrality and community detection; both of which are described next.
 
@@ -417,11 +416,11 @@ centrality and community detection; both of which are described next.
 \emph{Centrality} measures offer a way to characterise a node's \emph{importance}.
 
 \textbf{Betweenness} centrality is a measure based on shortest paths. For each
-node ($v$), the fraction of shortest paths (from source $s$ to target $t$,
-$\sigma_{st}$) which pass through it ($\sigma_{st}\left(v\right)$) is its
+node $v$, the fraction of shortest paths (from source $s$ to target $t$,
+$\sigma_{st}$) which pass through it $\sigma_{st}\left(v\right)$ is its
 betweenness centrality. When applied to mathematical theories, how
 ``unavoidable'' a given object is for the results which mention
-it.~\cite{freeman1977}
+it~{\citep{freeman1977}}.
 
 \begin{equation}
   g\left(v\right) = \sum_{s \neq v \neq t} \frac{\sigma_{st}\left(v\right)}{\sigma_{st}}
@@ -431,29 +430,29 @@ it.~\cite{freeman1977}
 each node, the sum of the length of all shortest paths to every other node is
 its closeness centrality. In a directed, dependency graph of mathematical
 theories, this corresponds to how ``foundational'' a node is. It is typically
-calculated as the reciprocal of \emph{farness} ($\sum_{y}d\left(y,x\right)$),
+calculated as the reciprocal of \emph{farness} $\sum_{y}\sigma_{xy}$,
 scaled by the number of nodes in the graph ($N$) to allow comparisons with
-graphs of different sizes.~\cite{bavelas1950}
+graphs of different sizes~{\citep{bavelas1950}}.
 
 \begin{equation}
-  C\left(x\right) = \frac{N}{\sum_{y}d\left(y,x\right)}
+  C\left(x\right) = \frac{N}{\sum_{y}\sigma_{xy}}
 \end{equation}
 
 \textbf{PageRank} is a variant of \textbf{eigenvector} centrality.  For an
-adjacency matrix $\mathbf{A}$, the v\textsuperscript{th} component of the
+adjacency matrix $\mathbf{A}$, the $v$\textsuperscript{th} component of the
 eigenvector $\mathbf{x}$ (whose entries must all be non-negative, corresponding
-to the greatest eigenvalue $\lambda$) is the v\textsuperscript{th} node's
+to the greatest eigenvalue $\lambda$) is the $v$\textsuperscript{th} node's
 \emph{relative, eigenvector} centrality. Normalising the eigenvector provides
-the \emph{absolute eigenvector} centralities.~\cite{newman2008}
+the \emph{absolute eigenvector} centralities~{\citep{newman2008}}.
 
 The principle behind such a measure is that connections to high-ranking nodes
 contribute more to a node's rank than connections to low-ranking nodes.  As
 such, for mathematical theories, it is like a \emph{weighted
 in-degree/number-of-uses} which takes into account the importance of the nodes
-which is using a given type, proof or definition.
+using a given type, proof or definition.
 
 PageRank is similar; we want a vector $\mathbf{r}$ that satisfies
-equation~\ref{eqn:pagerank}~\cite{page1999} instead of the equation $\mathbf{Ar}
+equation~\ref{eqn:pagerank}~{\citep{page1999}} instead of the equation $\mathbf{Ar}
 = \lambda\mathbf{r}$ (for number of nodes $N$, random-jump probability $1-d$ and
 stochastic adjacency matrix $\mathbf{L}$. Hence, it can be viewed as the
 probability of a randomly-perusing mathematician coming across a given proof or
@@ -475,38 +474,38 @@ determining which community a node belongs to. Each node starts with a unique
 label, after which, on successive iterations, it adopts the label held by most
 of its neighbours, until a consensus is reached. This whole procedure is
 repeated a few times and an aggregate result constitutes the
-output.~\cite{raghavan2007}
+output~{\citep{raghavan2007}}.
 
-\textbf{Edge betweenness} (like betweenness centrality), is also based on
+\textbf{Edge betweenness} -- like betweenness centrality -- is also based on
 shortest paths, with the idea that edges separating communities are likely to
 have high edge betweenness (since all shortest paths must pass through them).
-Removing the edge with the greatest betweenness value and re-computing over the
-remaining edges successively will result in a rooted tree, a hierarchical map
-(called a dendrogram) where the root represents the whole graph and the leaves
-represent individual nodes.~\cite{newman2004}
+Successively removing the edge with the greatest betweenness value and
+re-computing over the remaining edges will result in a rooted tree, a
+hierarchical map (called a dendrogram) where the root represents the whole graph
+and the leaves represent individual nodes~{\citep{newman2004}}.
 
 \textbf{Modularity} is a measure of how well network can be divided.  Formally,
 it is the fraction of edges that fall within a given grouping (across the whole
 graph) minus the expected number of those which could have fallen within the
 group by chance (and so is a real number between $-0.5$ and $1$). Calculating
 this in an optimal manner is an NP-complete problem, and so I used a fast and
-greedy version of the algorithm instead.~\cite{clauset2004}
+greedy version of the algorithm instead~{\citep{clauset2004}}.
 
 \subsection{visNetwork}
 
 There exist \emph{several} visualisation programs for Neo4j; however, many are
 for commercial, industrial use and offer the features/complexity (and pricing)
 to match. All tools that offer live visualisation with built-in Cypher query
-execution (e.g. KeyLines, TomSawyer, Linkurious) are proprietary, require a fee
+execution (for example, KeyLines, TomSawyer, Linkurious) are proprietary, require a fee
 to use and offer more granularity than I needed. Offline (and open-source)
 solutions (which require data to be exported in some manner before
-visualisation) such as Gephi or Alchemy.js offer similarly many features, but at
+visualisation) such as Gephi or Alchemy.js also offer many features, but at
 the cost of a steep learning curve. 
 
 Ultimately, I chose
-\href{http://datastorm-open.github.io/visNetwork}{visNetwork}, (an R library
-exporting to JavaScript which can be rendered inside a browser) because it was
-simple to use and easy to integrate with the rest of this project.
+\href{http://datastorm-open.github.io/visNetwork}{visNetwork}, which is an R
+library exporting to JavaScript because it was simple to use and easy to
+integrate with the rest of this project.
 
 \subsection{R}\label{subsec:R}
 
@@ -523,21 +522,21 @@ to pick-up.
 \section{Summary}
 
 In this chapter, I gave a detailed account of how I planned this project. At the
-start, I mentioned the choice of development methodology (spiral) and
+start, I mentioned the choice of development methodology (spiral) and the
 development tools I used (Git, GitHub and Travis-CI). Following that, I
 presented and explained the requirements this project should meet for modelling,
 interacting with and analysing Coq libraries. From there, I stated how the
 choice of technologies was dictated by the decision to use Coq and Neo4j.
 
 I then elaborated on my starting point for this project. I gave a description of
-Coq, its uses and explained why (complexity and poor documentation) it is a
+Coq, its uses and explained why (because of its complexity and poor documentation) it is a
 difficult system to work with. I also compared existing tools that aim to help a
 user understand a Coq library (coqdoc, coqdep, CoqSerAPI and dpdgraph) against
 this project's requirements and showed that although none satisfied all the
 requirements, dpdgraph provided a platform (albeit limited) to build upon.
 
 Similarly, I gave a description of Neo4j and some of its plugins (APOC, igraph
-and visNetwork) and explained their features, advantages, disadvantages in
+and visNetwork) and explained their features, advantages and disadvantages in
 relation to which of the project requirements they met. I discussed how I needed
 to learn the R programming language to tie together Neo4j, igraph and visNetwork
 in order to meet this project's interacting and computing requirements.
