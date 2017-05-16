@@ -92,7 +92,7 @@ relations between the proof-objects.
 
 Although I used dpdgraph as a starting point, I rewrote all the
 attribute-assigning code because the meaning of the attributes it initially
-collected was not obvious and terminology it used did not correspond to
+collected was not obvious and the terminology it used did not correspond to
 recognisable Coq constructs.
 
 I added the following attributes and improved the dependency-collection for
@@ -141,7 +141,7 @@ and adding all the ``ancestors'' of a module with the correct relations
 
 One of the most glaring omissions from dpdgraph's initial model was the
 inability to relate a type to its constructor(s). To fix this,
-I improved the dependency-collection code.
+I improved the dependency-collection code (see Appendix~\ref{chapter:sample}).
 
 Expanding an AST term for type-constructors shows which type it constructed
 (note that types have no information about which constructors construct them).
@@ -250,14 +250,14 @@ headers.
 \texttt{objectId:ID(Object), name, kind:LABEL, subkind:LABEL, path, type}
 
 Here we see name, path and type declared as properties, kind and subkind
-declared as labels and the objectId field declared as unique identifier (or in
+declared as labels and the objectId field declared as a unique identifier (or in
 relational terms, a key) for the nodes (in this schema, called `Objects') in
 the graph.
 
 \texttt{:START\_ID(Object), :END\_ID(Object), weight:int, :TYPE}
 
 Similarly, here we see relations (between `Objects' as declared
-previously) named according to the value under the \texttt{:TYPE} column (e.g.
+previously) named according to the value under the \texttt{:TYPE} column (for example,
 \texttt{CONTAINS}, \texttt{USES} or \texttt{CONSTRUCTED\_BY}), each with an
 integer property, weight.
 
@@ -275,9 +275,9 @@ Whilst using this tool, I discovered it had a bug. By default, \texttt{dpd2}
 attempts to remove reflexive and transitive dependencies (i.e. $a \rightarrow a$
 and removing $a \rightarrow c$ if $a \rightarrow b$ and $b \rightarrow^{+} c$)
 in a depth-first manner.  For large graphs, doing so is stack-intensive, and
-thus causes the aforementioned error.  Since this ``feature'' was unnecessary
+thus causes a stack-overflow error.  Since this ``feature'' was unnecessary
 (because it \emph{removed} useful information) and appeared time-consuming to
-fix, I passed \texttt{-keep-trans} flag on subsequent uses to avoid the issue
+fix, I passed the \texttt{-keep-trans} flag on subsequent uses to avoid the issue
 altogether.
 
 \section{CSV to Neo4j}
@@ -286,10 +286,9 @@ The `import tool' in Figure~\ref{fig:structure} is a command-line program that
 is included with Neo4j. Given a target directory, a CSV file containing the
 nodes of the graph and a separate CSV file containing the edges of the graph,
 the import tool constructs a database. As explained
-in~\ref{subsubsec:translationcsv}~\nameref{subsubsec:translationcsv} on
-page~\pageref{subsubsec:translationcsv}, the headers determine the labels,
-properties and IDs of nodes as well as the sources, destinations, properties and
-types of edges.
+in~\ref{subsubsec:translationcsv}~\nameref{subsubsec:translationcsv}, the
+headers determine the labels, properties and IDs of nodes as well as the
+sources, destinations, properties and types of edges.
 
 \section{Query Library}
 
@@ -314,7 +313,7 @@ note are:
     detection) and centrality measures (betweenness, closeness and PageRank).
 
   \item functions for regular-expressions and mathematics, useful for selecting
-    nodes based on statistics (e.g. PageRank) or selecting nodes based on their
+    nodes based on statistics (for example, PageRank) or selecting nodes based on their
     path property.
 
 \end{itemize}
@@ -330,8 +329,8 @@ from a new database, stored the information again for later use (to avoid
 re-computation) and output appropriate visualisations.  Since processing could
 take on the order of minutes, I also provided status updates (informing the user
 of the tasks being executed), execution times for each task, as well as
-progress-bars where possible and relevant (e.g.\ committing a transaction to the
-database).
+progress-bars where possible and relevant (for example,\ committing a
+transaction to the database). See Appendix~\ref{chapter:sample} for details.
 
 \subsubsection{Visualisation}
 
@@ -368,7 +367,7 @@ I used some of my older Coq proof-scripts -- problems I solved when learning Coq
 -- to check output on a small scale (where I knew every single aspect of the
 library, and testing turnaround was quick). I used Coq's Standard Library as a
 large-scale stress-test, to ensure all constructs were translated correctly.
-When I did find problems, I could usually trace them back to output from debug
+When I did find problems, I could usually trace them back using output from debug
 statements I had embedded into `dpdgraph++'.
 
 \subsection{Continuous-Integration Builds}\label{subsec:cibuilds}
@@ -380,7 +379,7 @@ CoqRegExp and the solved problems) relied on a version of Coq (8.5.2) older than
 the one Mathematical Components (needed for this project's moon-shot, the Odd
 Order Theorem) relied on (8.6). I set up Travis-CI for continuous-integration
 builds, made version dependencies precise and explicit, and removed much of the
-hassle and uncertainty surrounding builds on other machines.
+inconvenience and uncertainty surrounding builds on other machines.
 
 \subsection{Tooling}
 

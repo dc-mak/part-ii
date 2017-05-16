@@ -24,6 +24,9 @@
     urlcolor={blue!80!black}
 }
 
+% Citations with author
+\RequirePackage[round]{natbib}
+
 % Refer to Chapters and Sections by their Title
 \RequirePackage{nameref}
 

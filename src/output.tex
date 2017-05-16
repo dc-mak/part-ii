@@ -140,3 +140,369 @@ the effects of caching.
     decimal point.}
 
 \end{table}
+
+\chapter{Sample Code}\label{chapter:sample}
+
+Here is the dependency collection code (recursing down the AST).
+
+\begin{minted}[linenos,obeytabs=true,tabsize=2]{ocaml}
+let collect_dependance gref =
+  match gref with
+  | Globnames.VarRef _ -> assert false
+
+  | Globnames.ConstRef cst ->
+      let cb = Environ.lookup_constant cst (Global.env()) in
+      let cl = match Global.body_of_constant_body cb with
+         Some e -> [e]
+	| None -> [] in
+      let cl = match cb.Declarations.const_type with
+        | Declarations.RegularArity t -> t::cl
+        | Declarations.TemplateArity _ ->  cl in
+      List.fold_right collect_long_names cl Data.empty
+
+  | Globnames.IndRef i ->
+      let _, indbody = Global.lookup_inductive i in
+      let ca = indbody.Declarations.mind_user_lc in
+      Array.fold_right collect_long_names ca Data.empty
+
+ | Globnames.ConstructRef (i,_) -> 
+      let _, indbody = Global.lookup_inductive i in
+      let ca = indbody.Declarations.mind_user_lc in
+      (* So a constructor and its type are linked, BUT WRONG WAY AROUND *)
+      add_inductive i (Array.fold_right collect_long_names ca Data.empty)
+\end{minted}
+
+Here is a small excerpt of how edges are formatted and corrected.
+
+\begin{minted}[linenos,obeytabs=true,tabsize=2]{ocaml}
+  let out_edge fmt _g e =
+
+    (* incorporate src & dst types, flip if constructor & ind & match
+     * TO FIX WRONG WAY DEPENDENCY LINK FROM SEARCHDEPEND.ML4 *)
+    let src, dst, rel_type =
+      let matches typ n =
+        let dirname, name = G.Node.split_name (G.Node.obj n) in
+        get_constr_type typ = dirname ^ "." ^ name in
+
+      let src, dst = G.Edge.src e, G.Edge.dst e in
+
+      match G.Node.obj src, G.Node.obj dst with
+      | G.Node.Gref (Globnames.ConstructRef ((typ, _), _)),
+        G.Node.Gref (Globnames.IndRef _) when matches typ dst ->
+        dst, src, "CONSTRUCTED_BY"
+      | G.Node.Module _, G.Node.Module _ ->
+        dst, src, "CONTAINS"
+      | G.Node.Module _, G.Node.Gref _ ->
+        src, dst, "CONTAINS"
+      | _, _ ->
+        src, dst, "USES" in
+
+    let edge_attribs =
+      [ ("type", rel_type) ; ("weight", string_of_int (G.Edge.nb_use e))] in
+
+    (* NOTE: Flipped src and dst - src USED_BY dst <==> dst USES src*)
+    Format.fprintf fmt "E: %d %d [%a];@."
+        (G.Node.id dst)
+        (G.Node.id src)
+        pp_attribs edge_attribs
+\end{minted}
+
+Here is the analysis of the CoqRegExp library.
+
+\begin{minted}[linenos,obeytabs=true,tabsize=2]{R}
+suppressMessages(library(RNeo4j))
+suppressMessages(library(igraph))
+library(tictoc)
+
+# Connect to DB instance
+cat("Connecting to database... "); tic()
+graph <- startGraph(
+  "http://localhost:7474/db/data/",
+  username="neo4j",
+  password="Neo4j")
+time <- toc(quiet=TRUE); time <- time$toc - time$tic
+cat(sprintf("done. (%.2fs)\n", time))
+
+# Grab nodes...
+cat("Getting nodes (definitions and proofs) "); tic()
+nodes <- cypher(graph, "
+  MATCH (obj:definition),
+				(m:module)-[:CONTAINS]->(obj)
+  RETURN obj.objectId AS id,
+         obj.name AS label,
+         obj.path AS title,
+         \"triangle\" AS shape,
+				 m.objectId AS parent
+  UNION
+  MATCH (obj:proof),
+				(m:module)-[:CONTAINS]->(obj)
+  RETURN obj.objectId AS id,
+         obj.name AS label,
+         obj.path AS title,
+         \"square\" AS shape,
+				 m.objectId AS parent")
+
+# and edges.
+cat("and edges... ")
+edges <- cypher(graph, "
+  MATCH (src)-[edge]->(dst)
+  WHERE (src:definition OR src:proof) AND (dst:definition OR dst:proof)
+  RETURN src.objectId AS from, dst.objectId AS to, edge.weight AS weight")
+time <- toc(quiet=TRUE); time <- time$toc - time$tic
+cat(sprintf("done. (%.2fs)\n", time))
+
+# Constructing graph
+cat("Constructing igraph... "); tic()
+d_ig <- graph_from_data_frame(edges, directed=TRUE, nodes)
+ig <- graph_from_data_frame(edges, directed=FALSE, nodes)
+time <- toc(quiet=TRUE); time <- time$toc - time$tic
+cat(sprintf("done. (%.2fs)\n", time))
+
+# Calculate metrics on nodes
+node_metric <- function(algorithm, graph) {
+  cat(sprintf("%s ... ", algorithm)); tic()
+
+  result <- switch(algorithm,
+                   PageRank = page_rank(graph)$vector,
+                   Betweenness = betweenness(graph),
+                   Closeness = closeness(graph))
+
+  time <- toc(quiet=TRUE); time <- time$toc - time$tic
+  cat(sprintf("done. (%.2fs)\n", time))
+
+  return(result)
+}
+
+# Compute PageRank (proofs and definitions)
+nodes$pagerank <- node_metric("PageRank", d_ig)
+
+# Compute Betweenness (proofs and definitions)
+nodes$betweenness <- node_metric("Betweenness", d_ig)
+
+# Compute Closeness (proofs and definitions)
+nodes$closeness <- node_metric("Closeness", d_ig)
+
+# Assign a cluster to each node
+assign_cluster <- function(algorithm, nodes, graph) {
+  cat(sprintf("%s clustering... ", algorithm)); tic()
+
+  label <- switch(algorithm,
+                  "Fast Modularity" = "modularity",
+                  Betweenness = "betweenness",
+                  "Label Propagation" = "label_prop")
+
+  communities <- switch(algorithm,
+                        "Fast Modularity" = cluster_fast_greedy(graph),
+                        Betweenness = cluster_edge_betweenness(graph),
+                        "Label Propagation" = cluster_label_prop(graph))
+
+  memb <- data.frame(id = communities$name)
+  memb[[label]] <- communities$membership
+  nodes <- merge(nodes, memb)
+
+  time <- toc(quiet=TRUE); time <- time$toc - time$tic
+  cat(sprintf("done. (%.2fs)\n", time))
+
+  return(nodes)
+}
+
+# Cluster modularity (proofs and defintions) 
+# Needs UNDIRECTED graph
+nodes <- assign_cluster("Fast Modularity", nodes, ig)
+
+# Only run on small graphs.
+nodes <- assign_cluster("Betweenness", nodes, d_ig)
+
+# Cluster label_prop (proofs and defintions)
+nodes <- assign_cluster("Label Propagation", nodes, d_ig)
+
+# Put back into database
+cat(sprintf("Setting properties:\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n",
+            "definition_proof_pagerank",
+            "definition_proof_betweenness",
+            "definition_proof_closeness",
+            "definition_proof_modularity",
+            "definition_proof_edge_betweenness",
+            "definition_proof_label_prop")); tic()
+set = "
+  MATCH (obj { objectId : toInt({OBJID}) })
+  SET obj.definition_proof_pagerank = toFloat({PGR}), 
+            obj.definition_proof_betweenness = toFloat({BTW}),
+            obj.definition_proof_closeness = toFloat({CLOSE}),
+            obj.definition_proof_modularity = toInt({MODGROUP}),
+            obj.definition_proof_edge_betweenness = toInt({EBTW}),
+            obj.definition_proof_label_prop = toInt({LBL_PRP})
+"
+transaction <- newTransaction(graph)
+progressBar <- txtProgressBar(min=0,
+                              max=nrow(nodes),
+                              char='=',
+                              width=80, 
+                              style=3)
+for (i in 1:nrow(nodes)) {
+  row <- nodes[i,]
+  appendCypher(transaction,
+               set,
+               OBJID=row$id,
+               PGR=row$pagerank,
+               BTW=row$betweenness,
+               CLOSE=row$closeness,
+               MODGROUP=row$modularity,
+               EBTW=row$edge_betweenness,
+               LBL_PRP=row$label_prop)
+  setTxtProgressBar(progressBar, i)
+}
+close(progressBar)
+cat("Commiting transaction... ")
+commit(transaction)
+time <- toc(quiet=TRUE); time <- time$toc - time$tic
+cat(sprintf("done. (%.2fs)\n", time))
+\end{minted}
+
+Here is the visualisation of the CoqRegExp library.
+
+\begin{minted}[linenos,obeytabs=true,tabsize=2]{R}
+suppressMessages(library(RNeo4j))
+suppressMessages(library(igraph))
+suppressMessages(library(visNetwork))
+library(tictoc)
+
+# Connect to DB instance
+cat("Connecting to database... "); tic()
+graph <- startGraph(
+  "http://localhost:7474/db/data/",
+  username="neo4j",
+  password="Neo4j")
+time <- toc(quiet=TRUE); time <- time$toc - time$tic
+cat(sprintf("done. (%.2fs)\n", time))
+
+# Grab nodes...
+cat("Getting nodes (definitions and proofs) "); tic()
+nodes <- cypher(graph, "
+  MATCH (obj:definition),
+				(m:module)-[:CONTAINS]->(obj)
+  RETURN obj.objectId AS id,
+         obj.path + '.' + obj.name AS title,
+         \"triangle\" AS shape,
+         obj.definition_proof_pagerank AS pagerank,
+         obj.definition_proof_betweenness AS betweenness,
+         obj.definition_proof_closeness AS closeness,
+         obj.definition_proof_edge_betweenness AS edge_betweenness,
+         obj.definition_proof_label_prop AS label_prop,
+         obj.definition_proof_modularity AS modularity
+  UNION
+  MATCH (obj:proof),
+				(m:module)-[:CONTAINS]->(obj)
+  RETURN obj.objectId AS id,
+         obj.path + '.' + obj.name AS title,
+         \"square\" AS shape,
+         obj.definition_proof_pagerank AS pagerank,
+         obj.definition_proof_betweenness AS betweenness,
+         obj.definition_proof_closeness AS closeness,
+         obj.definition_proof_edge_betweenness AS edge_betweenness,
+         obj.definition_proof_label_prop AS label_prop,
+         obj.definition_proof_modularity AS modularity")
+
+# and edges.
+cat("and edges... "); tic()
+edges <- cypher(graph, "
+  MATCH (src)-[edge]->(dst)
+  WHERE (src:definition OR src:proof) AND (dst:definition OR dst:proof)
+  RETURN src.objectId AS from, dst.objectId AS to, edge.weight AS weight")
+time <- toc(quiet=TRUE); time <- time$toc - time$tic
+cat(sprintf("done. (%.2fs)\n", time))
+
+# Output visualisations
+visualise <- function(nodes, edges, filename, layout_opts,
+											edge_opts, skipIgraph=FALSE) {
+  cat(sprintf("Outputting %s... ", filename)); tic()
+
+  g <- visNetwork(nodes, edges, width="1600px", height="1600px") %>%
+       visInteraction(navigationButtons=TRUE,
+											dragNodes=FALSE, zoomView=FALSE)
+
+	g <- do.call(visEdges, append(list(g), edge_opts))
+
+  if (!skipIgraph) {
+    g <- do.call(visIgraphLayout, append(list(g), layout_opts))
+  } else {
+    visLayout(g, randomSeed=layout_opts$randomSeed)
+  }
+
+  visSave(g, file = filename)
+
+  time <- toc(quiet=TRUE); time <- time$toc - time$tic
+  cat(sprintf("done. (%.2fs)\n", time))
+  return(g)
+}
+
+# Bucket
+bucket <- function(x) { return(cut(log(0.001+x), 10, labels=FALSE)) }
+
+# Non DrL layouts
+other_layout <- list(randomSeed=1492)
+
+# Edge options
+edge_opts <- list(arrows="middle", color=list(opacity=1), dashes=FALSE)
+
+# Modularity (FR)
+nodes$value <- bucket(nodes$betweenness)
+nodes$group <- nodes$modularity
+other_layout$layout <- "layout_with_fr"
+edge_opts <- list(color=list(opacity=1), dashes=FALSE)
+visualise(nodes, edges, "direct.html", other_layout, edge_opts)
+
+# Grid graph
+nodes$value <- cut(nodes$betweenness, 10, labels=FALSE)
+nodes$group <- nodes$modularity
+other_layout$layout <- "layout_on_grid"
+edge_opts <- list(arrows="middle", color=list(opacity=0.7), dashes=TRUE)
+visualise(nodes, edges, "grid.html", other_layout, edge_opts)
+
+# Hierarchical graph
+nodes$value <- bucket(nodes$betweenness)
+nodes$group <- nodes$modularity
+other_layout$layout <- "layout_with_sugiyama"
+edge_opts <- list(color=list(opacity=1), dashes=TRUE)
+visualise(nodes, edges, "hierarchical.html", other_layout, edge_opts)
+
+
+# Construct a hierarchical network
+cat("Getting nodes (modules) "); tic()
+modules <- cypher(graph, "
+  MATCH (obj:module)
+  RETURN obj.objectId AS id,
+         coalesce(obj.path + '.', '') + obj.name AS title,
+         \"circle\" AS shape,
+         NULL AS pagerank,
+         NULL AS betweenness,
+         NULL AS edge_betweenness,
+         NULL AS closeness,
+         NULL AS modularity,
+         NULL AS label_prop,
+         9 AS value")
+
+# and edges.
+cat("and edges... ")
+contains <- cypher(graph, "
+  MATCH (src)-[edge:CONTAINS]->(dst)
+  WHERE (src:module) AND (dst:module OR dst:definition OR dst:proof)
+  RETURN src.objectId AS from, dst.objectId AS to,
+				 10000 * edge.weight AS weight")
+time <- toc(quiet=TRUE); time <- time$toc - time$tic
+cat(sprintf("done. (%.2fs)\n", time))
+
+# Modularity (FR, modules)
+nodes$value <- bucket(nodes$betweenness)
+nodes$group <- nodes$modularity
+modules$group <- max(nodes$group)+1
+other_layout$randomSeed=440
+edge_opts <- list(color=list(opacity=1), dashes=FALSE)
+visualise(rbind(nodes, modules),
+          contains,
+          "module.html",
+          other_layout,
+          edge_opts,
+          skipIgraph=TRUE)
+
+\end{minted}

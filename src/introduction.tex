@@ -12,14 +12,14 @@
 % }
 
 \prechapter{%
-  Coq is an interactive proof-assistant~\cite{Coq:manual}; it allows users to
+  Coq is an interactive proof-assistant~{\citep{Coq:manual}}; it allows users to
   formalise mathematical theories into machine-checked proofs. Coq libraries,
   which encode mathematical theories, are difficult to understand. In this
   dissertation, I will describe a new tool I implemented for Coq users that
   aimed to (a) represent Coq libraries as Neo4j (graph) databases and (b)
   provide a library of queries with the goal of highlighting the structure of
-  and relationship between proof-objects by using network-analysis techniques
-  usually associated with social-networks.
+  and relationship between proof-objects. It achieves (b) by using
+  network-analysis techniques usually associated with social-networks.
 }
 
 \section{Motivation}
@@ -32,14 +32,14 @@ statement of \emph{why} something is true. There are currently no tools which
 help with the challenge of gaining a \emph{high-level} understanding of a large
 Coq library.
 
-The Feit-Thompson Odd Order Theorem~\cite{peterfalvi2000oot, bender1994oot} (two
-dense books containing thousands of proofs and definitions which been translated
-into Coq~\cite{gonthier2013oot}) is an example of a large Coq library.  It is a
-part of larger, general trend of formalising substantial bodies of mathematics
-and marks the first time that we have a new way representing mathematics,
-different from the usual combination of formulas and natural-language prose.
-Such a turning point provides an opportunity to explore the novel
-representations and analyses possible.
+An example of a large Coq library is~{\citealt{gonthier2013oot}}. It translates
+(into Coq) two dense books on the Feit-Thompson Odd Order Theorem
+(\citealt{peterfalvi2000oot}, \citealt{bender1994oot}), which contain
+thousands of proofs and definitions. It is part of a larger, general trend of
+formalising substantial bodies of mathematics and marks the first time that we
+have a new way representing mathematics, different from the usual combination
+of formulas and natural-language prose.  Such a turning point provides an
+opportunity to explore the novel representations and analyses possible.
 
 However, it is still the case that when a user approaches a large Coq library, 
 they are left to understand and keep track of several aspects of the
@@ -50,8 +50,8 @@ result (i.e.\ number of assumptions, number of steps, some notion of the
 importance such as number of uses).
 
 I obtained such an opportunity by using a query-based approach: by creating a
-tool that expresses Coq library as databases, then I was able query and analyse
-them to gain insights like those mentioned above.
+tool that expresses Coq libraries as databases. Then I was able query and
+analyse them to gain insights like those mentioned above.
 
 \section{A Database Approach}
 
@@ -92,7 +92,7 @@ for traditional, relational databases. Due to the emergence of massive data
 sets thanks to large-scale social and advertising networks, new techniques for
 representing and analysing such data have been developed.
 
-For this project, I used the Neo4j~\cite{neo4j} graph database system (and its
+For this project, I used the Neo4j~{\citep{neo4j}} graph database system (and its
 expressive query language \emph{Cypher}) to create a tool for Coq users which
 applies such network-analysis techniques to Coq libraries and help understand
 them.
@@ -102,10 +102,10 @@ them.
 In this project, I aimed to write a tool for Coq users that:
 
 \begin{itemize}
-\item represents Coq libraries as Neo4j graph databases, which consists of
+\item represents Coq libraries as Neo4j graph databases. This involves
   \begin{itemize}
-  \item exploring and choosing the correct model
-  \item converting and extending existing code to output CSVs
+    \item exploring and choosing the correct model (schema)
+  \item converting and extending existing code to output CSVs (comma-separated values)
   \item writing new programs to extract extra information \\
       (omitted from other, existing tools)
   \item writing new programs to automate database creation.
@@ -119,16 +119,46 @@ In this project, I aimed to write a tool for Coq users that:
 \end{itemize}
 
 Note that the aims centre around the \emph{mechanics and details} of creating a
-model for Coq proof-objects and applying network analysis techniques to it and
+model for Coq proof-objects and applying network analysis techniques to it,
 \emph{not creating a polished, user-friendly product}. Since \emph{usability was
 not a focus of this project}, I did not conduct a user-study whilst evaluating
 this tool.
 
+\section{Sample of Coq}
+
+For readers unfamiliar with Coq, the following small example will clarify the
+starting point of this project.
+
+\begin{minted}{coq}
+(* A generic type-variable *)
+Variable T : Set.
+
+(* An inductive definition of a slist, similar to ML datatypes *)
+Inductive slist : Set :=
+| Empty : slist
+| Sing : T -> slist
+| Concat : slist -> slist -> slist.
+
+(* Tranforming slists into regular by pattern matching. *)
+Fixpoint flatten (xs : slist) : list T :=
+  match xs with
+  | Empty => nil
+  | Sing x => cons x nil
+  | Concat ys zs => flatten ys ++ flatten zs
+  end.
+
+(* We prove flatten distributes over concatenation. *)
+Theorem flatten_dist_concat : forall ls1 ls2 : slist,
+    flatten (Concat ls1 ls2) = flatten ls1 ++ flatten ls2.
+  reflexivity.
+Qed.
+\end{minted}
+
 \section{Summary}
 
-First, I explained why Coq libraries difficult to understand. Then, I said
+First, I explained why Coq libraries are difficult to understand. Then, I said
 that the trend of formalising large bodies of mathematics such as the
-Feit-Thompson Odd Order Theorem~\cite{peterfalvi2000oot, bender1994oot}
+Feit-Thompson Odd Order Theorem~{(\citealt{peterfalvi2000oot}, \citealt{bender1994oot})}
 presents an opportunity to develop new representations and analyses of
 mathematical theories. After that, I outlined why databases, specifically
 graph databases, were a promising approach to this new opportunity. Finally, I
